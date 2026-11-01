@@ -13,11 +13,6 @@ const MUSCLE_IDS = MUSCLE_GROUPS.map((g) => g.id);
 /* Global visibility factor (written by the persistent scroll canvas). */
 export const glowFade = { value: 1 };
 
-/* Deterministic body-part bands in model space (1.8 m figure, feet at y = 0).
-   First matching band wins; index matches MUSCLE_IDS order. Bands measured
-   against the actual model proportions (chest 1.24–1.38, abs 0.98–1.24,
-   back 1.02–1.48 with ax<0.19, forearms 0.78–1.06, quads 0.42–0.90,
-   calves 0.14–0.40). */
 const BODY_BANDS: {
   id: number;
   test: (x: number, y: number, z: number, ax: number) => boolean;
@@ -32,7 +27,6 @@ const BODY_BANDS: {
   { id: 7, test: (x, y, z, ax) => y >= 0.14 && y < 0.4 && ax < 0.17 },
 ];
 
-/* Yaw the figure turns toward when a group is focused. */
 export const GROUP_YAW: Record<MuscleGroupId, number> = {
   chest: 0,
   shoulders: -0.3,
@@ -51,13 +45,8 @@ function bandFor(x: number, y: number, z: number, ax: number): number {
   return -1;
 }
 
-/* Tag per-triangle with majority vote per vertex: pass 1 tags every face by
-   its centroid (kills UV-seam streaks from stacked duplicated vertices),
-   pass 2 resolves each shared vertex to the majority of its adjacent faces'
-   tags so a later face can't overwrite a boundary vertex (last-writer
-   fringes). Groups win ties over -1 so seams don't flicker untagged. */
 function tagMuscleGroups(scene: THREE.Group) {
-  const N_GROUPS = MUSCLE_IDS.length + 1; // ids 0..7 + untagged(-1)
+  const N_GROUPS = MUSCLE_IDS.length + 1;
   scene.updateMatrixWorld(true);
   const a = new THREE.Vector3();
   const b = new THREE.Vector3();
@@ -165,7 +154,6 @@ function createMuscleMaterial(
   return material;
 }
 
-/* Tag the GLB with per-vertex muscle groups and swap in the glow material. */
 export function prepareMusclesModel(scene: THREE.Group): THREE.MeshPhysicalMaterial {
   tagMuscleGroups(scene);
   let textureSource: THREE.MeshStandardMaterial | null = null;
@@ -187,7 +175,6 @@ export function prepareMusclesModel(scene: THREE.Group): THREE.MeshPhysicalMater
   return material;
 }
 
-/* Per-frame glow envelopes driven by explorer store state. */
 export function driveMuscleGlow(
   glowPow: { value: number }[] | undefined,
   active: MuscleGroupId | null,
@@ -205,15 +192,20 @@ export function driveMuscleGlow(
 }
 
 /**
- * List-driven figure (used inside the persistent scroll canvas).
- * Group hover/selection comes from the global muscle store.
+ * @param clone - when true, deep-clones the GLB so a second Canvas can use it
+ *                without stealing the scene from the first Canvas.
  */
-export function MusclesFigure() {
-  const { scene } = useOptimizedGLB("/models/human-muscles.glb");
+export function MusclesFigure({ clone = false }: { clone?: boolean }) {
+  const { scene: source } = useOptimizedGLB("/models/human-muscles.glb");
   const spin = useRef<THREE.Group>(null);
 
-  const prepared = useMemo(() => prepareMusclesModel(scene), [scene]);
-  const glowPow = prepared.userData.glowPow as { value: number }[] | undefined;
+  const { scene, material } = useMemo(() => {
+    const target = clone ? (source.clone(true) as THREE.Group) : source;
+    const mat = prepareMusclesModel(target);
+    return { scene: target, material: mat };
+  }, [source, clone]);
+
+  const glowPow = material.userData.glowPow as { value: number }[] | undefined;
 
   const active = useMuscleExplorer((s) => s.active);
   const hover = useMuscleExplorer((s) => s.hover);
@@ -224,8 +216,6 @@ export function MusclesFigure() {
     driveMuscleGlow(glowPow, active, hover, delta);
     const g = spin.current;
     if (g) {
-      // No idle spin, no scroll-coupled yaw: rotation follows only the
-      // focused muscle group (hover/selection), otherwise faces front.
       const target = GROUP_YAW[focusRef.current ?? "chest"];
       g.rotation.y = THREE.MathUtils.damp(g.rotation.y, target, 3, delta);
     }
