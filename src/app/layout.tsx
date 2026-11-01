@@ -1,5 +1,11 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Inter, Instrument_Serif } from "next/font/google";
+import {
+  Space_Grotesk,
+  Inter,
+  Instrument_Serif,
+  Noto_Kufi_Arabic,
+  IBM_Plex_Sans_Arabic,
+} from "next/font/google";
 import "./globals.css";
 import { I18nProvider } from "@/lib/i18n";
 
@@ -22,18 +28,33 @@ const serif = Instrument_Serif({
   display: "swap",
 });
 
+const displayAr = Noto_Kufi_Arabic({
+  subsets: ["arabic"],
+  variable: "--font-display-ar",
+  display: "swap",
+});
+
+const bodyAr = IBM_Plex_Sans_Arabic({
+  weight: ["400", "500", "600", "700"],
+  subsets: ["arabic"],
+  variable: "--font-body-ar",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  title: "Belghamdi Coaching — Anatomy of Performance",
+  title: "بلهامدي كوتشينج — برامج تدريب وإشراف شخصي",
   description:
-    "Premium online fitness coaching. Personalized programs, measurable progress, science-backed training.",
+    "برامج تدريب جاهزة وإشراف شخصي متابَع أسبوعيًا. تدريب مبني على العلم، تقدّم يقاس.",
 };
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" dir="ltr">
-      <body className={`${display.variable} ${body.variable} ${serif.variable}`}>
+    <html lang="ar" dir="rtl">
+      <body
+        className={`${display.variable} ${body.variable} ${serif.variable} ${displayAr.variable} ${bodyAr.variable}`}
+      >
         <I18nProvider>{children}</I18nProvider>
       </body>
     </html>

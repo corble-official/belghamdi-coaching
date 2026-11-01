@@ -20,9 +20,16 @@ export function uuid(): string {
   });
 }
 
-export function formatMoney(amount: number, currency = "EGP"): string {
+export function formatMoney(
+  amount: number,
+  currency = "EGP",
+  lang: "en" | "ar" = "en"
+): string {
   if (currency === "EGP") {
-    return `LE ${amount.toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
+    const grouped = amount.toLocaleString("en-US", {
+      maximumFractionDigits: 0,
+    });
+    return lang === "ar" ? `${grouped} ج.م` : `LE ${grouped}`;
   }
   return new Intl.NumberFormat("en-US", {
     style: "currency",

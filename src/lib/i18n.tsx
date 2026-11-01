@@ -476,7 +476,7 @@ type I18nCtx = { lang: Lang; t: (k: keyof typeof DICT) => string; setLang: (l: L
 const Ctx = createContext<I18nCtx | null>(null);
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>("en");
+  const [lang, setLangState] = useState<Lang>("ar");
 
   useEffect(() => {
     const saved = window.localStorage.getItem("bc_lang");
