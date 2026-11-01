@@ -36,7 +36,8 @@ The remake restructures the public website around the brief's IA and visual lang
 1. Stack unchanged: Next.js 14 App Router, TypeScript, Tailwind, Zustand, R3F (contained use only), Supabase/Shopify integrations unchanged.
 2. All real business/product data flows through `src/lib/catalog.ts` (`CLIENT_DATA.md` rules); Silver/Gold coaching prices remain demo placeholders labeled demo.
 3. EN/AR comes from the existing language context (`src/lib/i18n.tsx`); mechanism kept, defaults reversed to Arabic.
-4. Currency fixed EGP via `formatMoney()`; no recurring-billing assumptions.
+4. Currency fixed EGP via `formatMoney()`; no recurring-billing assumptions. Money formatting becomes locale-aware: `ج.م` in Arabic, `LE` in English — one formatter change propagating everywhere (public + admin).
+5. Document direction: `layout.tsx` sets static `lang="ar" dir="rtl"` (no post-hydration flip). The admin root gets its own scoped `dir="ltr"` + English default so the Arabic switch never reaches `/admin` — admin stays English/LTR with token-only visual refresh. Users set to English get the same site LTR via the existing client-side toggle (no `/en` routes; all URLs unchanged).
 5. `CLIENT_DATA.md`, AGENTS.md conventions, and demo-mode flagging (`demo: true`) must be preserved.
 
 ## Approaches considered (per §5 — 3D)
@@ -70,8 +71,8 @@ Removes: the current ember/amber glow layer, gradient.btns, emissive-pulse styli
 
 - **Display:** Noto Kufi Arabic (700/800) — geometric kufi reads "scientific/confident"; used for headlines, nav brand, prices.
 - **Body:** IBM Plex Sans Arabic (400/500/600) — highest-readability Arabic UI face; used for body, controls, forms.
-- Latin fallback in the same two roles: keep the current display/mono Latin faces for `lang=en` so EN pages stay composed, but hierarchy mirrors the Arabic system.
-- Arabic-first details: `dir="rtl"` as default document direction (`lang="ar"`), logical CSS properties (`ms-/me-`/`text-start`) instead of left/right, line-height tuned for Arabic (display ~1.2, body ~1.75), no letter-spacing on Arabic (only on Latin caps labels), Western digits with `ج.م` from `formatMoney`.
+- Latin fallback in the same two roles: keep the current Latin faces (Space Grotesk display, Inter body, Instrument Serif accent) for `lang=en` so EN pages stay composed, but hierarchy mirrors the Arabic system.
+- Arabic first: `dir="rtl"` default, logical CSS properties (`ms-/me-/text-start`) everywhere physical utilities exist today, line-height tuned for Arabic (display ~1.2, body ~1.75), no letter-spacing on Arabic (only Latin labels), Western digits with `ج.م` from the locale-aware formatter.
 - Body measure < 80 chars; prices and package data get a clear tabular hierarchy.
 
 ### Layout concept
@@ -97,11 +98,22 @@ The anatomy explorer becomes a **contained slot inside the coach/method or resul
 
 ## Site structure changes
 
-- `src/app/(site)` sections remade in the above order (existing page routes and URLs preserved: programs, coaching, cart, checkout, faq, contact, selector — no dead nav items).
-- **Removed:** fixed `SiteScrollCanvas` mount, hero 3D figure, scroll choreography (`SiteScrollCanvas.tsx` scroll rig), constant muscle-glow styling, hero-figure anchor.
-- **Kept and contained:** `MusclesFigure` GLB + `AnatomyExplorer` — becomes the only WebGL surface, desktop-only enrollment (media query + capability check), dynamic-gated activation on scroll proximity, paused when off-screen/hidden; selection still turns the figure (damped), no idle spin, no glow dependence; `prefers-reduced-motion` → static.
+- `src/app/(site)` sections remade in the above order (existing page routes and URLs preserved — programs, coaching, cart, checkout, faq, contact, selector, about, transformations, login; no dead nav items).
+- **Removed:** fixed `SiteScrollCanvas` mount, hero 3D figure, scroll choreography, constant muscle-glow styling, hero-figure anchor.
+- **Kept and contained:** the muscles GLB asset and selection/muscle-highlight logic — but as a NEW local bounded canvas inside the explorer section (the old `SiteScrollCanvas` rig/dual-anchor system is discarded, not converted). Desktop-only enrollment (media query + capability check), dynamic import, activation gated on scroll proximity, paused when off-screen/tab hidden. Selection still turns the figure (damped). Emissive materials remain only for selection highlight (a lit pick-up, not a constant aura); no ambient glow, no pulse, no rim lighting.
+- Admin dashboard: scoped LTR/English (admin root sets its own `dir="ltr"`), token-only visual refresh (copper accent, no glow), zero functional change.
 - Admin dashboard: token-only refresh (copper accent, no glow), zero functional change.
-- SEO/metadata: Arabic-first titles/descriptions/canonicals; EN mirrors on `/en` composition.
+- SEO/metadata: Arabic-first titles/descriptions/canonicals; EN mirror composed via the existing client-side toggle (`lang=en` → LTR), no separate routes.
+
+## Builder-check resolutions (client or settled calls)
+
+Questions the builder check raised; most important first:
+
+1. **Fate of `/about`, `/login`, `/transformations`** — CLIENT.
+2. **Money format** — settled: locale-aware `ج.م` (AR) / `LE` (EN), single formatter change.
+3. **Language architecture** — settled: keep client-side toggle, default Arabic, all URLs unchanged.
+4. **Admin under Arabic default** — settled: admin root scoped `dir="ltr"` + English; site toggle never affects `/admin`.
+5. **Coach bio facts** — settled approach: only verified info already on the live site (in current `/about` copy and `catalog.ts`/`CLIENT_DATA.md`); anything uncertain is flagged "requires confirmation" per brief §1, no invented claims.
 
 ## What remains to the builder (explicitly open)
 
