@@ -8,7 +8,7 @@ import { MusclesFigure, glowFade } from "./MusclesFigure";
 const AIM = new THREE.Vector3(0.15, 0.95, 0);
 
 /* Project a DOM anchor rect so the figure stands in it, feet near rect bottom,
-   scaled to its height. Page-glued: the figure scrolls away with its section. */
+   scaled to its height. Hard-glued: no scroll drift — stays locked to its slot. */
 function anchorTarget(
   rect: DOMRect,
   camera: THREE.Camera,
@@ -55,22 +55,22 @@ function Rig({ children }: { children: ReactNode }) {
   useFrame((_, delta) => {
     const vw = window.innerWidth;
     const vh = window.innerHeight;
-    const scroll = window.scrollY;
-    // The figure belongs to #hero-figure (glued, with a light scroll drift)
-    // or to #muscle-explorer (tracked so it always stays inside the box).
+
+    // The figure belongs to #hero-figure or #muscle-explorer.
+    // No scroll drift — position is hard-set every frame so it stays locked.
     const slotEl = document.getElementById("hero-figure");
     const srect = slotEl ? slotEl.getBoundingClientRect() : null;
     const heroIn =
-      !!srect && srect.bottom > vh * 0.35 && srect.top < vh * 0.55;
+      !!srect && srect.bottom > vh * 0.25 && srect.top < vh * 0.65;
     const box = document.getElementById("muscle-explorer");
     const rect = box ? box.getBoundingClientRect() : null;
     const inBox =
-      !!rect && rect.top < vh * 0.6 && rect.bottom > vh * 0.4;
+      !!rect && rect.top < vh * 0.75 && rect.bottom > vh * 0.25;
 
     let fadeT = 0;
     let name: "hero" | "explorer" | null = null;
-    let tx = poseRef.current?.position.x ?? 0;
-    let ty = poseRef.current?.position.y ?? 0;
+    let tx = 0;
+    let ty = 0;
     let tiltX = 0;
     let scaleT = 1;
 
@@ -78,38 +78,29 @@ function Rig({ children }: { children: ReactNode }) {
       name = "hero";
       fadeT = 1;
       ({ tx, ty, scaleT } = anchorTarget(srect, camera, vw, vh));
-      // A little scroll behaviour: the figure settles back slightly as the
-      // hero scrolls away, so it reads as anchored rather than floating.
-      ty += Math.min(scroll * 0.00045, 0.4);
-      // Mouse parallax moves the figure gently inside its slot.
-      tx += mouse.current.x * 0.12;
-      ty += mouse.current.y * 0.02;
-      tiltX = THREE.MathUtils.clamp(mouse.current.y * 0.08, -0.1, 0.1);
+      // Light mouse parallax only (no scroll offset)
+      tx += mouse.current.x * 0.08;
+      ty += mouse.current.y * 0.015;
+      tiltX = THREE.MathUtils.clamp(mouse.current.y * 0.06, -0.08, 0.08);
     } else if (inBox && rect) {
       name = "explorer";
       fadeT = 1;
-      // Tracked dock: the figure is anchored to the box each frame, so it
-      // stays inside the box while it scrolls and never hangs over content.
+      // Hard lock inside the explorer box — no drift, no extra offsets
       ({ tx, ty, scaleT } = anchorTarget(rect, camera, vw, vh));
     } else if (lastTarget.current) {
-      // Fade-out glue: while fading away, keep following the last zone's
-      // anchor so the figure scrolls off WITH its section instead of
-      // freezing on screen over unrelated content.
+      // Fade-out: keep following the last zone so the figure leaves with its section
       const prev = lastTarget.current;
       const prevEl =
         prev === "hero" ? slotEl : document.getElementById("muscle-explorer");
       const prevRect = prevEl ? prevEl.getBoundingClientRect() : null;
       if (prevRect) {
         ({ tx, ty, scaleT } = anchorTarget(prevRect, camera, vw, vh));
-        if (prev === "hero") ty += Math.min(scroll * 0.00045, 0.4);
       }
     }
 
     const g = poseRef.current;
     if (g) {
-      // Hard-glue: assign the projected anchor directly every frame so the
-      // figure never trails its section while scrolling (damping lags behind
-      // fast scroll targets and reads as the figure "moving on its own").
+      // Hard-glue every frame — no damping on position
       g.position.set(tx, ty, 0);
       g.scale.setScalar(scaleT);
       g.visible = op.current > 0.01;
@@ -117,9 +108,9 @@ function Rig({ children }: { children: ReactNode }) {
     lastTarget.current = name;
 
     const tl = tiltRef.current;
-    if (tl) tl.rotation.x = THREE.MathUtils.damp(tl.rotation.x, tiltX, 3, delta);
+    if (tl) tl.rotation.x = THREE.MathUtils.damp(tl.rotation.x, tiltX, 4, delta);
 
-    op.current = THREE.MathUtils.damp(op.current, fadeT, 6, delta);
+    op.current = THREE.MathUtils.damp(op.current, fadeT, 7, delta);
     const fade = op.current;
     glowFade.value = fade;
 
