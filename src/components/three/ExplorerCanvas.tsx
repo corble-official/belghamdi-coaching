@@ -5,7 +5,6 @@ import { MusclesFigure, glowFade } from "./MusclesFigure";
 
 function KeepGlowOn() {
   useFrame(() => {
-    // Explorer has its own canvas — never inherit the hero's fade-out
     glowFade.value = 1;
   });
   return null;
@@ -13,14 +12,13 @@ function KeepGlowOn() {
 
 /**
  * Self-contained 3D canvas that lives INSIDE #muscle-explorer.
- * The parent has overflow-hidden, so the figure is naturally clipped
- * and never depends on page scroll for positioning.
+ * Uses a cloned GLB so it doesn't steal the scene from the hero canvas.
  */
 export function ExplorerCanvas() {
   return (
     <Canvas
       dpr={[1, 1.5]}
-      camera={{ fov: 28, position: [0, 0.95, 4.2] }}
+      camera={{ fov: 28, position: [0, 0.9, 3.8] }}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
     >
@@ -32,9 +30,8 @@ export function ExplorerCanvas() {
 
       <KeepGlowOn />
 
-      {/* Centered and scaled to fit the 560px box */}
-      <group position={[0, -0.95, 0]} scale={0.92}>
-        <MusclesFigure />
+      <group position={[0, -0.9, 0]} scale={0.88}>
+        <MusclesFigure clone />
       </group>
     </Canvas>
   );
