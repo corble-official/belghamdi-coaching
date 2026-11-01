@@ -7,8 +7,7 @@ import { MusclesFigure, glowFade } from "./MusclesFigure";
 
 const AIM = new THREE.Vector3(0.15, 0.95, 0);
 
-/* Project a DOM anchor rect so the figure stands in it, feet near rect bottom,
-   scaled to fit fully inside the box height. */
+/* Project DOM rect → world position. Feet near bottom of the box, scaled to fit. */
 function anchorTarget(
   rect: DOMRect,
   camera: THREE.Camera,
@@ -19,16 +18,18 @@ function anchorTarget(
   const dist = camera.position.distanceTo(AIM);
   const visH = 2 * Math.tan((persp.fov * Math.PI) / 360) * dist;
   const visW = visH * (vw / vh);
+
   const cx = rect.left + rect.width * 0.5;
   const ndcX = (cx / vw) * 2 - 1;
   const tx = AIM.x + (ndcX * visW) / 2;
-  // Center vertically inside the box (not feet-at-bottom) so the whole figure stays in bounds
-  const cy = rect.top + rect.height * 0.52;
-  const ndcY = -(cy / vh) * 2 + 1;
+
+  // Feet near the bottom of the rect (classic standing pose)
+  const bottom = Math.min(rect.bottom, vh * 0.96);
+  const ndcY = -(bottom / vh) * 2 + 1;
   const ty = AIM.y + (ndcY * visH) / 2;
-  // Scale so the ~2-unit figure fits inside ~90% of the box height
-  const boxWorldH = (Math.min(rect.height, vh * 0.92) / vh) * visH;
-  const scaleT = Math.min(0.95, (boxWorldH * 0.88) / 2.0);
+
+  const boxWorldH = (Math.min(rect.height, vh * 0.9) / vh) * visH;
+  const scaleT = Math.min(1, (boxWorldH * 0.92) / 2.05);
   return { tx, ty, scaleT };
 }
 
@@ -38,7 +39,7 @@ function Rig({ children }: { children: ReactNode }) {
   const matsRef = useRef<THREE.Material[]>([]);
   const mouse = useRef({ x: 0, y: 0 });
   const op = useRef(0);
-  const { scene, camera, gl } = useThree();
+  const { scene, camera } = useThree();
 
   useEffect(() => {
     camera.lookAt(AIM);
@@ -59,24 +60,26 @@ function Rig({ children }: { children: ReactNode }) {
 
     const slotEl = document.getElementById("hero-figure");
     const srect = slotEl ? slotEl.getBoundingClientRect() : null;
-    // Only consider hero active when a solid portion is on screen
+
+    // Hero is active only while the CENTER of the slot is still on screen.
+    // This prevents the tall 84vh slot from keeping the figure alive over Philosophy.
+    const heroCenterY = srect ? srect.top + srect.height * 0.5 : -9999;
     const heroIn =
       !!srect &&
-      srect.bottom > vh * 0.2 &&
-      srect.top < vh * 0.7 &&
-      srect.height > 80;
+      heroCenterY > vh * 0.12 &&
+      heroCenterY < vh * 0.78;
 
     const box = document.getElementById("muscle-explorer");
     const rect = box ? box.getBoundingClientRect() : null;
-    // Explorer only when the box itself is substantially visible
+    const boxCenterY = rect ? rect.top + rect.height * 0.5 : -9999;
     const inBox =
       !!rect &&
-      rect.top < vh * 0.7 &&
-      rect.bottom > vh * 0.3 &&
-      rect.height > 120;
+      boxCenterY > vh * 0.15 &&
+      boxCenterY < vh * 0.85 &&
+      rect.top < vh &&
+      rect.bottom > 0;
 
     let fadeT = 0;
-    let activeRect: DOMRect | null = null;
     let tx = 0;
     let ty = 0;
     let tiltX = 0;
@@ -84,51 +87,35 @@ function Rig({ children }: { children: ReactNode }) {
 
     if (heroIn && srect) {
       fadeT = 1;
-      activeRect = srect;
       ({ tx, ty, scaleT } = anchorTarget(srect, camera, vw, vh));
-      // Very light mouse parallax
-      tx += mouse.current.x * 0.06;
-      ty += mouse.current.y * 0.012;
-      tiltX = THREE.MathUtils.clamp(mouse.current.y * 0.05, -0.07, 0.07);
+      // Gentle mouse parallax only in hero
+      tx += mouse.current.x * 0.07;
+      ty += mouse.current.y * 0.015;
+      tiltX = THREE.MathUtils.clamp(mouse.current.y * 0.055, -0.08, 0.08);
     } else if (inBox && rect) {
       fadeT = 1;
-      activeRect = rect;
       ({ tx, ty, scaleT } = anchorTarget(rect, camera, vw, vh));
-      // No parallax inside explorer — stays locked
+      // Locked — no parallax inside the explorer box
     }
-    // else: fadeT stays 0 → figure disappears, no floating over other sections
+    // else fadeT = 0 → figure is hidden, never floats over other sections
 
     const g = poseRef.current;
     if (g) {
       g.position.set(tx, ty, 0);
       g.scale.setScalar(scaleT);
-      g.visible = op.current > 0.02;
+      g.visible = op.current > 0.015;
     }
 
     const tl = tiltRef.current;
-    if (tl) tl.rotation.x = THREE.MathUtils.damp(tl.rotation.x, tiltX, 5, delta);
+    if (tl) {
+      tl.rotation.x = THREE.MathUtils.damp(tl.rotation.x, tiltX, 5, delta);
+    }
 
-    // Faster fade out so it doesn't linger
-    op.current = THREE.MathUtils.damp(op.current, fadeT, fadeT > 0.5 ? 8 : 12, delta);
+    // Fast fade-out, slightly softer fade-in
+    const speed = fadeT > 0.5 ? 9 : 14;
+    op.current = THREE.MathUtils.damp(op.current, fadeT, speed, delta);
     const fade = op.current;
     glowFade.value = fade;
-
-    // --- Scissor clip: only draw inside the active DOM box ---
-    const renderer = gl;
-    if (activeRect && fade > 0.02) {
-      const dpr = renderer.getPixelRatio();
-      const x = Math.max(0, activeRect.left) * dpr;
-      const y = (vh - Math.min(vh, activeRect.bottom)) * dpr;
-      const w = Math.min(activeRect.width, vw - Math.max(0, activeRect.left)) * dpr;
-      const h = Math.min(activeRect.height, vh) * dpr;
-
-      renderer.setScissorTest(true);
-      renderer.setScissor(x, y, Math.max(1, w), Math.max(1, h));
-      renderer.setViewport(x, y, Math.max(1, w), Math.max(1, h));
-    } else {
-      renderer.setScissorTest(false);
-      renderer.setViewport(0, 0, vw * renderer.getPixelRatio(), vh * renderer.getPixelRatio());
-    }
 
     if (matsRef.current.length === 0) {
       const found: THREE.Material[] = [];
@@ -169,10 +156,6 @@ export default function SiteScrollCanvas() {
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       resize={{ scroll: false }}
       style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 30 }}
-      onCreated={({ gl }) => {
-        gl.setClearColor(0x000000, 0);
-        gl.autoClear = true;
-      }}
     >
       <ambientLight intensity={0.3} />
       <directionalLight position={[2.5, 3.5, 2.5]} intensity={2.2} color="#EAE6DD" />
