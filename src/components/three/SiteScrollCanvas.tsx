@@ -11,7 +11,8 @@ function anchorTarget(
   rect: DOMRect,
   camera: THREE.Camera,
   vw: number,
-  vh: number
+  vh: number,
+  mode: "hero" | "explorer"
 ): { tx: number; ty: number; scaleT: number } {
   const persp = camera as THREE.PerspectiveCamera;
   const dist = camera.position.distanceTo(AIM);
@@ -22,14 +23,25 @@ function anchorTarget(
   const ndcX = (cx / vw) * 2 - 1;
   const tx = AIM.x + (ndcX * visW) / 2;
 
-  // Feet near bottom of the box
+  if (mode === "explorer") {
+    // Center the figure vertically inside the box so head + feet stay inside
+    const cy = rect.top + rect.height * 0.52;
+    const ndcY = -(cy / vh) * 2 + 1;
+    const ty = AIM.y + (ndcY * visH) / 2;
+
+    // Smaller scale so the whole figure fits comfortably inside the 560px box
+    const boxWorldH = (Math.min(rect.height, vh * 0.85) / vh) * visH;
+    const scaleT = Math.min(0.72, (boxWorldH * 0.72) / 2.05);
+    return { tx, ty, scaleT };
+  }
+
+  // Hero: feet near bottom, larger presence
   const bottom = Math.min(rect.bottom, vh * 0.97);
   const ndcY = -(bottom / vh) * 2 + 1;
   const ty = AIM.y + (ndcY * visH) / 2;
 
-  // Slightly smaller so the whole figure stays visually inside the box
-  const boxWorldH = (Math.min(rect.height, vh * 0.88) / vh) * visH;
-  const scaleT = Math.min(0.92, (boxWorldH * 0.85) / 2.05);
+  const boxWorldH = (Math.min(rect.height, vh * 0.9) / vh) * visH;
+  const scaleT = Math.min(0.95, (boxWorldH * 0.9) / 2.05);
   return { tx, ty, scaleT };
 }
 
@@ -62,11 +74,6 @@ function Rig({ children }: { children: ReactNode }) {
     const slotEl = document.getElementById("hero-figure");
     const srect = slotEl ? slotEl.getBoundingClientRect() : null;
 
-    /*
-     * HERO zone: only while we are still near the top of the page.
-     * The slot is 84vh tall, so bounding-rect checks alone keep it alive
-     * too long. scrollY is the reliable gate.
-     */
     const heroIn =
       scrollY < vh * 0.42 &&
       !!srect &&
@@ -77,12 +84,6 @@ function Rig({ children }: { children: ReactNode }) {
     const rect = box ? box.getBoundingClientRect() : null;
     const boxCenterY = rect ? rect.top + rect.height * 0.5 : -9999;
 
-    /*
-     * EXPLORER zone: the center of the box must be in the middle band of
-     * the viewport. This prevents the figure from staying visible while
-     * the box is only half on screen (and therefore spilling into the
-     * next section).
-     */
     const inBox =
       !!rect &&
       boxCenterY > vh * 0.28 &&
@@ -98,15 +99,14 @@ function Rig({ children }: { children: ReactNode }) {
 
     if (heroIn && srect) {
       fadeT = 1;
-      ({ tx, ty, scaleT } = anchorTarget(srect, camera, vw, vh));
+      ({ tx, ty, scaleT } = anchorTarget(srect, camera, vw, vh, "hero"));
       tx += mouse.current.x * 0.06;
       ty += mouse.current.y * 0.012;
       tiltX = THREE.MathUtils.clamp(mouse.current.y * 0.05, -0.07, 0.07);
     } else if (inBox && rect) {
       fadeT = 1;
-      ({ tx, ty, scaleT } = anchorTarget(rect, camera, vw, vh));
+      ({ tx, ty, scaleT } = anchorTarget(rect, camera, vw, vh, "explorer"));
     }
-    // else → completely hidden, no floating over Philosophy / How-it-works
 
     const g = poseRef.current;
     if (g) {
@@ -120,7 +120,6 @@ function Rig({ children }: { children: ReactNode }) {
       tl.rotation.x = THREE.MathUtils.damp(tl.rotation.x, tiltX, 5, delta);
     }
 
-    // Very fast fade-out so it never lingers
     const speed = fadeT > 0.5 ? 10 : 18;
     op.current = THREE.MathUtils.damp(op.current, fadeT, speed, delta);
     const fade = op.current;
