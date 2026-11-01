@@ -7,7 +7,6 @@ import { MusclesFigure, glowFade } from "./MusclesFigure";
 
 const AIM = new THREE.Vector3(0.15, 0.95, 0);
 
-/* Project DOM rect → world position. Feet near bottom of the box, scaled to fit. */
 function anchorTarget(
   rect: DOMRect,
   camera: THREE.Camera,
@@ -23,13 +22,14 @@ function anchorTarget(
   const ndcX = (cx / vw) * 2 - 1;
   const tx = AIM.x + (ndcX * visW) / 2;
 
-  // Feet near the bottom of the rect (classic standing pose)
-  const bottom = Math.min(rect.bottom, vh * 0.96);
+  // Feet near bottom of the box
+  const bottom = Math.min(rect.bottom, vh * 0.97);
   const ndcY = -(bottom / vh) * 2 + 1;
   const ty = AIM.y + (ndcY * visH) / 2;
 
-  const boxWorldH = (Math.min(rect.height, vh * 0.9) / vh) * visH;
-  const scaleT = Math.min(1, (boxWorldH * 0.92) / 2.05);
+  // Slightly smaller so the whole figure stays visually inside the box
+  const boxWorldH = (Math.min(rect.height, vh * 0.88) / vh) * visH;
+  const scaleT = Math.min(0.92, (boxWorldH * 0.85) / 2.05);
   return { tx, ty, scaleT };
 }
 
@@ -57,27 +57,38 @@ function Rig({ children }: { children: ReactNode }) {
   useFrame((_, delta) => {
     const vw = window.innerWidth;
     const vh = window.innerHeight;
+    const scrollY = window.scrollY;
 
     const slotEl = document.getElementById("hero-figure");
     const srect = slotEl ? slotEl.getBoundingClientRect() : null;
 
-    // Hero is active only while the CENTER of the slot is still on screen.
-    // This prevents the tall 84vh slot from keeping the figure alive over Philosophy.
-    const heroCenterY = srect ? srect.top + srect.height * 0.5 : -9999;
+    /*
+     * HERO zone: only while we are still near the top of the page.
+     * The slot is 84vh tall, so bounding-rect checks alone keep it alive
+     * too long. scrollY is the reliable gate.
+     */
     const heroIn =
+      scrollY < vh * 0.42 &&
       !!srect &&
-      heroCenterY > vh * 0.12 &&
-      heroCenterY < vh * 0.78;
+      srect.bottom > vh * 0.35 &&
+      srect.top < vh * 0.55;
 
     const box = document.getElementById("muscle-explorer");
     const rect = box ? box.getBoundingClientRect() : null;
     const boxCenterY = rect ? rect.top + rect.height * 0.5 : -9999;
+
+    /*
+     * EXPLORER zone: the center of the box must be in the middle band of
+     * the viewport. This prevents the figure from staying visible while
+     * the box is only half on screen (and therefore spilling into the
+     * next section).
+     */
     const inBox =
       !!rect &&
-      boxCenterY > vh * 0.15 &&
-      boxCenterY < vh * 0.85 &&
-      rect.top < vh &&
-      rect.bottom > 0;
+      boxCenterY > vh * 0.28 &&
+      boxCenterY < vh * 0.72 &&
+      rect.top < vh * 0.75 &&
+      rect.bottom > vh * 0.25;
 
     let fadeT = 0;
     let tx = 0;
@@ -88,22 +99,20 @@ function Rig({ children }: { children: ReactNode }) {
     if (heroIn && srect) {
       fadeT = 1;
       ({ tx, ty, scaleT } = anchorTarget(srect, camera, vw, vh));
-      // Gentle mouse parallax only in hero
-      tx += mouse.current.x * 0.07;
-      ty += mouse.current.y * 0.015;
-      tiltX = THREE.MathUtils.clamp(mouse.current.y * 0.055, -0.08, 0.08);
+      tx += mouse.current.x * 0.06;
+      ty += mouse.current.y * 0.012;
+      tiltX = THREE.MathUtils.clamp(mouse.current.y * 0.05, -0.07, 0.07);
     } else if (inBox && rect) {
       fadeT = 1;
       ({ tx, ty, scaleT } = anchorTarget(rect, camera, vw, vh));
-      // Locked — no parallax inside the explorer box
     }
-    // else fadeT = 0 → figure is hidden, never floats over other sections
+    // else → completely hidden, no floating over Philosophy / How-it-works
 
     const g = poseRef.current;
     if (g) {
       g.position.set(tx, ty, 0);
       g.scale.setScalar(scaleT);
-      g.visible = op.current > 0.015;
+      g.visible = op.current > 0.02;
     }
 
     const tl = tiltRef.current;
@@ -111,8 +120,8 @@ function Rig({ children }: { children: ReactNode }) {
       tl.rotation.x = THREE.MathUtils.damp(tl.rotation.x, tiltX, 5, delta);
     }
 
-    // Fast fade-out, slightly softer fade-in
-    const speed = fadeT > 0.5 ? 9 : 14;
+    // Very fast fade-out so it never lingers
+    const speed = fadeT > 0.5 ? 10 : 18;
     op.current = THREE.MathUtils.damp(op.current, fadeT, speed, delta);
     const fade = op.current;
     glowFade.value = fade;
