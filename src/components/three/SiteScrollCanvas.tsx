@@ -8,7 +8,7 @@ import { MusclesFigure, glowFade } from "./MusclesFigure";
 const AIM = new THREE.Vector3(0.15, 0.95, 0);
 
 /* Project a DOM anchor rect so the figure stands in it, feet near rect bottom,
-   scaled to its height. Hard-glued: no scroll drift — stays locked to its slot. */
+   scaled to fit fully inside the box height. */
 function anchorTarget(
   rect: DOMRect,
   camera: THREE.Camera,
@@ -22,11 +22,13 @@ function anchorTarget(
   const cx = rect.left + rect.width * 0.5;
   const ndcX = (cx / vw) * 2 - 1;
   const tx = AIM.x + (ndcX * visW) / 2;
-  const bottom = Math.min(rect.bottom, vh * 0.94);
-  const ndcY = -(bottom / vh) * 2 + 1;
+  // Center vertically inside the box (not feet-at-bottom) so the whole figure stays in bounds
+  const cy = rect.top + rect.height * 0.52;
+  const ndcY = -(cy / vh) * 2 + 1;
   const ty = AIM.y + (ndcY * visH) / 2;
-  const boxWorldH = (Math.min(rect.height, vh * 0.9) / vh) * visH;
-  const scaleT = Math.min(1, boxWorldH / 2.0);
+  // Scale so the ~2-unit figure fits inside ~90% of the box height
+  const boxWorldH = (Math.min(rect.height, vh * 0.92) / vh) * visH;
+  const scaleT = Math.min(0.95, (boxWorldH * 0.88) / 2.0);
   return { tx, ty, scaleT };
 }
 
@@ -36,8 +38,7 @@ function Rig({ children }: { children: ReactNode }) {
   const matsRef = useRef<THREE.Material[]>([]);
   const mouse = useRef({ x: 0, y: 0 });
   const op = useRef(0);
-  const lastTarget = useRef<"hero" | "explorer" | null>(null);
-  const { scene, camera } = useThree();
+  const { scene, camera, gl } = useThree();
 
   useEffect(() => {
     camera.lookAt(AIM);
@@ -56,63 +57,78 @@ function Rig({ children }: { children: ReactNode }) {
     const vw = window.innerWidth;
     const vh = window.innerHeight;
 
-    // The figure belongs to #hero-figure or #muscle-explorer.
-    // No scroll drift — position is hard-set every frame so it stays locked.
     const slotEl = document.getElementById("hero-figure");
     const srect = slotEl ? slotEl.getBoundingClientRect() : null;
+    // Only consider hero active when a solid portion is on screen
     const heroIn =
-      !!srect && srect.bottom > vh * 0.25 && srect.top < vh * 0.65;
+      !!srect &&
+      srect.bottom > vh * 0.2 &&
+      srect.top < vh * 0.7 &&
+      srect.height > 80;
+
     const box = document.getElementById("muscle-explorer");
     const rect = box ? box.getBoundingClientRect() : null;
+    // Explorer only when the box itself is substantially visible
     const inBox =
-      !!rect && rect.top < vh * 0.75 && rect.bottom > vh * 0.25;
+      !!rect &&
+      rect.top < vh * 0.7 &&
+      rect.bottom > vh * 0.3 &&
+      rect.height > 120;
 
     let fadeT = 0;
-    let name: "hero" | "explorer" | null = null;
+    let activeRect: DOMRect | null = null;
     let tx = 0;
     let ty = 0;
     let tiltX = 0;
     let scaleT = 1;
 
     if (heroIn && srect) {
-      name = "hero";
       fadeT = 1;
+      activeRect = srect;
       ({ tx, ty, scaleT } = anchorTarget(srect, camera, vw, vh));
-      // Light mouse parallax only (no scroll offset)
-      tx += mouse.current.x * 0.08;
-      ty += mouse.current.y * 0.015;
-      tiltX = THREE.MathUtils.clamp(mouse.current.y * 0.06, -0.08, 0.08);
+      // Very light mouse parallax
+      tx += mouse.current.x * 0.06;
+      ty += mouse.current.y * 0.012;
+      tiltX = THREE.MathUtils.clamp(mouse.current.y * 0.05, -0.07, 0.07);
     } else if (inBox && rect) {
-      name = "explorer";
       fadeT = 1;
-      // Hard lock inside the explorer box — no drift, no extra offsets
+      activeRect = rect;
       ({ tx, ty, scaleT } = anchorTarget(rect, camera, vw, vh));
-    } else if (lastTarget.current) {
-      // Fade-out: keep following the last zone so the figure leaves with its section
-      const prev = lastTarget.current;
-      const prevEl =
-        prev === "hero" ? slotEl : document.getElementById("muscle-explorer");
-      const prevRect = prevEl ? prevEl.getBoundingClientRect() : null;
-      if (prevRect) {
-        ({ tx, ty, scaleT } = anchorTarget(prevRect, camera, vw, vh));
-      }
+      // No parallax inside explorer — stays locked
     }
+    // else: fadeT stays 0 → figure disappears, no floating over other sections
 
     const g = poseRef.current;
     if (g) {
-      // Hard-glue every frame — no damping on position
       g.position.set(tx, ty, 0);
       g.scale.setScalar(scaleT);
-      g.visible = op.current > 0.01;
+      g.visible = op.current > 0.02;
     }
-    lastTarget.current = name;
 
     const tl = tiltRef.current;
-    if (tl) tl.rotation.x = THREE.MathUtils.damp(tl.rotation.x, tiltX, 4, delta);
+    if (tl) tl.rotation.x = THREE.MathUtils.damp(tl.rotation.x, tiltX, 5, delta);
 
-    op.current = THREE.MathUtils.damp(op.current, fadeT, 7, delta);
+    // Faster fade out so it doesn't linger
+    op.current = THREE.MathUtils.damp(op.current, fadeT, fadeT > 0.5 ? 8 : 12, delta);
     const fade = op.current;
     glowFade.value = fade;
+
+    // --- Scissor clip: only draw inside the active DOM box ---
+    const renderer = gl;
+    if (activeRect && fade > 0.02) {
+      const dpr = renderer.getPixelRatio();
+      const x = Math.max(0, activeRect.left) * dpr;
+      const y = (vh - Math.min(vh, activeRect.bottom)) * dpr;
+      const w = Math.min(activeRect.width, vw - Math.max(0, activeRect.left)) * dpr;
+      const h = Math.min(activeRect.height, vh) * dpr;
+
+      renderer.setScissorTest(true);
+      renderer.setScissor(x, y, Math.max(1, w), Math.max(1, h));
+      renderer.setViewport(x, y, Math.max(1, w), Math.max(1, h));
+    } else {
+      renderer.setScissorTest(false);
+      renderer.setViewport(0, 0, vw * renderer.getPixelRatio(), vh * renderer.getPixelRatio());
+    }
 
     if (matsRef.current.length === 0) {
       const found: THREE.Material[] = [];
@@ -153,6 +169,10 @@ export default function SiteScrollCanvas() {
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       resize={{ scroll: false }}
       style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 30 }}
+      onCreated={({ gl }) => {
+        gl.setClearColor(0x000000, 0);
+        gl.autoClear = true;
+      }}
     >
       <ambientLight intensity={0.3} />
       <directionalLight position={[2.5, 3.5, 2.5]} intensity={2.2} color="#EAE6DD" />
