@@ -24,18 +24,18 @@ function anchorTarget(
   const tx = AIM.x + (ndcX * visW) / 2;
 
   if (mode === "explorer") {
-    // Center the figure vertically inside the box so head + feet stay inside
-    const cy = rect.top + rect.height * 0.52;
-    const ndcY = -(cy / vh) * 2 + 1;
+    // Feet near the bottom of the box, figure scaled to fit entirely inside
+    const bottom = Math.min(rect.bottom - 12, vh * 0.96);
+    const ndcY = -(bottom / vh) * 2 + 1;
     const ty = AIM.y + (ndcY * visH) / 2;
 
-    // Smaller scale so the whole figure fits comfortably inside the 560px box
+    // Aggressive fit: ~70% of box height so head never sticks out the top
     const boxWorldH = (Math.min(rect.height, vh * 0.85) / vh) * visH;
-    const scaleT = Math.min(0.72, (boxWorldH * 0.72) / 2.05);
+    const scaleT = Math.min(0.65, (boxWorldH * 0.68) / 2.05);
     return { tx, ty, scaleT };
   }
 
-  // Hero: feet near bottom, larger presence
+  // Hero: larger, feet near bottom
   const bottom = Math.min(rect.bottom, vh * 0.97);
   const ndcY = -(bottom / vh) * 2 + 1;
   const ty = AIM.y + (ndcY * visH) / 2;
@@ -51,6 +51,8 @@ function Rig({ children }: { children: ReactNode }) {
   const matsRef = useRef<THREE.Material[]>([]);
   const mouse = useRef({ x: 0, y: 0 });
   const op = useRef(0);
+  // Remember last good pose so fade-out doesn't jump to screen center
+  const lastPose = useRef({ tx: 0, ty: 0, scaleT: 1 });
   const { scene, camera } = useThree();
 
   useEffect(() => {
@@ -74,11 +76,12 @@ function Rig({ children }: { children: ReactNode }) {
     const slotEl = document.getElementById("hero-figure");
     const srect = slotEl ? slotEl.getBoundingClientRect() : null;
 
+    // Hero only while still near the very top
     const heroIn =
-      scrollY < vh * 0.42 &&
+      scrollY < vh * 0.35 &&
       !!srect &&
-      srect.bottom > vh * 0.35 &&
-      srect.top < vh * 0.55;
+      srect.bottom > vh * 0.4 &&
+      srect.top < vh * 0.5;
 
     const box = document.getElementById("muscle-explorer");
     const rect = box ? box.getBoundingClientRect() : null;
@@ -86,16 +89,16 @@ function Rig({ children }: { children: ReactNode }) {
 
     const inBox =
       !!rect &&
-      boxCenterY > vh * 0.28 &&
-      boxCenterY < vh * 0.72 &&
-      rect.top < vh * 0.75 &&
-      rect.bottom > vh * 0.25;
+      boxCenterY > vh * 0.3 &&
+      boxCenterY < vh * 0.7 &&
+      rect.top < vh * 0.7 &&
+      rect.bottom > vh * 0.3;
 
     let fadeT = 0;
-    let tx = 0;
-    let ty = 0;
+    let tx = lastPose.current.tx;
+    let ty = lastPose.current.ty;
     let tiltX = 0;
-    let scaleT = 1;
+    let scaleT = lastPose.current.scaleT;
 
     if (heroIn && srect) {
       fadeT = 1;
@@ -103,10 +106,13 @@ function Rig({ children }: { children: ReactNode }) {
       tx += mouse.current.x * 0.06;
       ty += mouse.current.y * 0.012;
       tiltX = THREE.MathUtils.clamp(mouse.current.y * 0.05, -0.07, 0.07);
+      lastPose.current = { tx, ty, scaleT };
     } else if (inBox && rect) {
       fadeT = 1;
       ({ tx, ty, scaleT } = anchorTarget(rect, camera, vw, vh, "explorer"));
+      lastPose.current = { tx, ty, scaleT };
     }
+    // else: keep lastPose so the figure fades out in place instead of jumping to center
 
     const g = poseRef.current;
     if (g) {
@@ -120,7 +126,8 @@ function Rig({ children }: { children: ReactNode }) {
       tl.rotation.x = THREE.MathUtils.damp(tl.rotation.x, tiltX, 5, delta);
     }
 
-    const speed = fadeT > 0.5 ? 10 : 18;
+    // Fast fade-out
+    const speed = fadeT > 0.5 ? 10 : 20;
     op.current = THREE.MathUtils.damp(op.current, fadeT, speed, delta);
     const fade = op.current;
     glowFade.value = fade;
