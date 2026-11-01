@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import { AnimatePresence, motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import { HeroFallback } from "./Hero3D";
@@ -8,6 +9,11 @@ import { MUSCLE_GROUPS } from "./AnatomyFigure";
 import { PROGRAM_FOCUS } from "@/lib/anatomy-programs";
 import { MUSCLE_PALETTE } from "@/lib/muscle-palette";
 import { useMuscleExplorer } from "@/lib/muscle-store";
+
+const ExplorerCanvas = dynamic(
+  () => import("./ExplorerCanvas").then((m) => m.ExplorerCanvas),
+  { ssr: false, loading: () => null }
+);
 
 function useWebglSupported() {
   const [supported, setSupported] = useState<boolean | null>(null);
@@ -44,8 +50,8 @@ export function AnatomyExplorer() {
         id="muscle-explorer"
         className="relative h-[560px] rounded-sm border border-wgray-dim/40 bg-obsidian overflow-hidden"
       >
-        {!supported && <HeroFallback />}
-        <p className="absolute bottom-4 left-4 text-xs text-wgray font-display uppercase tracking-widest pointer-events-none">
+        {supported ? <ExplorerCanvas /> : <HeroFallback />}
+        <p className="absolute bottom-4 left-4 text-xs text-wgray font-display uppercase tracking-widest pointer-events-none z-10">
           Pick a muscle group — the figure turns to face it and lights up
         </p>
       </div>
@@ -71,7 +77,10 @@ export function AnatomyExplorer() {
               <span className="flex items-center gap-3">
                 <span
                   className="w-3 h-3 rounded-full shrink-0"
-                  style={{ background: MUSCLE_PALETTE[g.id], boxShadow: `0 0 10px ${MUSCLE_PALETTE[g.id]}66` }}
+                  style={{
+                    background: MUSCLE_PALETTE[g.id],
+                    boxShadow: `0 0 10px ${MUSCLE_PALETTE[g.id]}66`,
+                  }}
                 />
                 <span className="font-display font-semibold text-bone">{g.label}</span>
               </span>
