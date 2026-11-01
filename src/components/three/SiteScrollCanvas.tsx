@@ -61,12 +61,11 @@ function Rig({ children }: { children: ReactNode }) {
     const slotEl = document.getElementById("hero-figure");
     const srect = slotEl ? slotEl.getBoundingClientRect() : null;
 
-    // Hero only — strict top-of-page gate so it never lingers over Philosophy
     const heroIn =
-      scrollY < vh * 0.32 &&
+      scrollY < vh * 0.28 &&
       !!srect &&
-      srect.bottom > vh * 0.4 &&
-      srect.top < vh * 0.5;
+      srect.bottom > vh * 0.42 &&
+      srect.top < vh * 0.48;
 
     let fadeT = 0;
     let tx = lastPose.current.tx;
@@ -82,13 +81,12 @@ function Rig({ children }: { children: ReactNode }) {
       tiltX = THREE.MathUtils.clamp(mouse.current.y * 0.05, -0.07, 0.07);
       lastPose.current = { tx, ty, scaleT };
     }
-    // else: hold last pose while fading so nothing jumps to screen center
 
     const g = poseRef.current;
     if (g) {
       g.position.set(tx, ty, 0);
       g.scale.setScalar(scaleT);
-      g.visible = op.current > 0.02;
+      g.visible = op.current > 0.015;
     }
 
     const tl = tiltRef.current;
@@ -96,9 +94,12 @@ function Rig({ children }: { children: ReactNode }) {
       tl.rotation.x = THREE.MathUtils.damp(tl.rotation.x, tiltX, 5, delta);
     }
 
-    // Very fast fade-out so the pedestal/shadow doesn't trail
-    const speed = fadeT > 0.5 ? 10 : 22;
-    op.current = THREE.MathUtils.damp(op.current, fadeT, speed, delta);
+    // Snap fade-out: when leaving, drop opacity almost immediately
+    if (fadeT < 0.5) {
+      op.current = Math.max(0, op.current - delta * 8);
+    } else {
+      op.current = THREE.MathUtils.damp(op.current, fadeT, 12, delta);
+    }
     const fade = op.current;
     glowFade.value = fade;
 
