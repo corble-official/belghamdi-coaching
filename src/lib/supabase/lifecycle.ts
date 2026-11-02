@@ -63,6 +63,8 @@ export function resolveLifecycle(
       return { status: "suspended", access: "suspended" };
 
     case "manual_revoked":
+      // No dedicated DB status vocabulary yet (lands with the migration
+      // task) — suspended status + revoked access for now.
       return { status: "suspended", access: "revoked" };
 
     case "manual_extended":

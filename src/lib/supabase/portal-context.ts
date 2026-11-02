@@ -73,17 +73,37 @@ export async function getPortalContext(): Promise<PortalContext> {
 
   const supabase = await createPortalClient();
 
+/**
+ * Columns not yet present in Supabase — migrations 001/004 own the schema.
+ * Align (and delete this shim) when the migrations land. Typed as optional
+ * unknowns so tsc stays strict without lying about the current schema.
+ */
+interface PendingSchemaFields {
+  auth_user_id?: unknown;
+  onboarding_completed?: unknown;
+  full_name?: unknown;
+  email?: unknown;
+}
+
+/** Safe string read for shim-typed optional schema fields. */
+const str = (value: unknown): string | undefined =>
+  typeof value === "string" ? value : undefined;
+
   const [profileRes, clientRes] = await Promise.all([
     supabase.from("profiles").select("*").eq("id", user.id).single(),
     supabase.from("clients").select("*").eq("auth_user_id", user.id).single(),
   ]);
 
-  const client = clientRes.data;
+  // TODO(schema): `clients.auth_user_id` filters a column from migration 001;
+  // remove this guard once the migrations land.
+  const client = (clientRes.data as (Record<string, unknown> &
+    PendingSchemaFields) | null) ?? null;
 
   let sub: SubscriptionState | null = null;
   let onboardingPending = false;
 
   if (client) {
+    // TODO(schema): `onboarding_completed` comes from migration 004.
     onboardingPending = client.onboarding_completed === false;
 
     const subsRes = await supabase
@@ -124,9 +144,9 @@ export async function getPortalContext(): Promise<PortalContext> {
     role: "client",
     profile,
     client: {
-      id: client.id,
-      full_name: client.full_name ?? profile.full_name,
-      email: client.email ?? profile.email,
+      id: str(client.id) ?? "",
+      full_name: str(client.full_name) ?? profile.full_name,
+      email: str(client.email) ?? profile.email,
     },
     entitlements: computeEntitlements(sub, new Date(), {
       onboardingPending,

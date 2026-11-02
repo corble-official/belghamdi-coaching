@@ -100,12 +100,13 @@ export function computeEntitlements(
 
     case "history_only":
       // History visible, but no new submissions and no coach chat.
-      // onboarding_available overrides blocking for pending onboarding clients.
+      // Onboarding form availability is governed ONLY by
+      // onboarding_available — never by flipping a feature gate.
       return {
         coach_chat: false,
         weekly_checkins: false,
         monthly_reviews: false,
-        progress_submissions: onboardingAvailable,
+        progress_submissions: false,
         checkin_history_readonly: true,
         coach_feedback_readonly: true,
         onboarding_available: onboardingAvailable,
