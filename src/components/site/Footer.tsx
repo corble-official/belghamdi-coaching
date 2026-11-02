@@ -1,176 +1,115 @@
 "use client";
 
 import Link from "next/link";
-import { useState, type FormEvent } from "react";
-import { ArrowRight, Instagram, Youtube, Mail } from "lucide-react";
-import { useI18n } from "@/lib/i18n";
+import { Instagram, Youtube, Mail, MapPin, ArrowUpRight } from "lucide-react";
 import { BUSINESS } from "@/lib/catalog";
-import { logEvent } from "@/lib/integrations/dispatcher";
+import { useI18n } from "@/lib/i18n";
 
-const NEWSLETTER_KEY = "bc_newsletter";
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-const SOCIALS = [
-  { label: "Instagram", href: BUSINESS.socials.instagram, Icon: Instagram },
-  { label: "YouTube", href: BUSINESS.socials.youtube, Icon: Youtube },
-  { label: "Mail", href: BUSINESS.whatsappLink, Icon: Mail },
-  { label: "TikTok", href: BUSINESS.socials.tiktok, Icon: null },
-  { label: "Threads", href: BUSINESS.socials.threads, Icon: null },
-] as { label: string; href: string; Icon: typeof Instagram | null }[];
-
-const COLUMNS = [
-  {
-    title: "Explore",
-    links: [
-      { href: "/programs", label: "Programs" },
-      { href: "/coaching", label: "Online Coaching" },
-      { href: "/transformations", label: "Transformations" },
-      { href: "/selector", label: "Program Selector" },
-    ],
-  },
-  {
-    title: "Company",
-    links: [
-      { href: "/about", label: "About the Coach" },
-      { href: "/contact", label: "Contact" },
-      { href: "/login", label: "Client Login" },
-      { href: "/faq", label: "FAQ" },
-    ],
-  },
-  {
-    title: "Policies",
-    links: [
-      { href: "/faq#policies", label: "Terms" },
-      { href: "/faq#policies", label: "Refund Policy" },
-      { href: "/faq#policies", label: "Privacy" },
-    ],
-  },
-];
+function TikTokIcon({ className = "h-4 w-4" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 1 1-2.89-2.89c.3 0 .6.05.87.13v-3.5a6.33 6.33 0 1 0 5.47 6.27V7.69a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1 .48z" />
+    </svg>
+  );
+}
 
 export function Footer() {
-  const { t } = useI18n();
-  const [email, setEmail] = useState("");
-  const [subscribed, setSubscribed] = useState(false);
-  const [error, setError] = useState(false);
+  const { t, lang } = useI18n();
+  const year = new Date().getFullYear();
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    const value = email.trim();
-    if (!EMAIL_RE.test(value)) {
-      setError(true);
-      return;
-    }
-    let list: string[] = [];
-    try {
-      list = JSON.parse(window.localStorage.getItem(NEWSLETTER_KEY) ?? "[]") as string[];
-      if (!Array.isArray(list)) list = [];
-    } catch {
-      list = [];
-    }
-    if (!list.includes(value)) {
-      list.push(value);
-      window.localStorage.setItem(NEWSLETTER_KEY, JSON.stringify(list));
-    }
-    logEvent("lead.created", `newsletter:${value}`);
-    setError(false);
-    setEmail("");
-    setSubscribed(true);
-  };
+  const social = [
+    { href: BUSINESS.socials.instagram, icon: <Instagram className="h-4 w-4" />, label: "Instagram" },
+    { href: BUSINESS.socials.tiktok, icon: <TikTokIcon />, label: "TikTok" },
+    { href: BUSINESS.socials.youtube, icon: <Youtube className="h-4 w-4" />, label: "YouTube" },
+  ];
 
   return (
-    <footer className="bg-obsidian border-t border-wgray-dim/40 mt-0">
-      <div className="max-w-7xl mx-auto px-6 lg:px-10 py-16">
-        <div className="grid md:grid-cols-2 lg:grid-cols-[1.4fr_repeat(3,1fr)] gap-12">
-          <div>
-            <img
-              src="/logo.png"
-              alt="Belghamdi Coaching"
-              width={56}
-              height={56}
-              className="h-14 w-14 object-contain mb-4"
-            />
-            <p className="font-serif text-2xl text-wgray max-w-xs leading-snug">
-              {t("footer_tagline")}
+    <footer className="bg-ink text-cream/80 mt-0">
+      <div className="max-w-7xl mx-auto px-5 md:px-8 lg:px-10 py-14 md:py-20">
+        <div className="grid gap-10 md:grid-cols-12">
+          <div className="md:col-span-4">
+            <div className="flex items-center gap-2.5">
+              <img src="/logo.png" alt="" width={40} height={40} className="h-10 w-10 object-contain" />
+              <span className="font-latin font-extrabold text-base text-cream uppercase" dir="ltr">
+                Belghamdi Coaching
+              </span>
+            </div>
+            <p className="text-sm leading-relaxed mt-4 max-w-[36ch] text-cream/60">
+              {lang === "ar"
+                ? "برامج تدريب جاهزة بأسعار في المتناول، وشرح بالفيديو لكل تمرين — عشان تتمرن صح من غير عشوائية."
+                : "Ready-made training programs at fair prices, with video explanations for every exercise — so you can train right, without guesswork."}
             </p>
-            <div className="flex items-center gap-4 mt-6">
-              {SOCIALS.map((s) => {
-                const Icon = s.Icon;
-                return (
-                  <a
-                    key={s.label}
-                    href={s.href}
-                    aria-label={s.label}
-                    className="w-10 h-10 border border-wgray-dim flex items-center justify-center text-wgray hover:text-copper hover:border-copper transition-colors"
-                  >
-                    {Icon ? (
-                      <Icon className="h-4 w-4" />
-                    ) : (
-                      <span className="text-[9px] font-display font-bold">{s.label[0]}</span>
-                    )}
-                  </a>
-                );
-              })}
+            <div className="flex gap-3 mt-6">
+              {social.map((s) => (
+                <a
+                  key={s.label}
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={s.label}
+                  className="h-9 w-9 rounded-full border border-cream/20 flex items-center justify-center hover:border-brand hover:text-brand transition-colors"
+                >
+                  {s.icon}
+                </a>
+              ))}
             </div>
           </div>
 
-          {COLUMNS.map((col) => (
-            <div key={col.title}>
-              <p className="text-xs font-display uppercase tracking-[0.3em] text-wgray mb-5">
-                {col.title}
-              </p>
-              <ul className="space-y-3">
-                {col.links.map((l) => (
-                  <li key={l.label}>
-                    <Link
-                      href={l.href}
-                      className="text-sm text-wgray hover:text-bone transition-colors"
-                    >
-                      {l.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          <div className="md:col-span-3">
+            <p className="font-display font-bold text-cream text-sm mb-4">{t("footer_programs")}</p>
+            <ul className="space-y-2.5 text-sm">
+              <li><Link href="/programs" className="hover:text-brand transition-colors">{t("footer_programs")}</Link></li>
+              <li><Link href="/coaching" className="hover:text-brand transition-colors">{t("footer_coaching")}</Link></li>
+              <li><Link href="/transformations" className="hover:text-brand transition-colors">{t("footer_transformations")}</Link></li>
+              <li><Link href="/about" className="hover:text-brand transition-colors">{t("nav_whoami")}</Link></li>
+            </ul>
+          </div>
+
+          <div className="md:col-span-3">
+            <p className="font-display font-bold text-cream text-sm mb-4">{t("footer_contact")}</p>
+            <ul className="space-y-2.5 text-sm">
+              <li className="flex items-center gap-2">
+                <Mail className="h-4 w-4 text-brand shrink-0" />
+                <a href={`mailto:${BUSINESS.email}`} className="hover:text-brand transition-colors" dir="ltr">
+                  {BUSINESS.email}
+                </a>
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="text-brand shrink-0 font-bold" dir="ltr">✆</span>
+                <a href={BUSINESS.whatsappLink} target="_blank" rel="noopener noreferrer" className="hover:text-brand transition-colors" dir="ltr">
+                  {BUSINESS.whatsapp}
+                </a>
+              </li>
+              <li className="flex items-center gap-2">
+                <MapPin className="h-4 w-4 text-brand shrink-0" />
+                {BUSINESS.location}
+              </li>
+            </ul>
+          </div>
+
+          <div className="md:col-span-2 text-sm">
+            <p className="font-display font-bold text-cream text-sm mb-4">
+              {lang === "ar" ? "تجارب وتوثيق" : "Explore"}
+            </p>
+            <ul className="space-y-2.5">
+              <li><Link href="/selector" className="hover:text-brand transition-colors">{t("selector_eyebrow")}</Link></li>
+              <li><Link href="/faq" className="hover:text-brand transition-colors">{t("faq_eyebrow")}</Link></li>
+              <li><Link href="/login" className="hover:text-brand transition-colors">{t("nav_login")}</Link></li>
+              <li>
+                <Link href="/explore" className="hover:text-brand transition-colors inline-flex items-center gap-1">
+                  {t("footer_explore3d")} <ArrowUpRight className="h-3.5 w-3.5" />
+                </Link>
+              </li>
+            </ul>
+          </div>
         </div>
 
-        <div className="mt-14 pt-8 border-t border-wgray-dim/40 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="max-w-md w-full">
-            {subscribed ? (
-              <p className="text-sm text-copper font-display uppercase tracking-widest">
-                {t("newsletter_success")}
-              </p>
-            ) : (
-              <>
-                <form noValidate onSubmit={handleSubmit} className="flex items-center gap-3">
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                      setError(false);
-                    }}
-                    placeholder={t("newsletter_placeholder")}
-                    className="input-dark flex-1"
-                    aria-label={t("newsletter_email_label")}
-                  />
-                  <button
-                    type="submit"
-                    className="p-3 border border-wgray-dim text-wgray hover:text-copper hover:border-copper transition-colors"
-                    aria-label={t("newsletter_subscribe")}
-                  >
-                    <ArrowRight className="h-4 w-4" />
-                  </button>
-                </form>
-                {error && (
-                  <p className="text-xs text-copper mt-2">{t("newsletter_error")}</p>
-                )}
-              </>
-            )}
+        <div className="border-t border-cream/10 mt-12 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-cream/50">
+          <p>© {year} {BUSINESS.brandLegal}. {lang === "ar" ? "كل الحقوق محفوظة." : "All rights reserved."}</p>
+          <div className="flex items-center gap-5">
+            <Link href="/faq" className="hover:text-brand transition-colors">{t("footer_privacy")}</Link>
+            <Link href="/faq" className="hover:text-brand transition-colors">{t("footer_terms")}</Link>
           </div>
-          <p className="text-xs text-wgray-dim">
-            © {new Date().getFullYear()} Belghamdi Coaching — Bassam El Ghamdi. All rights reserved.
-          </p>
         </div>
       </div>
     </footer>

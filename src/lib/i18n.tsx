@@ -469,6 +469,161 @@ const DICT: Record<string, { en: string; ar: string }> = {
     en: "Demo mode: checkout is simulated. Live mode will route through the Shopify checkout.",
     ar: "وضع تجريبي: الشراء محاكى. الوضع الفعلي سيمر عبر الدفع في Shopify.",
   },
+
+  /* ===== Rebrand — homepage v2 ===== */
+  hero_kicker2: { en: "Ready-made training programs — in Arabic", ar: "برامج تدريب جاهزة — بالعربي" },
+  hero_headline2: { en: "The body you dream of... start building it the right way", ar: "جسمك اللي بتحلم بيه... ابدأ تبنيه صح" },
+  hero_copy2: {
+    en: "Practical training programs that fit your goal and your budget — clear steps that let you train with confidence, no guesswork.",
+    ar: "برامج تدريبية عملية تناسب هدفك وميزانيتك، بخطوات واضحة تساعدك تتمرن بثقة ومن غير عشوائية.",
+  },
+  hero_cta_programs: { en: "Discover the programs", ar: "اكتشف البرامج" },
+  hero_cta_coach: { en: "Meet the captain", ar: "اعرف أكتر عن الكابتن" },
+  hero_trust_line: { en: "Programs for beginners and pros — 3 to 6 training days", ar: "برامج للمبتدئين والمحترفين — من 3 لـ 6 أيام تدريب" },
+  float_label_coach: { en: "Your coach on the journey", ar: "مدربك في رحلتك" },
+  float_label_videos: { en: "Video explanation for every exercise", ar: "شرح فيديو لكل تمرين" },
+  float_label_price: { en: "Starting 380 EGP", ar: "تبدأ من 380 جنيه" },
+  coach_photo_placeholder: {
+    en: "Coach portrait placeholder — drop the file at public/images/coach-avatar.jpg",
+    ar: "مكان صورة الكابتن — حط الملف في public/images/coach-avatar.jpg",
+  },
+  trust_1: { en: "Programs at fair prices", ar: "برامج بأسعار مناسبة" },
+  trust_2: { en: "Perfect for beginners", ar: "مناسب للمبتدئين" },
+  trust_3: { en: "Video explained exercises", ar: "شرح فيديو للتمارين" },
+  trust_4: { en: "Alternatives for your setup", ar: "بدائل تناسب إمكانياتك" },
+  trust_5: { en: "Vodafone Cash & Instapay", ar: "فودافون كاش و إنستاباي" },
+  programs2_section_name: { en: "Training programs", ar: "برامج التدريب" },
+  programs2_headline: { en: "Pick a program and start the change", ar: "اختار برنامجك وابدأ التغيير" },
+  programs2_copy: { en: "You don't need to spend a lot to train correctly.", ar: "مش محتاج تدفع كتير عشان تبدأ تتمرن صح." },
+  programs2_cta_all: { en: "See all programs", ar: "شوف كل البرامج" },
+  level_beginner: { en: "Beginner", ar: "مبتدئ" },
+  level_intermediate: { en: "Intermediate", ar: "متوسط" },
+  level_advanced: { en: "Advanced", ar: "متقدم" },
+  days_per_week_n: { en: "{n} days / week", ar: "{n} أيام / أسبوع" },
+  why_title: { en: "Why Belghamdi?", ar: "ليه بالغامدي؟" },
+  why_headline: { en: "You don't need a big budget to train right", ar: "مش لازم ميزانية كبيرة عشان تبدأ صح" },
+  why_1_title: { en: "A clear program", ar: "برنامج واضح" },
+  why_1_copy: { en: "Instead of wondering what to train every single day.", ar: "بدل ما تفضل محتار تتمرن إيه كل يوم." },
+  why_2_title: { en: "Video explanations", ar: "شرح بالفيديو" },
+  why_2_copy: { en: "Learn the correct performance of every exercise.", ar: "اتعلم الأداء الصحيح لكل تمرين." },
+  why_3_title: { en: "Fits your time", ar: "مناسب لوقتك" },
+  why_3_copy: { en: "Choose the number of days that fits your schedule.", ar: "اختار عدد أيام يناسب جدولك." },
+  why_4_title: { en: "Exercise alternatives", ar: "بدائل للتمارين" },
+  why_4_copy: { en: "Not every exercise needs a specific machine.", ar: "مش كل تمرين محتاج جهاز معين." },
+  why_5_title: { en: "Fits your level", ar: "مناسب لمستواك" },
+  why_5_copy: { en: "Whether it's your first time in a gym or you have experience.", ar: "سواء أول مرة تدخل الجيم أو عندك خبرة." },
+  why_6_title: { en: "Choices that fit your budget", ar: "اختيارات تناسب ميزانيتك" },
+  why_6_copy: { en: "Start with the program that suits your capabilities.", ar: "ابدأ بالبرنامج المناسب لإمكانياتك." },
+  results_headline: { en: "Results speak", ar: "النتائج بتتكلم" },
+  results_before: { en: "Before", ar: "قبل" },
+  results_after: { en: "After", ar: "بعد" },
+  results_copy: { en: "Real journeys from real clients — different goals, one method.", ar: "رحلات حقيقية من عملاء حقيقيين — أهداف مختلفة ومنهج واحد." },
+  results_cta: { en: "See all transformations", ar: "شوف كل التحولات" },
+  results_note: { en: "Results vary from person to person according to commitment and consistency.", ar: "النتائج بتختلف من شخص لشخص حسب الالتزام والاستمرارية." },
+  results_empty: { en: "No published transformations yet — check back soon.", ar: "مفيش تحولات منشورة لسه — تابعنا قريب." },
+  hiw2_headline: { en: "From choosing a program to your first exercise", ar: "من اختيار البرنامج لحد أول تمرينة" },
+  hiw2_step1: { en: "Pick your goal", ar: "اختار هدفك" },
+  hiw2_step1_copy: { en: "Find the program that suits you.", ar: "حدد البرنامج المناسب ليك." },
+  hiw2_step2: { en: "Pay easily", ar: "اشترك بسهولة" },
+  hiw2_step2_copy: { en: "Choose the payment method that suits you.", ar: "اختار طريقة الدفع المناسبة." },
+  hiw2_step3: { en: "Receive your program", ar: "استلم برنامجك" },
+  hiw2_step3_copy: { en: "Follow the delivery instructions.", ar: "اتبع تعليمات الاستلام." },
+  hiw2_step4: { en: "Start training", ar: "ابدأ التمرين" },
+  hiw2_step4_copy: { en: "Watch the exercise explanations and start your plan.", ar: "شوف شرح التمارين وابدأ تنفيذ خطتك." },
+  coaching2_q: { en: "Need personal follow-up?", ar: "محتاج متابعة شخصية؟" },
+  coaching2_copy: {
+    en: "If you need a plan built for your goal and circumstances, with continuous follow-up and adjustments — online training is your choice.",
+    ar: "لو محتاج خطة معمولة على هدفك وظروفك مع متابعة وتعديلات مستمرة، التدريب الأونلاين هو اختيارك.",
+  },
+  coaching2_feat_personalized: { en: "Personalized training", ar: "تدريب شخصي" },
+  coaching2_feat_nutrition: { en: "Nutrition planning", ar: "تخطيط التغذية" },
+  coaching2_feat_followup: { en: "Ongoing follow-up", ar: "متابعة مستمرة" },
+  coaching2_feat_adjustments: { en: "Program adjustments", ar: "تعديلات على البرنامج" },
+  coaching2_feat_explanations: { en: "Exercise explanation", ar: "شرح التمارين" },
+  coaching2_cta: { en: "Discover online training", ar: "اكتشف التدريب الأونلاين" },
+  coaching2_diff: {
+    en: "Ready-made program: buy it and start today. Online coaching: a plan built for you with follow-up.",
+    ar: "البرنامج الجاهز: تشتريه وتبدأ النهارده. التدريب الأونلاين: خطة مبنية ليك مع متابعة شخصية.",
+  },
+  coach_section_q: { en: "Who is the captain?", ar: "مين الكابتن؟" },
+  coach_section_copy: {
+    en: "I'm Coach Belghamdi — for years I've been training thousands of the Arabic community every week, and my goal is simple: make correct training accessible to everyone, at a price everyone can afford.",
+    ar: "أنا الكابتن بالغامدي، من سنين بشغّل مع آلاف من الناس كل أسبوع، وهدفي بسيط: أخلي التمرين الصح في متناول الكل، وبسعر يستاهله كل واحد.",
+  },
+  videos_section_q: { en: "Learn with me", ar: "اتعلم معايا" },
+  videos_copy: {
+    en: "Selected videos from my weekly content — exercise tips, common mistakes, and nutrition.",
+    ar: "فيديوهات مختارة من محتواي الأسبوعي — نصائح تمرين، أخطاء شائعة، وتغذية.",
+  },
+  videos_cta: { en: "See all videos", ar: "شوف كل الفيديوهات" },
+  video_platform_yt: { en: "YouTube", ar: "يوتيوب" },
+  video_platform_ig: { en: "Instagram", ar: "انستجرام" },
+  video_platform_tt: { en: "TikTok", ar: "تيك توك" },
+  video_placeholder_note: {
+    en: "Video previews — replace with real YouTube/Instagram content",
+    ar: "معرض فيديوهات — استبدله بمحتوى يوتيوب و انستجرام الفعلي",
+  },
+  testimonials2_q: { en: "What people say", ar: "الكلام اللي بنسمعه" },
+  testimonials2_title: { en: "Feedback from trainees", ar: "ملاحظات المتدربين" },
+  final_q: { en: "What are you waiting for to start?", ar: "مستني إيه عشان تبدأ؟" },
+  final_copy2: {
+    en: "Pick your program and take the first step toward a stronger body and more active life.",
+    ar: "اختار برنامجك وخد أول خطوة ناحية جسم أقوى وحياة أنشط.",
+  },
+  final_cta2: { en: "Start with your program", ar: "ابدأ ببرنامجك" },
+  footer_programs: { en: "Training programs", ar: "برامج التدريب" },
+  footer_coaching: { en: "Online training", ar: "التدريب الأونلاين" },
+  footer_transformations: { en: "Transformations", ar: "التحولات" },
+  footer_videos: { en: "Videos", ar: "الفيديوهات" },
+  footer_contact: { en: "Contact", ar: "تواصل معي" },
+  footer_privacy: { en: "Privacy policy", ar: "سياسة الخصوصية" },
+  footer_terms: { en: "Terms and conditions", ar: "الشروط والأحكام" },
+  footer_explore3d: { en: "3D muscle explorer", ar: "استكشاف العضلات ثلاثي الأبعاد" },
+  nav_home: { en: "Home", ar: "الرئيسية" },
+  nav_results: { en: "Results", ar: "النتائج" },
+  nav_whoami: { en: "About", ar: "من أنا" },
+  nav_start_now: { en: "Start now", ar: "ابدأ دلوقتي" },
+  wa_float_label: { en: "Ask on WhatsApp", ar: "اسأل على واتساب" },
+
+  /* ===== About page ===== */
+  about_q: { en: "About", ar: "من أنا" },
+  about_headline: { en: "A coach obsessed with the process", ar: "كوتش مهووس بالتنفيذ الصح" },
+  about_copy: {
+    en: "Belghamdi Coaching exists to bring scientific training to people who want real outcomes — structured programming, honest accountability, and progress you can measure week over week.",
+    ar: "بالغامدي كوتشينج موجود عشان يجيب التدريب العلمي لكل الناس اللي عايزة نتيجة حقيقية — برمجة منظمة، ومتابعة صادقة، وتقدم تراه بعينك أسبوع ورا أسبوع.",
+  },
+  about_1_title: { en: "Coach-led programs", ar: "برامج من الكابتن بنفسه" },
+  about_1_copy: {
+    en: "Every training split and full program is designed and reviewed by the coach — never recycled templates.",
+    ar: "كل تقسيمة وكل برنامج معهود عليه من الكابتن بنفسه — مفيش قوالب جاهزة متكررة.",
+  },
+  about_2_title: { en: "Education first", ar: "التعليم الأول" },
+  about_2_copy: {
+    en: "Clients learn why exercises are chosen. Workout education and exercise explanations are part of the plan.",
+    ar: "العملاء بيفهموا ليه كل تمرين موجود لهم. شرح التمارين جزء من الخطة نفسها.",
+  },
+  about_3_title: { en: "Community + accountability", ar: "كوميونيتي + التزام" },
+  about_3_copy: {
+    en: "A fitness community and structured check-ins keep progress social, honest, and consistent.",
+    ar: "كوميونيتي فيتنس ومتابعات منظمة تخلي تقدمك الاجتماعي والصادق والمستمر.",
+  },
+  about_quote: {
+    en: "Build beyond your limits — but build in a way you can sustain for the next decade.",
+    ar: "ابنِ أكبر من حدودك — بس بطريقة تقدر تكمل معاك عشر سنين جاية.",
+  },
+  about_quote_by: { en: "— Coach Belghamdi", ar: "— الكابتن بالغامدي" },
+
+  /* ===== Transformations page ===== */
+  transformations_q: { en: "Transformations", ar: "التحولات" },
+  transformations_headline: { en: "Journeys measured in checkpoints", ar: "رحلات محسوبة بمحطات" },
+  transformations_copy: {
+    en: "Instead of a before/after wall, we show the process: assessment weeks, volume phases, and peak blocks — each with measurable outcomes.",
+    ar: "بدل صورتين قبل وبعد، بنعرض العملية كلها: أسابيع تقييم، مراحل بناء، وبلوكات الذروة — كل مرحلة بنتيجة معلومة.",
+  },
+  transformations_note: {
+    en: "Demo content shown. Real client transformations will replace these entries — never presented without verified consent.",
+    ar: "محتوى تجريبي. التحولات الحقيقية للعملاء هتظهر هنا بعد موافقتهم — عمرنا ما بنعرض حاجة من غير إذن صريح.",
+  },
 };
 
 type I18nCtx = { lang: Lang; t: (k: keyof typeof DICT) => string; setLang: (l: Lang) => void };
@@ -476,7 +631,7 @@ type I18nCtx = { lang: Lang; t: (k: keyof typeof DICT) => string; setLang: (l: L
 const Ctx = createContext<I18nCtx | null>(null);
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>("en");
+  const [lang, setLangState] = useState<Lang>("ar");
 
   useEffect(() => {
     const saved = window.localStorage.getItem("bc_lang");

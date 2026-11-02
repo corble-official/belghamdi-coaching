@@ -5,6 +5,7 @@ import { EyeOff, Eye, Save } from "lucide-react";
 import { useAdminStore } from "@/lib/demo/admin-store";
 import type { ContentTab, ContentEdit } from "@/lib/demo/admin-store";
 import { logEvent } from "@/lib/integrations/dispatcher";
+import type { Transformation } from "@/lib/types";
 
 const SECTIONS = ["Homepage", "Programs", "Coaching packages", "Testimonials", "Transformation gallery", "FAQ"] as const;
 
@@ -87,24 +88,7 @@ export default function AdminContentPage() {
       {section === "Transformation gallery" && (
         <div className="space-y-4 mt-8">
           {transformations.map((t) => (
-            <div key={t.id} className="card-surface p-6">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="font-display font-semibold text-bone">{t.clientLabel}</p>
-                  <p className="text-sm text-wgray mt-2 max-w-2xl">{t.summary}</p>
-                  <p className="text-xs text-copper mt-2">
-                    {t.weeks}-week journey · {t.stages.length} stages{" "}
-                    {t.demo && <span className="text-wgray-dim ml-2">demo content</span>}
-                  </p>
-                  <button
-                    onClick={() => updateTransformation(t.id, { visible: !t.visible })}
-                    className="mt-4 text-xs font-display uppercase tracking-widest text-copper hover:text-bone transition-colors"
-                  >
-                    {t.visible ? "Hide from site" : "Publish to site"}
-                  </button>
-                </div>
-              </div>
-            </div>
+            <TransformationEditor key={t.id} id={t.id} tr={t} onUpdate={updateTransformation} />
           ))}
         </div>
       )}
@@ -174,6 +158,107 @@ function SectionEditor({ section }: { section: EditableTab }) {
         Demo mode — edits are stored locally and are not published to the public site. This is
         demo plumbing until the live content connection is configured.
       </p>
+    </div>
+  );
+}
+
+function TransformationEditor({
+  id,
+  tr,
+  onUpdate,
+}: {
+  id: string;
+  tr: Transformation;
+  onUpdate: (id: string, patch: Partial<Transformation>) => void;
+}) {
+  const [before, setBefore] = useState(tr.beforeImage || "");
+  const [after, setAfter] = useState(tr.afterImage || "");
+  const [stageImages, setStageImages] = useState<string[]>(tr.stages.map((s) => s.image || ""));
+  const [saved, setSaved] = useState(false);
+
+  const save = () => {
+    onUpdate(id, {
+      beforeImage: before.trim() || undefined,
+      afterImage: after.trim() || undefined,
+      stages: tr.stages.map((s, i) => ({ ...s, image: stageImages[i]?.trim() || undefined })),
+    });
+    setSaved(true);
+    setTimeout(() => setSaved(false), 1600);
+  };
+
+  return (
+    <div className="card-surface p-6">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="font-display font-semibold text-bone">{tr.clientLabel}</p>
+          <p className="text-xs text-copper mt-1">
+            {tr.weeks}-week journey · {tr.stages.length} stages{" "}
+            {tr.demo && <span className="text-wgray-dim ml-2">demo content</span>}
+          </p>
+        </div>
+        <button
+          onClick={() => onUpdate(id, { visible: !tr.visible })}
+          className="text-xs font-display uppercase tracking-widest text-copper hover:text-bone transition-colors shrink-0"
+        >
+          {tr.visible ? "Hide from site" : "Publish to site"}
+        </button>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-6 mt-6">
+        <div>
+          <label className="label-dark">Before image URL</label>
+          <input
+            value={before}
+            onChange={(e) => setBefore(e.target.value)}
+            placeholder="https://... (public/ before photo)"
+            className="input-dark"
+            dir="ltr"
+          />
+        </div>
+        <div>
+          <label className="label-dark">After image URL</label>
+          <input
+            value={after}
+            onChange={(e) => setAfter(e.target.value)}
+            placeholder="https://... (public/ after photo)"
+            className="input-dark"
+            dir="ltr"
+          />
+        </div>
+      </div>
+
+      {/* preview */}
+      {(before || after) && (
+        <div className="flex gap-3 mt-4">
+          {before && (
+            <img src={before} alt="Before preview" className="w-20 h-20 object-cover rounded-lg" />
+          )}
+          {after && (
+            <img src={after} alt="After preview" className="w-20 h-20 object-cover rounded-lg" />
+          )}
+        </div>
+      )}
+
+      <div className="mt-6 space-y-3">
+        {tr.stages.map((s, i) => (
+          <div key={i} className="grid md:grid-cols-[80px_1fr] gap-3 items-center">
+            <span className="text-xs text-wgray font-display">Week {s.week}</span>
+            <input
+              value={stageImages[i] ?? ""}
+              onChange={(e) =>
+                setStageImages(stageImages.map((v, k) => (k === i ? e.target.value : v)))
+              }
+              placeholder="Optional stage image URL"
+              className="input-dark !py-2"
+              dir="ltr"
+            />
+          </div>
+        ))}
+      </div>
+
+      <button onClick={save} className="btn-primary mt-6">
+        <Save className="h-4 w-4" /> {saved ? "Saved ✓" : "Save Changes"}
+      </button>
     </div>
   );
 }

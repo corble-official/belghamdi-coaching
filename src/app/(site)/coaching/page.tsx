@@ -73,7 +73,7 @@ export default function CoachingPage() {
             </ul>
           </Reveal>
           <Reveal delay={0.1} className="card-surface p-10 border-copper/60 relative">
-            <span className="absolute top-6 right-6 bg-copper text-graphite text-[10px] font-bold uppercase tracking-widest px-3 py-1.5">
+            <span className="absolute top-6 left-6 bg-brand text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full">
               {t("coaching_badge_most_complete")}
             </span>
             <p className="eyebrow mb-3">

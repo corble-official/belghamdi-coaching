@@ -93,7 +93,10 @@ export interface Transformation {
     title: string;
     detail: string;
     metric: string;
+    image?: string;
   }[];
+  beforeImage?: string;
+  afterImage?: string;
   visible: boolean;
 }
 

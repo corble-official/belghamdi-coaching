@@ -235,6 +235,135 @@ export const CATALOG: Product[] = [
 
 export const getProduct = (slug: string) => CATALOG.find((p) => p.slug === slug);
 
+/* ===== Arabic copy per product (site is Arabic-first) ===== */
+const PRODUCT_AR: Record<string, { title: string; description: string; audience: string }> = {
+  "anterior-x-posterior": {
+    title: "أنتريو × بوستيريور",
+    description:
+      "برنامج تدريب كامل، 4 أيام أو أكتر في الأسبوع بتكرار عالي لكل مجموعة عضلية. تقسيمة أمامية/خلفية بتطوّر جسمك كله على أساس علمي، وتضخيم متوازن بتكرار وشدة عالية — من غير أيام رجل منفصلة، في خطة مرنة تقدر تستمر معاها.",
+    audience: "أي حد عايز خطة شاملة تطوّر جسمه كله — كل المستويات",
+  },
+  "arnold-x-u-l": {
+    title: "أرنولد × أبر لور",
+    description:
+      "برنامج هجين بيدمج حجم أرنولد الكلاسيكي مع تقسيمة أبر/لور. اختاره لو عايز نظام بالغامدي بتدريب عالي كل أسبوع.",
+    audience: "أصحاب تقسيمة أرنولد اللي عايزينها بشكل حديث ومنظم",
+  },
+  "muscle-mommies-4-5-days-splits": {
+    title: "فول بودي — 3 أيام",
+    description:
+      "برنامج تدريب 3 أيام بس في الأسبوع — لأكبر كتلة عضلية في أقل وقت. لو وقتك ضيق بس عايز جسم قوي ومليان بشكل علمي، البرنامج ده ليك. 3 أيام كفايين لأكبر تنشيش عضلي مع احترام الاستشفاء ومنع التمرين المفرط.",
+    audience: "اللي معندهمش وقت كتير وعايز أقصى نتيجة — من المبتدئ للمتقدم",
+  },
+  "full-body-3-days-high-frequency-split": {
+    title: "مسل ماميز",
+    description:
+      "تقسيمة بالغامدي المميزة للسيدات على أساس 3 أيام فول بودي بتكرار عالي — متطورة لمجتمع Muscle Mommies ومتاحة بحد أيام متغير (اختيارات 4–5 أيام داخل الخطة).",
+    audience: "سيدات بيبنيوا قوة ورشاقة على جدول أسبوعي مرن",
+  },
+  "push-pull-leg-x-upper-lower": {
+    title: "بوش بول ليج × أبر لور — 5 أيام",
+    description:
+      "النظام الهجين خمسي: أسبوع Push/Pull/Legs مع يومين أبر/لور، يدي كل عضلة حجم أسبوعي عالي مع استشفاء واقعي. دي أقوى تقسيمة 5 أيام في المتجر.",
+    audience: "اللي يقدر يلتزم 5 أيام تدريب متواصلة لمدة 6 شهور أو أكتر",
+  },
+  "upper-lower-4-days": {
+    title: "أبر لور — 4 أيام",
+    description:
+      "تقسيمة أبر/لور 4 أيام الكلاسيكية في المتجر — خطوة لقدام من خطة 3 أيام بحصص مخصصة لفوق وتحت مرتين في الأسبوع، معمولة لتوازن القوة والحجم لما تقدر تلتزم 4 أيام ثابتة.",
+    audience: "اللي يقدر يلتزم 4 أيام ثابتة (الاختيار بين فول بودي و PPL × أبر لور)",
+  },
+};
+
+export function productTitle(p: Product, lang: "ar" | "en") {
+  return lang === "ar" ? PRODUCT_AR[p.slug]?.title ?? p.title : p.title;
+}
+export function productDescription(p: Product, lang: "ar" | "en") {
+  return lang === "ar" ? PRODUCT_AR[p.slug]?.description ?? p.description : p.description;
+}
+export function productAudience(p: Product, lang: "ar" | "en") {
+  return lang === "ar" ? PRODUCT_AR[p.slug]?.audience ?? p.audience : p.audience;
+}
+
+export const INJURY_NOTE_AR = "البرنامج ده مش مناسب للي عنده إصابة حالية أو للي في فترة تأهيل.";
+
+const INCLUDED_ITEMS_AR: { title: string; detail: string }[] = [
+  { title: "شرح بالفيديو لكل تمرين", detail: "فيديوهات شرح تفصيلي (صوت + صورة) لكل تمرين، عشان تنفذ الأداء الصحيح بسهولة." },
+  { title: "تمارين مختارة بعناية", detail: "اختيار احترافي للتمارين لأقصى تنشيش عضلي بأقل تعب." },
+  { title: "جدول متابعة الأوزان والعدد", detail: "ملف تسجل فيه أوزانك وعدد مرات التكرار — تشوف تقدمك يوم بعد يوم." },
+  { title: "تفاصيل تدريب كاملة", detail: "نطاق تكرار، فترات راحة، وشدّة التمرين المطلوبة — كل حاجة محسوبة بدقة." },
+  { title: "جروب خاص ودعم", detail: "كوميونيتي تفاعلي بكل اللي شاوكهم نفس الهدف، ودعم مباشر جوا الجروب." },
+  { title: "دليل إرشادات كامل", detail: "دليل شامل تتجنب بيه الأخطاء الشائعة وتوصل لأفضل نتيجة." },
+  { title: "ملف خصومات حصرية", detail: "خصومات حصرية من براندات التغذية والفيتنس الشريكة." },
+];
+
+export function includedLines(lang: "ar" | "en"): string[] {
+  return (lang === "ar" ? INCLUDED_ITEMS_AR : INCLUDED_ITEMS).map(
+    (i) => `${i.title} — ${i.detail}`
+  );
+}
+
+const BENEFITS_AR: Record<string, string[]> = {
+  "anterior-x-posterior": [
+    "تطوير كامل للجسم على أساس علمي",
+    "تكرار عالي لكل مجموعة عضلية",
+    "تضخيم متوازن ومتناسق",
+    "أقصى نتيجة بأقل تعب",
+  ],
+  "arnold-x-u-l": [
+    "حجم أرنولد الكلاسيكي مع تقسيمة أبر/لور",
+    "نظام بالغامدي المميز",
+    "شدة أسبوعية عالية",
+    "تنفيذ مشروح بالفيديو",
+  ],
+  "muscle-mommies-4-5-days-splits": [
+    "3 أيام في الأسبوع فقط",
+    "أقصى تنشيش عضلي لكل حصة",
+    "خطة بتراعي الاستشفاء",
+    "مش محتاج حضور يومي للجيم",
+  ],
+  "full-body-3-days-high-frequency-split": [
+    "بنية فول بودي بتكرار عالي",
+    "اختار الأيام اللي تناسب أسبوعك",
+    "خاص بمجتمع Muscle Mommies",
+    "تنفيذ مشروح بالفيديو",
+  ],
+  "push-pull-leg-x-upper-lower": [
+    "حجم أسبوعي عالي لكل عضلة",
+    "إيقاع هجين PPL + أبر/لور",
+    "خطة 5 أيام واقعية الاستشفاء",
+    "تنفيذ مشروح بالفيديو",
+  ],
+  "upper-lower-4-days": [
+    "إيقاع أسبوعي متوازن فوق/تحت",
+    "تدرج في القوة والحجم",
+    "بنية تقدر تستمر معاها شهور",
+    "تنفيذ مشروح بالفيديو",
+  ],
+};
+
+export function benefitsFor(product: Product, lang: "ar" | "en"): string[] {
+  return lang === "ar" ? BENEFITS_AR[product.slug] ?? product.benefits : product.benefits;
+}
+
+const FREQ_AR: Record<string, string> = {
+  "anterior-x-posterior": "4+ حصص / أسبوع",
+  "arnold-x-u-l": "تقسيمات متعددة / أسبوع",
+  "muscle-mommies-4-5-days-splits": "3 حصص / أسبوع",
+  "full-body-3-days-high-frequency-split": "3 أيام (اختيارات 4–5 أيام)",
+  "push-pull-leg-x-upper-lower": "5 حصص / أسبوع",
+  "upper-lower-4-days": "4 حصص / أسبوع",
+};
+
+export function productFrequency(p: Product, lang: "ar" | "en") {
+  return lang === "ar" ? FREQ_AR[p.slug] ?? p.frequency : p.frequency;
+}
+
+export function levelName(level: Product["level"], lang: "ar" | "en") {
+  const ar = { beginner: "مبتدئ", intermediate: "متوسط", advanced: "متقدم" } as const;
+  return lang === "ar" ? ar[level] : level;
+}
+
 export type CoachingPackageId = "silver" | "gold";
 
 export interface CoachingPackage {
@@ -291,7 +420,7 @@ export const BUSINESS = {
   brand: "Belghamdi Coaching",
   brandLegal: "Belghamdi-Coaching",
   coach: "Bassam El Ghamdi",
-  coachArabic: "بسام الغامدي",
+  coachArabic: "بسام بالغامدي",
   location: "Cairo, Egypt",
   website: "https://belghamdicoaching.com",
   email: "coach@belghamdicoaching.com",
