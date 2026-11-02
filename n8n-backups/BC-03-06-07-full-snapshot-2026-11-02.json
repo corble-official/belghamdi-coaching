@@ -1,0 +1,2235 @@
+{
+  "BC-03": {
+    "workflow": {
+      "id": "aPt7y8swl0aq3Mka",
+      "name": "BC-03 | Belghamdi Client Onboarding",
+      "active": true,
+      "isArchived": false,
+      "versionId": "e3f848b5-ee1c-4a49-9b26-bf17cc69bd43",
+      "activeVersionId": "e3f848b5-ee1c-4a49-9b26-bf17cc69bd43",
+      "triggerCount": 4,
+      "nodeCount": 33,
+      "createdAt": "2026-11-01T17:19:57.303Z",
+      "updatedAt": "2026-11-01T22:04:33.732Z",
+      "settings": {
+        "executionOrder": "v1",
+        "availableInMCP": true,
+        "timezone": "Africa/Cairo",
+        "errorWorkflow": "dkzI3KyB8ygSWGus"
+      },
+      "tags": [],
+      "parentFolderId": null,
+      "description": "Event-driven onboarding pipeline: verified order events create clients and send a secure 5-day Telegram form link, with daily reminder/escalation sweeps and a GET/POST form flow (Supabase RPC + Telegram).",
+      "scopes": [
+        "execution:delete",
+        "execution:list",
+        "execution:read",
+        "execution:reveal",
+        "workflow:delete",
+        "workflow:disableRedaction",
+        "workflow:enableRedaction",
+        "workflow:execute",
+        "workflow:execute-chat",
+        "workflow:export",
+        "workflow:move",
+        "workflow:publish",
+        "workflow:read",
+        "workflow:share",
+        "workflow:unpublish",
+        "workflow:unshare",
+        "workflow:update"
+      ],
+      "canExecute": true,
+      "connections": {
+        "orderIntake": {
+          "main": [
+            [
+              {
+                "node": "Parse Order Event",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Parse Order Event": {
+          "main": [
+            [
+              {
+                "node": "Order Ref Present?",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Order Ref Present?": {
+          "main": [
+            [
+              {
+                "node": "Register Verified Order",
+                "type": "main",
+                "index": 0
+              }
+            ],
+            [
+              {
+                "node": "Prepare Invalid Reply",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Register Verified Order": {
+          "main": [
+            [
+              {
+                "node": "Event Registered Ok?",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Event Registered Ok?": {
+          "main": [
+            [
+              {
+                "node": "Duplicate Order Event?",
+                "type": "main",
+                "index": 0
+              }
+            ],
+            [
+              {
+                "node": "Prepare Error Reply",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Prepare Invalid Reply": {
+          "main": [
+            [
+              {
+                "node": "Respond Order Event",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Duplicate Order Event?": {
+          "main": [
+            [
+              {
+                "node": "Prepare Duplicate Reply",
+                "type": "main",
+                "index": 0
+              }
+            ],
+            [
+              {
+                "node": "Client On Telegram?",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Prepare Error Reply": {
+          "main": [
+            [
+              {
+                "node": "Respond Order Event",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Prepare Duplicate Reply": {
+          "main": [
+            [
+              {
+                "node": "Respond Order Event",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Client On Telegram?": {
+          "main": [
+            [
+              {
+                "node": "Prepare Onboarding Invite",
+                "type": "main",
+                "index": 0
+              }
+            ],
+            [
+              {
+                "node": "Prepare No-Chat Reply",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Prepare Onboarding Invite": {
+          "main": [
+            [
+              {
+                "node": "Send Onboarding Invite",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Send Onboarding Invite": {
+          "main": [
+            [
+              {
+                "node": "Prepare New Client Reply",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Prepare New Client Reply": {
+          "main": [
+            [
+              {
+                "node": "Respond Order Event",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Prepare No-Chat Reply": {
+          "main": [
+            [
+              {
+                "node": "Respond Order Event",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Daily Onboarding Sweep": {
+          "main": [
+            [
+              {
+                "node": "Fetch Pending Reminders",
+                "type": "main",
+                "index": 0
+              },
+              {
+                "node": "Fetch Onboarding Escalations",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Fetch Pending Reminders": {
+          "main": [
+            [
+              {
+                "node": "Split Reminder Rows",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Split Reminder Rows": {
+          "main": [
+            [
+              {
+                "node": "Reminder Has Chat?",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Reminder Has Chat?": {
+          "main": [
+            [
+              {
+                "node": "Prepare Reminder Message",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Prepare Reminder Message": {
+          "main": [
+            [
+              {
+                "node": "Send Onboarding Reminder",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Send Onboarding Reminder": {
+          "main": [
+            [
+              {
+                "node": "Mark Reminder Sent",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Fetch Onboarding Escalations": {
+          "main": [
+            [
+              {
+                "node": "Split Escalation Rows",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Split Escalation Rows": {
+          "main": [
+            [
+              {
+                "node": "Notify Coach - 72h Escalation",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Onboarding Form Link": {
+          "main": [
+            [
+              {
+                "node": "Load Onboarding Form",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Load Onboarding Form": {
+          "main": [
+            [
+              {
+                "node": "Build Onboarding Page",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Build Onboarding Page": {
+          "main": [
+            [
+              {
+                "node": "Respond Onboarding Form",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Onboarding Submit Endpoint": {
+          "main": [
+            [
+              {
+                "node": "Save Onboarding Submission",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Save Onboarding Submission": {
+          "main": [
+            [
+              {
+                "node": "Notify Coach - Submitted",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Notify Coach - Submitted": {
+          "main": [
+            [
+              {
+                "node": "Respond Submission",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        }
+      },
+      "nodes": [
+        {
+          "id": "b99b52fe-a895-4b5b-8d7c-535f12ec56c6",
+          "name": "orderIntake",
+          "type": "n8n-nodes-base.webhook",
+          "typeVersion": 2.2,
+          "position": [
+            0,
+            400
+          ],
+          "parameters": {
+            "httpMethod": "POST",
+            "path": "bc03-order-event",
+            "responseMode": "responseNode",
+            "options": {
+              "ignoreBots": true
+            }
+          },
+          "webhookId": "99deabc0-b5c1-47e4-a58e-c71e4edbce75",
+          "notes": "POST verified order events here. Body: order_ref, package_id, duration_days, customer_name, telegram ids, email/phone, kind (renewal|cancel), subscription_code"
+        },
+        {
+          "id": "194ebf8d-34ae-45b7-b884-91da32d0ec5e",
+          "name": "Parse Order Event",
+          "type": "n8n-nodes-base.code",
+          "typeVersion": 2,
+          "position": [
+            220,
+            400
+          ],
+          "parameters": {
+            "jsCode": "const b = $json.body || {};\nconst num = v => (v === undefined || v === null || v === '') ? null : Number(v);\nreturn [{ json: { order_ref: b.order_ref || null, event_type: b.event_type || 'order_verified', provider: b.provider || 'internal', package_id: b.package_id || null, duration_days: b.duration_days || null, customer_name: b.customer_name || null, telegram_user_id: num(b.telegram_user_id), telegram_chat_id: num(b.telegram_chat_id), email: b.email || null, phone: b.phone || null, kind: b.kind || null, subscription_code: b.subscription_code || null, valid: !!b.order_ref } }];"
+          },
+          "notes": "Parse Order Event - Code node"
+        },
+        {
+          "id": "2e15873b-66fe-475e-99ca-0ae80e947266",
+          "name": "Order Ref Present?",
+          "type": "n8n-nodes-base.if",
+          "typeVersion": 2.4,
+          "position": [
+            440,
+            400
+          ],
+          "parameters": {
+            "conditions": {
+              "options": {
+                "caseSensitive": true,
+                "leftValue": "",
+                "typeValidation": "loose",
+                "version": 2
+              },
+              "conditions": [
+                {
+                  "id": "cond-ordervalid",
+                  "leftValue": "={{ $json.order_ref }}",
+                  "rightValue": "",
+                  "operator": {
+                    "type": "string",
+                    "operation": "notEmpty",
+                    "singleValue": true
+                  }
+                }
+              ],
+              "combinator": "and"
+            },
+            "options": {}
+          },
+          "notes": "Guards the intake."
+        },
+        {
+          "id": "9d9ec1fd-a11e-4c63-9770-6e9e379034d1",
+          "name": "Register Verified Order",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.2,
+          "position": [
+            660,
+            320
+          ],
+          "parameters": {
+            "method": "POST",
+            "url": "https://mqbyjshkocnkxfqoypyj.supabase.co/rest/v1/rpc/process_order_event",
+            "authentication": "predefinedCredentialType",
+            "nodeCredentialType": "supabaseApi",
+            "sendBody": true,
+            "specifyBody": "json",
+            "jsonBody": "={{ JSON.stringify({ p_evt: { event_type: $json.event_type, provider: $json.provider, order_ref: $json.order_ref, package_id: $json.package_id, duration_days: $json.duration_days, customer_name: $json.customer_name, telegram_user_id: $json.telegram_user_id, telegram_chat_id: $json.telegram_chat_id, email: $json.email, phone: $json.phone, kind: $json.kind, subscription_code: $json.subscription_code } }) }}",
+            "options": {
+              "timeout": 15000
+            }
+          },
+          "notes": "Idempotent: dedupes (event_type/provider/order_ref), upserts client + subscription, opens onboarding form request.",
+          "credentials": {
+            "supabaseApi": {
+              "id": "mm0MVSRSwHynyDnR",
+              "name": "BC01 Supabase v2"
+            }
+          }
+        },
+        {
+          "id": "c038c2cd-ecc3-45dc-9486-0468b2ab2f21",
+          "name": "Event Registered Ok?",
+          "type": "n8n-nodes-base.if",
+          "typeVersion": 2.4,
+          "position": [
+            880,
+            320
+          ],
+          "parameters": {
+            "conditions": {
+              "options": {
+                "caseSensitive": true,
+                "leftValue": "",
+                "typeValidation": "loose",
+                "version": 2
+              },
+              "conditions": [
+                {
+                  "id": "cond-orderok",
+                  "leftValue": "={{ $json.success }}",
+                  "rightValue": "",
+                  "operator": {
+                    "type": "boolean",
+                    "operation": "true",
+                    "singleValue": true
+                  }
+                }
+              ],
+              "combinator": "and"
+            },
+            "options": {}
+          }
+        },
+        {
+          "id": "d281f5a5-e04f-4b80-b852-8da96f1949e4",
+          "name": "Prepare Invalid Reply",
+          "type": "n8n-nodes-base.code",
+          "typeVersion": 2,
+          "position": [
+            660,
+            560
+          ],
+          "parameters": {
+            "jsCode": "return [{ json: { status: 'ignored', reason: 'missing order_ref' } }];"
+          },
+          "notes": "Prepare Invalid Reply - Code node"
+        },
+        {
+          "id": "7b764e50-f966-4fdf-afaa-62270f8465d9",
+          "name": "Respond Order Event",
+          "type": "n8n-nodes-base.respondToWebhook",
+          "typeVersion": 1.5,
+          "position": [
+            2200,
+            440
+          ],
+          "parameters": {
+            "respondWith": "firstIncomingItem",
+            "options": {}
+          }
+        },
+        {
+          "id": "4a380c08-3865-4238-9adc-07b5d29de834",
+          "name": "Duplicate Order Event?",
+          "type": "n8n-nodes-base.if",
+          "typeVersion": 2.4,
+          "position": [
+            1100,
+            320
+          ],
+          "parameters": {
+            "conditions": {
+              "options": {
+                "caseSensitive": true,
+                "leftValue": "",
+                "typeValidation": "loose",
+                "version": 2
+              },
+              "conditions": [
+                {
+                  "id": "cond-orderdup",
+                  "leftValue": "={{ $json.duplicate }}",
+                  "rightValue": "",
+                  "operator": {
+                    "type": "boolean",
+                    "operation": "true",
+                    "singleValue": true
+                  }
+                }
+              ],
+              "combinator": "and"
+            },
+            "options": {}
+          }
+        },
+        {
+          "id": "d11f7e59-dcf4-4390-9157-d09d7bf1dc58",
+          "name": "Prepare Error Reply",
+          "type": "n8n-nodes-base.code",
+          "typeVersion": 2,
+          "position": [
+            1100,
+            560
+          ],
+          "parameters": {
+            "jsCode": "return [{ json: { status: 'failed', reason: 'order event registration failed' } }];"
+          },
+          "notes": "Prepare Error Reply - Code node"
+        },
+        {
+          "id": "2e69d1c8-7395-44ea-ae15-cc421254c049",
+          "name": "Prepare Duplicate Reply",
+          "type": "n8n-nodes-base.code",
+          "typeVersion": 2,
+          "position": [
+            1320,
+            560
+          ],
+          "parameters": {
+            "jsCode": "return [{ json: { status: 'processed', duplicate: true } }];"
+          },
+          "notes": "Prepare Duplicate Reply - Code node"
+        },
+        {
+          "id": "3f0e2e89-53a4-4794-b180-7b284be253f8",
+          "name": "Client On Telegram?",
+          "type": "n8n-nodes-base.if",
+          "typeVersion": 2.4,
+          "position": [
+            1320,
+            320
+          ],
+          "parameters": {
+            "conditions": {
+              "options": {
+                "caseSensitive": true,
+                "leftValue": "",
+                "typeValidation": "loose",
+                "version": 2
+              },
+              "conditions": [
+                {
+                  "id": "cond-haschat",
+                  "leftValue": "={{ $json.telegram_chat_id }}",
+                  "rightValue": "",
+                  "operator": {
+                    "type": "string",
+                    "operation": "notEmpty",
+                    "singleValue": true
+                  }
+                }
+              ],
+              "combinator": "and"
+            },
+            "options": {}
+          }
+        },
+        {
+          "id": "e75802d9-f546-4325-8c75-332d3ace8188",
+          "name": "Prepare Onboarding Invite",
+          "type": "n8n-nodes-base.code",
+          "typeVersion": 2,
+          "position": [
+            1540,
+            320
+          ],
+          "parameters": {
+            "jsCode": "const r = $json;\nconst link = 'https://n8n.corble.net/webhook/form/onboarding?t=' + r.token;\nconst text = 'أهلاً 👋 تم تأكيد اشتراكك مع Belghamdi Coaching ✅\\n' + 'خطوة أخيرة: استمارة التسجيل (5 دقائق):\\n' + link;\nreturn [{ json: { chat_id: r.telegram_chat_id, text: text, client_code: r.client_code } }];"
+          },
+          "notes": "Prepare Onboarding Invite - Code node"
+        },
+        {
+          "id": "cb10bbca-8ae0-440a-9b8d-d5b6f2a61ea6",
+          "name": "Send Onboarding Invite",
+          "type": "n8n-nodes-base.telegram",
+          "typeVersion": 1.2,
+          "position": [
+            1760,
+            320
+          ],
+          "parameters": {
+            "resource": "message",
+            "operation": "sendMessage",
+            "chatId": "={{ $json.chat_id }}",
+            "text": "={{ 'أهلاً تم تأكيد اشتراكك مع Belghamdi Coaching. خطوة أخيرة: استمارة التسجيل (5 دقائق): ' + $json.link }}",
+            "additionalFields": {
+              "appendAttribution": false,
+              "disable_web_page_preview": true,
+              "parse_mode": "HTML"
+            }
+          },
+          "notes": "Client DM with the 5-day secure form link.",
+          "retryOnFail": true,
+          "maxTries": 3,
+          "waitBetweenTries": 2000,
+          "onError": "continueRegularOutput",
+          "webhookId": "2b5b14c1-f9a9-4034-91f8-33b31137190a",
+          "credentials": {
+            "telegramApi": {
+              "id": "SBknWSUqMmwwMXNe",
+              "name": "BC01 Telegram v2"
+            }
+          }
+        },
+        {
+          "id": "34aba831-8149-4e57-bf8d-f2c81246d09c",
+          "name": "Prepare New Client Reply",
+          "type": "n8n-nodes-base.code",
+          "typeVersion": 2,
+          "position": [
+            1980,
+            320
+          ],
+          "parameters": {
+            "jsCode": "const r = $('Register Verified Order').first().json;\nreturn [{ json: { status: 'processed', duplicate: false, client_code: r.client_code, onboarding: 'invite_sent' } }];"
+          },
+          "notes": "Prepare New Client Reply - Code node"
+        },
+        {
+          "id": "ed6afe6a-4c3d-43a2-8af5-6f77c9f61bb1",
+          "name": "Prepare No-Chat Reply",
+          "type": "n8n-nodes-base.code",
+          "typeVersion": 2,
+          "position": [
+            1540,
+            560
+          ],
+          "parameters": {
+            "jsCode": "const r = $('Register Verified Order').first().json;\nreturn [{ json: { status: 'processed', duplicate: false, client_code: r.client_code, onboarding: 'invite_stored_no_telegram' } }];"
+          },
+          "notes": "Prepare No-Chat Reply - Code node"
+        },
+        {
+          "id": "bbef9e4c-8ed9-4087-9983-a8030443c690",
+          "name": "Daily Onboarding Sweep",
+          "type": "n8n-nodes-base.scheduleTrigger",
+          "typeVersion": 1.4,
+          "position": [
+            0,
+            900
+          ],
+          "parameters": {
+            "rule": {
+              "interval": [
+                {
+                  "field": "days",
+                  "daysInterval": 1,
+                  "triggerAtHour": 18,
+                  "triggerAtMinute": 30
+                }
+              ]
+            }
+          },
+          "notes": "Cairo 18:30 - 24h/48h reminders plus 72h escalation."
+        },
+        {
+          "id": "918e2965-f59b-46d8-93ce-56cf2a5c6841",
+          "name": "Fetch Pending Reminders",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.2,
+          "position": [
+            220,
+            900
+          ],
+          "parameters": {
+            "method": "POST",
+            "url": "https://mqbyjshkocnkxfqoypyj.supabase.co/rest/v1/rpc/get_onboarding_reminders",
+            "authentication": "predefinedCredentialType",
+            "nodeCredentialType": "supabaseApi",
+            "sendBody": true,
+            "specifyBody": "json",
+            "jsonBody": "={{ JSON.stringify({}) }}",
+            "options": {
+              "timeout": 15000
+            }
+          },
+          "notes": "Postgrest RPC get_onboarding_reminders",
+          "credentials": {
+            "supabaseApi": {
+              "id": "mm0MVSRSwHynyDnR",
+              "name": "BC01 Supabase v2"
+            }
+          }
+        },
+        {
+          "id": "4ffa9f4d-29cc-482c-b2d7-44672a94946a",
+          "name": "Split Reminder Rows",
+          "type": "n8n-nodes-base.code",
+          "typeVersion": 2,
+          "position": [
+            440,
+            900
+          ],
+          "parameters": {
+            "jsCode": "return ($json.items || []).map(r => ({ json: r }));"
+          },
+          "notes": "Split Reminder Rows - Code node"
+        },
+        {
+          "id": "709fd0e2-fd76-4247-9efc-5d726758b56f",
+          "name": "Reminder Has Chat?",
+          "type": "n8n-nodes-base.if",
+          "typeVersion": 2.4,
+          "position": [
+            1100,
+            900
+          ],
+          "parameters": {
+            "conditions": {
+              "options": {
+                "caseSensitive": true,
+                "leftValue": "",
+                "typeValidation": "loose",
+                "version": 2
+              },
+              "conditions": [
+                {
+                  "id": "cond-remhaschat",
+                  "leftValue": "={{ $json.chat_id }}",
+                  "rightValue": "",
+                  "operator": {
+                    "type": "string",
+                    "operation": "notEmpty",
+                    "singleValue": true
+                  }
+                }
+              ],
+              "combinator": "and"
+            },
+            "options": {}
+          }
+        },
+        {
+          "id": "ebf60aed-090c-4b61-b814-2e6cf0928147",
+          "name": "Prepare Reminder Message",
+          "type": "n8n-nodes-base.code",
+          "typeVersion": 2,
+          "position": [
+            1320,
+            900
+          ],
+          "parameters": {
+            "jsCode": "const r = $json;\nconst link = 'https://n8n.corble.net/webhook/form/onboarding?t=' + r.token;\nconst n = r.reminder_no || 1;\nconst msgs = {\n  1: 'تذكير لطيف استمارة التسجيل لعميل ' + (r.client_code || '') + ' لسه ناقصة. أكملها من هنا: ' + link,\n  2: 'مهم استمارة تسجيل ' + (r.client_code || '') + ' ما زالت ناقصة. أكملها من هنا: ' + link\n};\nreturn [{ json: { chat_id: r.chat_id, text: msgs[n] || msgs[1], request_id: r.request_id } }];"
+          },
+          "notes": "Prepare Reminder Message - Code node"
+        },
+        {
+          "id": "ea47ffbe-b978-45b1-8ddd-549a0015a4c3",
+          "name": "Send Onboarding Reminder",
+          "type": "n8n-nodes-base.telegram",
+          "typeVersion": 1.2,
+          "position": [
+            1540,
+            820
+          ],
+          "parameters": {
+            "resource": "message",
+            "operation": "sendMessage",
+            "chatId": "={{ $json.chat_id }}",
+            "text": "={{ ($json.reminder_no === 2 ? 'مهم: ' : 'تذكير لطيف: ') + 'استمارة التسجيل لعميل ' + ($json.client_code || '') + ' ناقصة. أكملها من هنا: ' + $json.link }}",
+            "additionalFields": {
+              "appendAttribution": false,
+              "disable_web_page_preview": true,
+              "parse_mode": "HTML"
+            }
+          },
+          "notes": "Telegram send",
+          "retryOnFail": true,
+          "maxTries": 3,
+          "waitBetweenTries": 2000,
+          "onError": "continueRegularOutput",
+          "webhookId": "27eb2f4c-7a90-4c43-b1b2-df97eb555362",
+          "credentials": {
+            "telegramApi": {
+              "id": "SBknWSUqMmwwMXNe",
+              "name": "BC01 Telegram v2"
+            }
+          }
+        },
+        {
+          "id": "c6e31844-e1e1-436c-ae68-be3fcd1c7c7c",
+          "name": "Mark Reminder Sent",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.2,
+          "position": [
+            1760,
+            900
+          ],
+          "parameters": {
+            "method": "POST",
+            "url": "https://mqbyjshkocnkxfqoypyj.supabase.co/rest/v1/rpc/mark_onboarding_reminded",
+            "authentication": "predefinedCredentialType",
+            "nodeCredentialType": "supabaseApi",
+            "sendBody": true,
+            "specifyBody": "json",
+            "jsonBody": "={{ JSON.stringify({ p_request_id: $json.request_id }) }}",
+            "options": {
+              "timeout": 15000
+            }
+          },
+          "notes": "Bumps reminder_count.",
+          "credentials": {
+            "supabaseApi": {
+              "id": "mm0MVSRSwHynyDnR",
+              "name": "BC01 Supabase v2"
+            }
+          }
+        },
+        {
+          "id": "37701f86-6cae-4302-9324-08a2c5988f04",
+          "name": "Fetch Onboarding Escalations",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.2,
+          "position": [
+            220,
+            1080
+          ],
+          "parameters": {
+            "method": "POST",
+            "url": "https://mqbyjshkocnkxfqoypyj.supabase.co/rest/v1/rpc/get_onboarding_escalations",
+            "authentication": "predefinedCredentialType",
+            "nodeCredentialType": "supabaseApi",
+            "sendBody": true,
+            "specifyBody": "json",
+            "jsonBody": "={{ JSON.stringify({}) }}",
+            "options": {
+              "timeout": 15000
+            }
+          },
+          "notes": "Postgrest RPC get_onboarding_escalations",
+          "credentials": {
+            "supabaseApi": {
+              "id": "mm0MVSRSwHynyDnR",
+              "name": "BC01 Supabase v2"
+            }
+          }
+        },
+        {
+          "id": "1b6ecd29-bdd3-4b2f-8c9f-2c1a818706a2",
+          "name": "Split Escalation Rows",
+          "type": "n8n-nodes-base.code",
+          "typeVersion": 2,
+          "position": [
+            440,
+            1080
+          ],
+          "parameters": {
+            "jsCode": "return ($json.items || []).map(r => ({ json: r }));"
+          },
+          "notes": "Split Escalation Rows - Code node"
+        },
+        {
+          "id": "6ef0a956-d6f8-46fa-bcb2-1c6d7abaaca6",
+          "name": "Notify Coach - 72h Escalation",
+          "type": "n8n-nodes-base.telegram",
+          "typeVersion": 1.2,
+          "position": [
+            660,
+            1080
+          ],
+          "parameters": {
+            "resource": "message",
+            "operation": "sendMessage",
+            "chatId": "-1003977860508",
+            "text": "={{ 'استمارة تسجيل ' + $json.client_code + ' لم تُكمل بعد 72 ساعة. تم إنشاء مهمة مراجعة.' }}",
+            "additionalFields": {
+              "appendAttribution": false,
+              "disable_web_page_preview": true,
+              "parse_mode": "HTML"
+            }
+          },
+          "notes": "Telegram send",
+          "retryOnFail": true,
+          "maxTries": 3,
+          "waitBetweenTries": 2000,
+          "onError": "continueRegularOutput",
+          "webhookId": "a11b5ea3-76ad-48aa-a526-eea4ecc03e21",
+          "credentials": {
+            "telegramApi": {
+              "id": "SBknWSUqMmwwMXNe",
+              "name": "BC01 Telegram v2"
+            }
+          }
+        },
+        {
+          "id": "9574d61d-fcd4-4520-b71b-eae102456c82",
+          "name": "Onboarding Form Link",
+          "type": "n8n-nodes-base.webhook",
+          "typeVersion": 2.2,
+          "position": [
+            0,
+            1400
+          ],
+          "parameters": {
+            "httpMethod": "GET",
+            "path": "form/onboarding",
+            "responseMode": "responseNode",
+            "options": {
+              "ignoreBots": true
+            }
+          },
+          "webhookId": "1c1b931e-9bfb-4600-89d2-6d01ad331194",
+          "notes": "GET with ?t=<token>"
+        },
+        {
+          "id": "daf7a02d-ecc1-4c46-9581-1233f42f208b",
+          "name": "Load Onboarding Form",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.2,
+          "position": [
+            220,
+            1400
+          ],
+          "parameters": {
+            "method": "POST",
+            "url": "https://mqbyjshkocnkxfqoypyj.supabase.co/rest/v1/rpc/get_onboarding_form",
+            "authentication": "predefinedCredentialType",
+            "nodeCredentialType": "supabaseApi",
+            "sendBody": true,
+            "specifyBody": "json",
+            "jsonBody": "={{ JSON.stringify({ p_token: $json.query.t }) }}",
+            "options": {
+              "timeout": 15000
+            }
+          },
+          "notes": "Postgrest RPC get_onboarding_form",
+          "credentials": {
+            "supabaseApi": {
+              "id": "mm0MVSRSwHynyDnR",
+              "name": "BC01 Supabase v2"
+            }
+          }
+        },
+        {
+          "id": "8e814ac3-f96c-4e05-8f44-40cc9bbb1148",
+          "name": "Build Onboarding Page",
+          "type": "n8n-nodes-base.code",
+          "typeVersion": 2,
+          "position": [
+            440,
+            1400
+          ],
+          "parameters": {
+            "jsCode": "const ONB = 'PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImFyIiBkaXI9InJ0bCI+CjxoZWFkPgo8bWV0YSBjaGFyc2V0PSJVVE' +\n  'YtOCI+CjxtZXRhIG5hbWU9InZpZXdwb3J0IiBjb250ZW50PSJ3aWR0aD1kZXZpY2Utd2lkdGgsIGluaXRpYWwtc2Nh' +\n  'bGU9MS4wIj4KPHRpdGxlPkJlbGdoYW1kaSBDb2FjaGluZyDigJQg2KfYs9iq2YXYp9ix2Kkg2KfZhNiq2LPYrNmK2Y' +\n  'Q8L3RpdGxlPgo8c2NyaXB0IHNyYz0iaHR0cHM6Ly9jZG4udGFpbHdpbmRjc3MuY29tIj48L3NjcmlwdD4KPHN0eWxl' +\n  'PgogIGJvZHl7Zm9udC1mYW1pbHk6c3lzdGVtLXVpLCdTZWdvZSBVSScsVGFob21hLHNhbnMtc2VyaWY7YmFja2dyb3' +\n  'VuZDojMGIwYjBmO2NvbG9yOiNlN2U3ZWF9CiAgLmZpZWxke3dpZHRoOjEwMCU7YmFja2dyb3VuZDojMTUxNTFjO2Jv' +\n  'cmRlcjoxcHggc29saWQgIzJhMmEzNTtib3JkZXItcmFkaXVzOi43NXJlbTtwYWRkaW5nOi43cmVtIC45cmVtO2NvbG' +\n  '9yOiNlN2U3ZWE7Zm9udC1zaXplOjFyZW19CiAgLmZpZWxkOmZvY3Vze291dGxpbmU6bm9uZTtib3JkZXItY29sb3I6' +\n  'I2YwNzEyZH0KICBsYWJlbHtkaXNwbGF5OmJsb2NrO2ZvbnQtc2l6ZTouODVyZW07Y29sb3I6IzlhOWFhNjttYXJnaW' +\n  '46LjlyZW0gMCAuM3JlbX0KICAucHJpbWFyeXt3aWR0aDoxMDAlO2JhY2tncm91bmQ6I2YwNzEyZDtjb2xvcjojZmZm' +\n  'O2ZvbnQtd2VpZ2h0OjcwMDtib3JkZXItcmFkaXVzOi43NXJlbTtwYWRkaW5nOi44cmVtO21hcmdpbi10b3A6MS4ycm' +\n  'VtO2ZvbnQtc2l6ZToxLjA1cmVtO2N1cnNvcjpwb2ludGVyO2JvcmRlcjpub25lfQogIC5wcmltYXJ5OmRpc2FibGVk' +\n  'e29wYWNpdHk6LjY7Y3Vyc29yOmRlZmF1bHR9CiAgLmNhcmR7bWF4LXdpZHRoOjU2MHB4O21hcmdpbjoyLjVyZW0gYX' +\n  'V0bztiYWNrZ3JvdW5kOiMxMDEwMTY7Ym9yZGVyOjFweCBzb2xpZCAjMjMyMzJkO2JvcmRlci1yYWRpdXM6MS4yNXJl' +\n  'bTtwYWRkaW5nOjEuNzVyZW19CiAgLmJhZGdle2Rpc3BsYXk6aW5saW5lLWJsb2NrO2JhY2tncm91bmQ6IzFiMWIyNT' +\n  'tjb2xvcjojZjA3MTJkO2JvcmRlcjoxcHggc29saWQgIzNhMmExZDtib3JkZXItcmFkaXVzOi41cmVtO3BhZGRpbmc6' +\n  'LjI1cmVtIC43cmVtO2ZvbnQtc2l6ZTouOHJlbX0KPC9zdHlsZT4KPC9oZWFkPgo8Ym9keT4KPGRpdiBjbGFzcz0iY2' +\n  'FyZCI+CiAgPGRpdiBjbGFzcz0iZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1iZXR3ZWVuIG1iLTQiPgogICAgPHNw' +\n  'YW4gY2xhc3M9ImJhZGdlIj5CZWxnaGFtZGkgQ29hY2hpbmc8L3NwYW4+CiAgICA8c3BhbiBpZD0ic3RhZ2UiIGNsYX' +\n  'NzPSJ0ZXh0LXhzIHRleHQtZ3JheS01MDAiPjwvc3Bhbj4KICA8L2Rpdj4KICA8aDEgY2xhc3M9InRleHQteGwgZm9u' +\n  'dC1ib2xkIG1iLTEiPtin2LPYqtmF2KfYsdipINin2YTYqtiz2KzZitmEINmE2YTYudmF2YrZhCDYp9mE2KzYr9mK2K' +\n  '88L2gxPgogIDxwIGNsYXNzPSJ0ZXh0LXNtIHRleHQtZ3JheS00MDAgbWItMiI+2KPZh9mE2KfZiyA8c3BhbiBpZD0i' +\n  'Y25hbWUiPuKAlDwvc3Bhbj4g8J+RiyDYrtmF2LMg2K/Zgtin2KbZgiDZgdmC2Lcg2YjYqtmD2YjZhiDYp9iz2KrZhd' +\n  'in2LHYqSDYp9mE2KrYs9is2YrZhCDYrNin2YfYstipINmE2YTYqNiv2KEuPC9wPgogIDxmb3JtIGlkPSJmIiBub3Zh' +\n  'bGlkYXRlPgogICAgPGRpdiBpZD0id2FpdCIgY2xhc3M9InRleHQtc20gdGV4dC1ncmF5LTUwMCBweS02IHRleHQtY2' +\n  'VudGVyIj7YrNin2LHZjSDYp9mE2KrYrdmC2YIg2YXZhiDYp9mE2LHYp9io2LfigKY8L2Rpdj4KICAgIDxkaXYgaWQ9' +\n  'ImZvcm1Cb2R5IiBzdHlsZT0iZGlzcGxheTpub25lIj4KICAgICAgPGxhYmVsIGZvcj0iZnVsbF9uYW1lIj7Yp9mE2K' +\n  'fYs9mFINin2YTZg9in2YXZhCAqPC9sYWJlbD48aW5wdXQgaWQ9ImZ1bGxfbmFtZSIgY2xhc3M9ImZpZWxkIiByZXF1' +\n  'aXJlZD4KICAgICAgPGxhYmVsIGZvcj0icGhvbmUiPtix2YLZhSDYp9mE2YfYp9iq2YEgLyDZiNin2KrYs9in2KggKj' +\n  'wvbGFiZWw+PGlucHV0IGlkPSJwaG9uZSIgY2xhc3M9ImZpZWxkIiByZXF1aXJlZCBpbnB1dG1vZGU9InRlbCI+CiAg' +\n  'ICAgIDxsYWJlbCBmb3I9ImVtYWlsIj7Yp9mE2KjYsdmK2K8g2KfZhNil2YTZg9iq2LHZiNmG2Yo8L2xhYmVsPjxpbn' +\n  'B1dCBpZD0iZW1haWwiIGNsYXNzPSJmaWVsZCIgdHlwZT0iZW1haWwiPgogICAgICA8bGFiZWwgZm9yPSJmaXRuZXNz' +\n  'X2dvYWwiPtin2YTZh9iv2YEg2KfZhNij2LPYp9iz2YogKjwvbGFiZWw+CiAgICAgIDxzZWxlY3QgaWQ9ImZpdG5lc3' +\n  'NfZ29hbCIgY2xhc3M9ImZpZWxkIiByZXF1aXJlZD4KICAgICAgICA8b3B0aW9uIHZhbHVlPSJidWlsZF9tdXNjbGUi' +\n  'Ptio2YbYp9ihINin2YTYudi22YTYp9iqINmI2KfZhNit2KzZhTwvb3B0aW9uPgogICAgICAgIDxvcHRpb24gdmFsdW' +\n  'U9Imxvc2Vfd2VpZ2h0Ij7Yrtiz2KfYsdipINmI2LLZhjwvb3B0aW9uPgogICAgICAgIDxvcHRpb24gdmFsdWU9ImJv' +\n  'ZHlfcmVjb21wIj7Ypdi52KfYr9ipINiq2LTZg9mK2YQg2KfZhNis2LPZhTwvb3B0aW9uPgogICAgICAgIDxvcHRpb2' +\n  '4gdmFsdWU9ImdlbmVyYWxfZml0bmVzcyI+2YTZitin2YLYqSDYudin2YXYqTwvb3B0aW9uPgogICAgICA8L3NlbGVj' +\n  'dD4KICAgICAgPGxhYmVsIGZvcj0idHJhaW5pbmdfZGF5cyI+2LnYr9ivINij2YrYp9mFINin2YTYqtmF2LHZitmGIN' +\n  'ij2LPYqNmI2LnZitin2YsgKjwvbGFiZWw+CiAgICAgIDxzZWxlY3QgaWQ9InRyYWluaW5nX2RheXMiIGNsYXNzPSJm' +\n  'aWVsZCIgcmVxdWlyZWQ+CiAgICAgICAgPG9wdGlvbiB2YWx1ZT0iMyI+MyDYo9mK2KfZhTwvb3B0aW9uPjxvcHRpb2' +\n  '4gdmFsdWU9IjQiPjQg2KPZitin2YU8L29wdGlvbj4KICAgICAgICA8b3B0aW9uIHZhbHVlPSI1Ij41INij2YrYp9mF' +\n  'PC9vcHRpb24+PG9wdGlvbiB2YWx1ZT0iNiI+NiDYo9mK2KfZhTwvb3B0aW9uPgogICAgICA8L3NlbGVjdD4KICAgIC' +\n  'AgPGxhYmVsIGZvcj0idHJhaW5pbmdfbG9jYXRpb24iPtmF2YPYp9mGINin2YTYqtmF2LHZitmGICo8L2xhYmVsPgog' +\n  'ICAgICA8c2VsZWN0IGlkPSJ0cmFpbmluZ19sb2NhdGlvbiIgY2xhc3M9ImZpZWxkIiByZXF1aXJlZD4KICAgICAgIC' +\n  'A8b3B0aW9uIHZhbHVlPSJneW0iPtis2YrZhTwvb3B0aW9uPjxvcHRpb24gdmFsdWU9ImhvbWUiPtin2YTZhdmG2LLZ' +\n  'hDwvb3B0aW9uPjxvcHRpb24gdmFsdWU9ImJvdGgiPtin2YTYrNmK2YUgKyDYp9mE2YXZhtiy2YQ8L29wdGlvbj4KIC' +\n  'AgICAgPC9zZWxlY3Q+CiAgICAgIDxsYWJlbCBmb3I9ImV4cGVyaWVuY2VfbGV2ZWwiPtmF2LPYqtmI2Ykg2KfZhNiu' +\n  '2KjYsdipICo8L2xhYmVsPgogICAgICA8c2VsZWN0IGlkPSJleHBlcmllbmNlX2xldmVsIiBjbGFzcz0iZmllbGQiIH' +\n  'JlcXVpcmVkPgogICAgICAgIDxvcHRpb24gdmFsdWU9ImJlZ2lubmVyIj7Zhdio2KrYr9imPC9vcHRpb24+PG9wdGlv' +\n  'biB2YWx1ZT0iaW50ZXJtZWRpYXRlIj7Zhdiq2YjYs9i3PC9vcHRpb24+PG9wdGlvbiB2YWx1ZT0iYWR2YW5jZWQiPt' +\n  'mF2KrZgtiv2YU8L29wdGlvbj4KICAgICAgPC9zZWxlY3Q+CiAgICAgIDxsYWJlbCBmb3I9Im5vdGVzIj7ZhdmE2KfY' +\n  'rdi42KfYqiDYtdit2YrYqSAvINil2LXYp9io2KfYqjwvbGFiZWw+CiAgICAgIDx0ZXh0YXJlYSBpZD0ibm90ZXMiIG' +\n  'NsYXNzPSJmaWVsZCIgcm93cz0iMyIgcGxhY2Vob2xkZXI9ItmF2KvYp9mEOiDZg9iq2YEg2LPYp9io2YLYjCDYuNmH' +\n  '2LHYjCDYsdmD2KjYqeKApiI+PC90ZXh0YXJlYT4KICAgICAgPGxhYmVsIGZvcj0icGhvdG9zIj7YsdmI2KfYqNi3IN' +\n  'i12YjYsdmDICjYp9iu2KrZitin2LHZiiDigJQg2LnYr9ipINix2YjYp9io2Lcg2YXZgdi12YjZhNipINio2YHYp9i1' +\n  '2YTYqSk8L2xhYmVsPgogICAgICA8aW5wdXQgaWQ9InBob3RvcyIgY2xhc3M9ImZpZWxkIiBwbGFjZWhvbGRlcj0iaH' +\n  'R0cHM6Ly/igKYiPgogICAgICA8YnV0dG9uIGlkPSJidG4iIHR5cGU9InN1Ym1pdCIgY2xhc3M9InByaW1hcnkiPtil' +\n  '2LHYs9in2YQg2KfZhNiq2LPYrNmK2YQg4pyTPC9idXR0b24+CiAgICAgIDxwIGlkPSJtc2ciIGNsYXNzPSJ0ZXh0LW' +\n  'NlbnRlciB0ZXh0LXNtIG10LTMiPjwvcD4KICAgIDwvZGl2PgogIDwvZm9ybT4KPC9kaXY+CjxzY3JpcHQgaWQ9Il9f' +\n  'ZGF0YSIgdHlwZT0iYXBwbGljYXRpb24vanNvbiI+X19EQVRBX1BMQUNFSE9MREVSX188L3NjcmlwdD4NCjxzY3JpcH' +\n  'Q+DQpjb25zdCBwYXJhbXM9bmV3IFVSTFNlYXJjaFBhcmFtcyhsb2NhdGlvbi5zZWFyY2gpOw0KY29uc3QgdG9rZW49' +\n  'cGFyYW1zLmdldCgndCcpOw0KY29uc3QgREFUQT1KU09OLnBhcnNlKGF0b2IoZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SW' +\n  'QoJ19fZGF0YScpLnRleHRDb250ZW50KSk7DQpmdW5jdGlvbiBib290KCl7DQogIGlmKCFEQVRBLnN1Y2Nlc3N8fERB' +\n  'VEEuYWxyZWFkeV9jb21wbGV0ZWQpew0KICAgIGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCd3YWl0JykudGV4dENvbn' +\n  'RlbnQgPSBEQVRBLmFscmVhZHlfY29tcGxldGVkDQogICAgICA/ICfYqtmFINil2LHYs9in2YQg2KfZhNin2LPYqtmF' +\n  '2KfYsdipINio2KfZhNmB2LnZhCDigJQg2LTZg9ix2KfZiyDZhNmDIOKchScNCiAgICAgIDogKERBVEEuZXJyb3I9PT' +\n  '0ndG9rZW5fZXhwaXJlZCc/J9in2YbYqtmH2Kog2LXZhNin2K3ZitipINin2YTYsdin2KjYtyDigJQg2KrZiNin2LXZ' +\n  'hCDZhdi52YbYpyDZhNil2LHYs9in2YQg2LHYp9io2Lcg2KzYr9mK2K8nOifZitio2K/ZiCDYo9mGINin2YTYsdin2K' +\n  'jYtyDYutmK2LEg2LXYrdmK2K0nKTsNCiAgICBpZihEQVRBLmNsaWVudF9uYW1lKSBkb2N1bWVudC5nZXRFbGVtZW50' +\n  'QnlJZCgnY25hbWUnKS50ZXh0Q29udGVudD1EQVRBLmNsaWVudF9uYW1lOw0KICAgIHJldHVybjsNCiAgfQ0KICBkb2' +\n  'N1bWVudC5nZXRFbGVtZW50QnlJZCgnY25hbWUnKS50ZXh0Q29udGVudD1EQVRBLmNsaWVudF9uYW1lfHwnJzsNCiAg' +\n  'ZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ3dhaXQnKS5zdHlsZS5kaXNwbGF5PSdub25lJzsNCiAgZG9jdW1lbnQuZ2' +\n  'V0RWxlbWVudEJ5SWQoJ2Zvcm1Cb2R5Jykuc3R5bGUuZGlzcGxheT0nJzsNCiAgZG9jdW1lbnQuZ2V0RWxlbWVudEJ5' +\n  'SWQoJ3N0YWdlJykudGV4dENvbnRlbnQ9J9i12KfZhNit2Kkg2K3YqtmJICcrbmV3IERhdGUoREFUQS5leHBpcmVzX2' +\n  'F0KS50b0xvY2FsZURhdGVTdHJpbmcoJ2FyLUVHJyk7DQp9DQpkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnZicpLmFk' +\n  'ZEV2ZW50TGlzdGVuZXIoJ3N1Ym1pdCcsYXN5bmMgZXY9PnsNCiAgZXYucHJldmVudERlZmF1bHQoKTsNCiAgY29uc3' +\n  'QgYnRuPWRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCdidG4nKTsgYnRuLmRpc2FibGVkPXRydWU7DQogIGNvbnN0IGRh' +\n  'dGE9T2JqZWN0LmZyb21FbnRyaWVzKG5ldyBGb3JtRGF0YShkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnZicpKS5lbn' +\n  'RyaWVzKCkpOw0KICBjb25zdCBwaG90b3M9KGRhdGEucGhvdG9zfHwnJykuc3BsaXQoJywnKS5tYXAocz0+cy50cmlt' +\n  'KCkpLmZpbHRlcihCb29sZWFuKTsNCiAgZGVsZXRlIGRhdGEucGhvdG9zOw0KICBjb25zdCByPWF3YWl0IGZldGNoKC' +\n  'cvd2ViaG9vay9mb3JtL29uYm9hcmRpbmctc3VibWl0P3Q9JytlbmNvZGVVUklDb21wb25lbnQodG9rZW4pLHsNCiAg' +\n  'ICBtZXRob2Q6J1BPU1QnLGhlYWRlcnM6eydDb250ZW50LVR5cGUnOidhcHBsaWNhdGlvbi9qc29uJ30sYm9keTpKU0' +\n  '9OLnN0cmluZ2lmeSh7ZGF0YSxwaG90b3N9KX0pOw0KICBjb25zdCBqPWF3YWl0IHIuanNvbigpOw0KICBjb25zdCBt' +\n  'c2c9ZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ21zZycpOw0KICBpZihqLnN1Y2Nlc3MpeyBkb2N1bWVudC5nZXRFbG' +\n  'VtZW50QnlJZCgnZm9ybUJvZHknKS5pbm5lckhUTUw9Jyc7IG1zZy5jbGFzc05hbWU9J3RleHQtY2VudGVyIHRleHQt' +\n  'Z3JlZW4tNDAwIG10LTMnOw0KICAgIG1zZy50ZXh0Q29udGVudD0n2KrZhSDYp9mE2KrYs9is2YrZhCDYqNmG2KzYp9' +\n  'itIOKchSDZh9mK2KrZhSDYp9mE2KrZiNin2LXZhCDZhdi52YMg2YLYsdmK2KjYp9mLINmF2Lkg2K7Yt9iq2YMuJzsg' +\n  'fQ0KICBlbHNlIHsgbXNnLmNsYXNzTmFtZT0ndGV4dC1jZW50ZXIgdGV4dC1yZWQtNDAwIG10LTMnOw0KICAgIG1zZy' +\n  '50ZXh0Q29udGVudD0oai5lcnJvcj09PSdhbHJlYWR5X2NvbXBsZXRlZCcpPyfYqtmFINin2YTYqtiz2KzZitmEINio' +\n  '2KfZhNmB2LnZhCc6J9it2K/YqyDYrti32KMg4oCUINit2KfZiNmEINmF2LHYqSDYo9iu2LHZiSc7IGJ0bi5kaXNhYm' +\n  'xlZD1mYWxzZTsgfQ0KfSk7DQpib290KCk7DQo8L3NjcmlwdD4NCjwvYm9keT4NCjwvaHRtbD4NCgoNCg==';\nconst data = $json || {};\nconst payload = Buffer.from(JSON.stringify({\n  success: data.success === true,\n  already_completed: data.already_completed === true,\n  client_name: data.client_name || null,\n  expires_at: data.expires_at || null,\n  error: data.error || null\n})).toString('base64');\nconst html = Buffer.from(ONB, 'base64').toString('utf8');\nreturn [{ json: { html: html.replace('__DATA_PLACEHOLDER__', payload) } }];"
+          },
+          "notes": "Build Onboarding Page - Code node"
+        },
+        {
+          "id": "d3fa7a75-58a7-45d2-b1ce-bb8bfc665809",
+          "name": "Respond Onboarding Form",
+          "type": "n8n-nodes-base.respondToWebhook",
+          "typeVersion": 1.5,
+          "position": [
+            660,
+            1400
+          ],
+          "parameters": {
+            "respondWith": "text",
+            "responseBody": "={{ $json.html }}",
+            "options": {
+              "responseHeaders": {
+                "entries": [
+                  {
+                    "name": "Content-Type",
+                    "value": "text/html; charset=utf-8"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "id": "df0b1351-a35f-4617-b8f4-9f163989252d",
+          "name": "Onboarding Submit Endpoint",
+          "type": "n8n-nodes-base.webhook",
+          "typeVersion": 2.2,
+          "position": [
+            0,
+            1700
+          ],
+          "parameters": {
+            "httpMethod": "POST",
+            "path": "form/onboarding-submit",
+            "responseMode": "responseNode",
+            "options": {
+              "ignoreBots": true
+            }
+          },
+          "webhookId": "b100ce15-5c09-4fec-9364-79022521e184"
+        },
+        {
+          "id": "a2fa380f-87d7-438c-bb53-aa254a1f8e7c",
+          "name": "Save Onboarding Submission",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.2,
+          "position": [
+            220,
+            1700
+          ],
+          "parameters": {
+            "method": "POST",
+            "url": "https://mqbyjshkocnkxfqoypyj.supabase.co/rest/v1/rpc/submit_onboarding",
+            "authentication": "predefinedCredentialType",
+            "nodeCredentialType": "supabaseApi",
+            "sendBody": true,
+            "specifyBody": "json",
+            "jsonBody": "={{ JSON.stringify({ p_token: $json.query.t, p_data: $json.body.data, p_photos: $json.body.photos }) }}",
+            "options": {
+              "timeout": 15000
+            }
+          },
+          "notes": "Validates token, stores submission, activates client, opens review task.",
+          "credentials": {
+            "supabaseApi": {
+              "id": "mm0MVSRSwHynyDnR",
+              "name": "BC01 Supabase v2"
+            }
+          }
+        },
+        {
+          "id": "0e1890a6-d14e-4a7f-8787-f831e5027a5e",
+          "name": "Notify Coach - Submitted",
+          "type": "n8n-nodes-base.telegram",
+          "typeVersion": 1.2,
+          "position": [
+            440,
+            1700
+          ],
+          "parameters": {
+            "resource": "message",
+            "operation": "sendMessage",
+            "chatId": "-1003977860508",
+            "text": "={{ 'عميل ' + $json.client_code + ' أكمل استمارة التسجيل جاهز للمراجعة' }}",
+            "additionalFields": {
+              "appendAttribution": false,
+              "disable_web_page_preview": true,
+              "parse_mode": "HTML"
+            }
+          },
+          "notes": "Telegram send",
+          "retryOnFail": true,
+          "maxTries": 3,
+          "waitBetweenTries": 2000,
+          "onError": "continueRegularOutput",
+          "webhookId": "a8160209-f4c6-4604-bee5-056ec763ae7b",
+          "credentials": {
+            "telegramApi": {
+              "id": "SBknWSUqMmwwMXNe",
+              "name": "BC01 Telegram v2"
+            }
+          }
+        },
+        {
+          "id": "836e3379-070b-44d1-81d2-69667e04834d",
+          "name": "Respond Submission",
+          "type": "n8n-nodes-base.respondToWebhook",
+          "typeVersion": 1.5,
+          "position": [
+            660,
+            1700
+          ],
+          "parameters": {
+            "options": {},
+            "respondWith": "text",
+            "responseBody": "={{ JSON.stringify({ success: true }) }}"
+          }
+        }
+      ],
+      "nodeGroups": [
+        {
+          "id": "grp-order",
+          "name": "Order intake",
+          "nodeNames": [
+            "Parse Order Event",
+            "Order Ref Present?",
+            "Register Verified Order",
+            "Event Registered Ok?",
+            "Duplicate Order Event?",
+            "Client On Telegram?",
+            "Prepare Invalid Reply",
+            "Prepare Error Reply",
+            "Prepare Duplicate Reply",
+            "Prepare Onboarding Invite",
+            "Send Onboarding Invite",
+            "Prepare New Client Reply",
+            "Prepare No-Chat Reply",
+            "Respond Order Event"
+          ],
+          "description": "Webhook intake for verified orders into the CRM"
+        },
+        {
+          "id": "grp-form",
+          "name": "Onboarding form",
+          "nodeNames": [
+            "Load Onboarding Form",
+            "Build Onboarding Page",
+            "Respond Onboarding Form"
+          ],
+          "description": "Secure 5-day onboarding webform served from RPC"
+        },
+        {
+          "id": "grp-submit",
+          "name": "Form submission",
+          "nodeNames": [
+            "Save Onboarding Submission",
+            "Notify Coach - Submitted",
+            "Respond Submission"
+          ],
+          "description": "POST endpoint saving client submissions and alerting coach"
+        },
+        {
+          "id": "grp-reminders",
+          "name": "Reminder sweep",
+          "nodeNames": [
+            "Fetch Pending Reminders",
+            "Split Reminder Rows",
+            "Reminder Has Chat?",
+            "Prepare Reminder Message",
+            "Send Onboarding Reminder",
+            "Mark Reminder Sent"
+          ],
+          "description": "24h/48h reminders for pending onboarding forms"
+        },
+        {
+          "id": "grp-escalation",
+          "name": "Escalation sweep",
+          "nodeNames": [
+            "Fetch Onboarding Escalations",
+            "Split Escalation Rows",
+            "Notify Coach - 72h Escalation"
+          ],
+          "description": "72h escalation notification to the coach group"
+        }
+      ],
+      "activeVersion": {
+        "sameAsDraft": true
+      },
+      "meta": {
+        "aiBuilderAssisted": true,
+        "builderVariant": "mcp"
+      }
+    },
+    "triggerInfo": "This workflow has the following trigger(s):\n\n\nWebhook trigger(s):\n\n\n\t\t\t\t<trigger 1>\n\t\t\t\t\t - Node name: orderIntake\n\t\t\t\t\t - Production URL: https://n8n.corble.net/webhook/bc03-order-event\n\t\t\t\t\t - Test URL: https://n8n.corble.net/webhook-test/bc03-order-event\n\t\t\t\t\t - HTTP Method: POST\n\t\t\t\t\t - Response Mode: Webhook is configured to respond using \"Respond to Webhook\" node.\n\t\t\t\t\t - No credentials required for this webhook.\n\t\t\t\t</trigger 1>\n\n\n\t\t\t\t<trigger 2>\n\t\t\t\t\t - Node name: Onboarding Form Link\n\t\t\t\t\t - Production URL: https://n8n.corble.net/webhook/form/onboarding\n\t\t\t\t\t - Test URL: https://n8n.corble.net/webhook-test/form/onboarding\n\t\t\t\t\t - HTTP Method: GET\n\t\t\t\t\t - Response Mode: Webhook is configured to respond using \"Respond to Webhook\" node.\n\t\t\t\t\t - No credentials required for this webhook.\n\t\t\t\t</trigger 2>\n\n\n\t\t\t\t<trigger 3>\n\t\t\t\t\t - Node name: Onboarding Submit Endpoint\n\t\t\t\t\t - Production URL: https://n8n.corble.net/webhook/form/onboarding-submit\n\t\t\t\t\t - Test URL: https://n8n.corble.net/webhook-test/form/onboarding-submit\n\t\t\t\t\t - HTTP Method: POST\n\t\t\t\t\t - Response Mode: Webhook is configured to respond using \"Respond to Webhook\" node.\n\t\t\t\t\t - No credentials required for this webhook.\n\t\t\t\t</trigger 3>\n\nTo execute a webhook trigger, pass triggerNodeName and inputs: { triggerNodeName: \"<node name>\", inputs: { webhookData: { headers?, query?, body? } } }.\n\nSchedule trigger(s):\n\n\n\t\t\t\t<trigger 1>\n\t\t\t\t\t - Node name: Daily Onboarding Sweep\n\t\t\t\t</trigger 1>\n\nScheduled workflows do not take inputs. To execute a specific schedule trigger, pass triggerNodeName only: { triggerNodeName: \"<node name>\" }."
+  },
+  "BC-06": {
+    "workflow": {
+      "id": "4w7DX62b6wCOpPiI",
+      "name": "BC-06 | Belghamdi Coach Tasks",
+      "active": true,
+      "isArchived": false,
+      "versionId": "f370e7dc-1ea6-436d-9db3-627ef8d23e3e",
+      "activeVersionId": "f370e7dc-1ea6-436d-9db3-627ef8d23e3e",
+      "triggerCount": 1,
+      "nodeCount": 10,
+      "createdAt": "2026-11-01T18:23:11.331Z",
+      "updatedAt": "2026-11-01T22:03:44.095Z",
+      "settings": {
+        "executionOrder": "v1",
+        "availableInMCP": true,
+        "timezone": "Africa/Cairo",
+        "errorWorkflow": "dkzI3KyB8ygSWGus"
+      },
+      "tags": [],
+      "parentFolderId": null,
+      "description": "Event-driven coach task engine: POST /bc06-task-event upserts or completes coach follow-up tasks via Supabase RPC, notifies the coach's Telegram group on new tasks, and returns the RPC result.",
+      "scopes": [
+        "execution:delete",
+        "execution:list",
+        "execution:read",
+        "execution:reveal",
+        "workflow:delete",
+        "workflow:disableRedaction",
+        "workflow:enableRedaction",
+        "workflow:execute",
+        "workflow:execute-chat",
+        "workflow:export",
+        "workflow:move",
+        "workflow:publish",
+        "workflow:read",
+        "workflow:share",
+        "workflow:unpublish",
+        "workflow:unshare",
+        "workflow:update"
+      ],
+      "canExecute": true,
+      "connections": {
+        "Task Event Webhook": {
+          "main": [
+            [
+              {
+                "node": "Route Task Action",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Route Task Action": {
+          "main": [
+            [
+              {
+                "node": "Upsert Follow-up Task",
+                "type": "main",
+                "index": 0
+              }
+            ],
+            [
+              {
+                "node": "Complete Follow-up Task",
+                "type": "main",
+                "index": 0
+              }
+            ],
+            [
+              {
+                "node": "Respond Task Unknown",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Upsert Follow-up Task": {
+          "main": [
+            [
+              {
+                "node": "Task Upsert OK?",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Task Upsert OK?": {
+          "main": [
+            [
+              {
+                "node": "Notify Coach - New Task",
+                "type": "main",
+                "index": 0
+              }
+            ],
+            [
+              {
+                "node": "Respond Task Error",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Notify Coach - New Task": {
+          "main": [
+            [
+              {
+                "node": "Respond Task Upsert",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Complete Follow-up Task": {
+          "main": [
+            [
+              {
+                "node": "Respond Task Complete",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        }
+      },
+      "nodes": [
+        {
+          "id": "5a8d0c75-2fea-4f47-b293-9d0315252f15",
+          "name": "Task Event Webhook",
+          "type": "n8n-nodes-base.webhook",
+          "typeVersion": 2.2,
+          "position": [
+            0,
+            400
+          ],
+          "parameters": {
+            "httpMethod": "POST",
+            "path": "bc06-task-event",
+            "responseMode": "responseNode",
+            "options": {
+              "ignoreBots": true
+            }
+          },
+          "webhookId": "71c63da2-b128-4e12-80dc-6f090a2c39a5",
+          "notes": "POST {action:'upsert'|'complete', ...}"
+        },
+        {
+          "id": "acc346b2-5a7b-4172-a69f-6b7cc6ef1434",
+          "name": "Route Task Action",
+          "type": "n8n-nodes-base.switch",
+          "typeVersion": 3.5,
+          "position": [
+            220,
+            400
+          ],
+          "parameters": {
+            "rules": {
+              "values": [
+                {
+                  "outputKey": "upsert",
+                  "conditions": {
+                    "options": {
+                      "caseSensitive": false,
+                      "leftValue": "",
+                      "typeValidation": "loose"
+                    },
+                    "conditions": [
+                      {
+                        "leftValue": "={{ $json.body.action }}",
+                        "operator": {
+                          "type": "string",
+                          "operation": "equals"
+                        },
+                        "rightValue": "upsert"
+                      }
+                    ],
+                    "combinator": "and"
+                  }
+                },
+                {
+                  "outputKey": "complete",
+                  "conditions": {
+                    "options": {
+                      "caseSensitive": false,
+                      "leftValue": "",
+                      "typeValidation": "loose"
+                    },
+                    "conditions": [
+                      {
+                        "leftValue": "={{ $json.body.action }}",
+                        "operator": {
+                          "type": "string",
+                          "operation": "equals"
+                        },
+                        "rightValue": "complete"
+                      }
+                    ],
+                    "combinator": "and"
+                  }
+                }
+              ]
+            },
+            "options": {
+              "fallbackOutput": "extra",
+              "renameFallbackOutput": "Unknown"
+            }
+          }
+        },
+        {
+          "id": "a3142dbc-9c02-4109-8a4b-c0d28e067385",
+          "name": "Upsert Follow-up Task",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.2,
+          "position": [
+            440,
+            280
+          ],
+          "parameters": {
+            "method": "POST",
+            "url": "https://mqbyjshkocnkxfqoypyj.supabase.co/rest/v1/rpc/upsert_follow_up_task",
+            "authentication": "predefinedCredentialType",
+            "nodeCredentialType": "supabaseApi",
+            "sendBody": true,
+            "specifyBody": "json",
+            "jsonBody": "={{ JSON.stringify({ p_task: $json.body.task || $json.body }) }}",
+            "options": {
+              "timeout": 15000
+            }
+          },
+          "notes": "Idempotent on (source_type, source_id, category).",
+          "credentials": {
+            "supabaseApi": {
+              "id": "mm0MVSRSwHynyDnR",
+              "name": "BC01 Supabase v2"
+            }
+          }
+        },
+        {
+          "id": "b3ca7d12-b2d4-48bf-be45-045e378c880f",
+          "name": "Task Upsert OK?",
+          "type": "n8n-nodes-base.if",
+          "typeVersion": 2.4,
+          "position": [
+            660,
+            280
+          ],
+          "parameters": {
+            "conditions": {
+              "options": {
+                "caseSensitive": true,
+                "leftValue": "",
+                "typeValidation": "loose",
+                "version": 2
+              },
+              "conditions": [
+                {
+                  "id": "cond-ok",
+                  "leftValue": "={{ $json.success }}",
+                  "rightValue": true,
+                  "operator": {
+                    "type": "boolean",
+                    "operation": "true",
+                    "singleValue": true
+                  }
+                }
+              ],
+              "combinator": "and"
+            },
+            "options": {}
+          }
+        },
+        {
+          "id": "8e804125-ea0b-42e9-9f36-e10dac46c907",
+          "name": "Notify Coach - New Task",
+          "type": "n8n-nodes-base.telegram",
+          "typeVersion": 1.2,
+          "position": [
+            880,
+            280
+          ],
+          "parameters": {
+            "resource": "message",
+            "operation": "sendMessage",
+            "chatId": "-1003977860508",
+            "text": "={{ (() => { const t = ($('Task Event Webhook').item.json.body.task) || ($('Task Event Webhook').item.json.body); const pr = (t.priority || 'medium').toUpperCase(); const prTag = pr === 'HIGH' ? 'مهم' : (pr === 'LOW' ? 'عادي' : ''); return (prTag ? prTag + ': ' : '') + 'مهمة جديدة [' + (t.category || 'عامة') + '] لعميل ' + (t.client_code || t.client_id || '') + ' — ' + (t.reason || ''); })() }}",
+            "additionalFields": {
+              "appendAttribution": false,
+              "disable_web_page_preview": true
+            }
+          },
+          "retryOnFail": true,
+          "maxTries": 3,
+          "waitBetweenTries": 2000,
+          "onError": "continueRegularOutput",
+          "webhookId": "aafd56a1-ae42-4290-9c52-88b70dea3fac",
+          "credentials": {
+            "telegramApi": {
+              "id": "SBknWSUqMmwwMXNe",
+              "name": "BC01 Telegram v2"
+            }
+          }
+        },
+        {
+          "id": "9e95d323-5f06-4d45-b4ea-83ad3f352d6b",
+          "name": "Respond Task Upsert",
+          "type": "n8n-nodes-base.respondToWebhook",
+          "typeVersion": 1.5,
+          "position": [
+            1100,
+            280
+          ],
+          "parameters": {
+            "respondWith": "text",
+            "responseBody": "={{ JSON.stringify($('Upsert Follow-up Task').item.json) }}",
+            "options": {}
+          }
+        },
+        {
+          "id": "d594d9cb-f67e-46a7-a1bf-04d271b3a827",
+          "name": "Respond Task Error",
+          "type": "n8n-nodes-base.respondToWebhook",
+          "typeVersion": 1.5,
+          "position": [
+            880,
+            480
+          ],
+          "parameters": {
+            "respondWith": "text",
+            "responseBody": "={{ JSON.stringify($json) }}",
+            "options": {}
+          }
+        },
+        {
+          "id": "aee1f08d-4a2c-4814-9902-0187482db1f2",
+          "name": "Complete Follow-up Task",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.2,
+          "position": [
+            440,
+            620
+          ],
+          "parameters": {
+            "method": "POST",
+            "url": "https://mqbyjshkocnkxfqoypyj.supabase.co/rest/v1/rpc/complete_follow_up_task",
+            "authentication": "predefinedCredentialType",
+            "nodeCredentialType": "supabaseApi",
+            "sendBody": true,
+            "specifyBody": "json",
+            "jsonBody": "={{ JSON.stringify({ p_task_id: $json.body.task_id, p_notes: $json.body.notes || null, p_completed_by: $json.body.completed_by || null }) }}",
+            "options": {
+              "timeout": 15000
+            }
+          },
+          "credentials": {
+            "supabaseApi": {
+              "id": "mm0MVSRSwHynyDnR",
+              "name": "BC01 Supabase v2"
+            }
+          }
+        },
+        {
+          "id": "0e45739f-2976-4ec5-922b-4d5a39df711d",
+          "name": "Respond Task Complete",
+          "type": "n8n-nodes-base.respondToWebhook",
+          "typeVersion": 1.5,
+          "position": [
+            660,
+            620
+          ],
+          "parameters": {
+            "respondWith": "text",
+            "responseBody": "={{ JSON.stringify($json) }}",
+            "options": {}
+          }
+        },
+        {
+          "id": "26d46102-4844-4e8b-8f41-fc619a1478fc",
+          "name": "Respond Task Unknown",
+          "type": "n8n-nodes-base.respondToWebhook",
+          "typeVersion": 1.5,
+          "position": [
+            440,
+            760
+          ],
+          "parameters": {
+            "respondWith": "text",
+            "responseBody": "={{ '{\"success\": false, \"error\": \"unknown_action\"}' }}",
+            "options": {}
+          }
+        }
+      ],
+      "nodeGroups": [
+        {
+          "id": "grp-ct-upsert",
+          "name": "Task upsert and coach alert",
+          "nodeNames": [
+            "Upsert Follow-up Task",
+            "Task Upsert OK?",
+            "Notify Coach - New Task",
+            "Respond Task Upsert",
+            "Respond Task Error"
+          ],
+          "description": "Create/update coach tasks with coach alert on success"
+        },
+        {
+          "id": "grp-ct-route",
+          "name": "Task event routing",
+          "nodeNames": [
+            "Route Task Action"
+          ],
+          "description": "POST event intake and action switching"
+        },
+        {
+          "id": "grp-ct-complete",
+          "name": "Task completion",
+          "nodeNames": [
+            "Complete Follow-up Task",
+            "Respond Task Complete"
+          ],
+          "description": "Coach review completion via admin dashboard event"
+        }
+      ],
+      "activeVersion": {
+        "sameAsDraft": true
+      },
+      "meta": {
+        "aiBuilderAssisted": true,
+        "builderVariant": "mcp"
+      }
+    },
+    "triggerInfo": "This workflow has the following trigger(s):\n\n\nWebhook trigger(s):\n\n\n\t\t\t\t<trigger 1>\n\t\t\t\t\t - Node name: Task Event Webhook\n\t\t\t\t\t - Production URL: https://n8n.corble.net/webhook/bc06-task-event\n\t\t\t\t\t - Test URL: https://n8n.corble.net/webhook-test/bc06-task-event\n\t\t\t\t\t - HTTP Method: POST\n\t\t\t\t\t - Response Mode: Webhook is configured to respond using \"Respond to Webhook\" node.\n\t\t\t\t\t - No credentials required for this webhook.\n\t\t\t\t</trigger 1>\n\nTo execute a webhook trigger, pass triggerNodeName and inputs: { triggerNodeName: \"<node name>\", inputs: { webhookData: { headers?, query?, body? } } }."
+  },
+  "BC-07": {
+    "workflow": {
+      "id": "hE3RuIkr82XHZqmA",
+      "name": "BC-07 | Belghamdi Renewals",
+      "active": true,
+      "isArchived": false,
+      "versionId": "f9f0a28d-de46-44fd-9fec-c99ebbf042ab",
+      "activeVersionId": "f9f0a28d-de46-44fd-9fec-c99ebbf042ab",
+      "triggerCount": 2,
+      "nodeCount": 14,
+      "createdAt": "2026-11-01T18:28:43.984Z",
+      "updatedAt": "2026-11-01T22:04:56.105Z",
+      "settings": {
+        "executionOrder": "v1",
+        "availableInMCP": true,
+        "timezone": "Africa/Cairo",
+        "errorWorkflow": "dkzI3KyB8ygSWGus"
+      },
+      "tags": [],
+      "parentFolderId": null,
+      "description": "Daily sweep sends client renewal reminders at 7/3/1 days, opens coach tasks at expiry, and processes verified payment/subscription events via POST /bc07-renewal-event.",
+      "scopes": [
+        "execution:delete",
+        "execution:list",
+        "execution:read",
+        "execution:reveal",
+        "workflow:delete",
+        "workflow:disableRedaction",
+        "workflow:enableRedaction",
+        "workflow:execute",
+        "workflow:execute-chat",
+        "workflow:export",
+        "workflow:move",
+        "workflow:publish",
+        "workflow:read",
+        "workflow:share",
+        "workflow:unpublish",
+        "workflow:unshare",
+        "workflow:update"
+      ],
+      "canExecute": true,
+      "connections": {
+        "Renewal Check Sweep": {
+          "main": [
+            [
+              {
+                "node": "Load Renewal Candidates",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Load Renewal Candidates": {
+          "main": [
+            [
+              {
+                "node": "Split Renewal Rows",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Split Renewal Rows": {
+          "main": [
+            [
+              {
+                "node": "Is Expiry Day?",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Is Expiry Day?": {
+          "main": [
+            [
+              {
+                "node": "Upsert Expiry Coach Task",
+                "type": "main",
+                "index": 0
+              }
+            ],
+            [
+              {
+                "node": "Prepare Renewal Reminder",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Upsert Expiry Coach Task": {
+          "main": [
+            [
+              {
+                "node": "Notify Coach - Expiry",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Prepare Renewal Reminder": {
+          "main": [
+            [
+              {
+                "node": "Send Renewal Reminder",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Renewal Event Webhook": {
+          "main": [
+            [
+              {
+                "node": "Process Renewal Event",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Process Renewal Event": {
+          "main": [
+            [
+              {
+                "node": "Renewal Verified?",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Renewal Verified?": {
+          "main": [
+            [
+              {
+                "node": "Notify Coach - Renewal",
+                "type": "main",
+                "index": 0
+              }
+            ],
+            [
+              {
+                "node": "Respond Renewal Error",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "Notify Coach - Renewal": {
+          "main": [
+            [
+              {
+                "node": "Respond Renewal Verified",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        }
+      },
+      "nodes": [
+        {
+          "id": "a8424007-7860-4e52-89ef-e72c9ed9aaf5",
+          "name": "Renewal Check Sweep",
+          "type": "n8n-nodes-base.scheduleTrigger",
+          "typeVersion": 1.4,
+          "position": [
+            0,
+            400
+          ],
+          "parameters": {
+            "rule": {
+              "interval": [
+                {
+                  "field": "days",
+                  "daysInterval": 1,
+                  "triggerAtHour": 10,
+                  "triggerAtMinute": 30
+                }
+              ]
+            }
+          },
+          "notes": "Cairo 10:30 - renewal reminders at 7/3/1 days + expiry-day coach task."
+        },
+        {
+          "id": "ceb1ba4e-ad6e-4728-a7e0-7284eaf38fe4",
+          "name": "Load Renewal Candidates",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.2,
+          "position": [
+            220,
+            400
+          ],
+          "parameters": {
+            "method": "POST",
+            "url": "https://mqbyjshkocnkxfqoypyj.supabase.co/rest/v1/rpc/get_renewal_candidates",
+            "authentication": "predefinedCredentialType",
+            "nodeCredentialType": "supabaseApi",
+            "sendBody": true,
+            "specifyBody": "json",
+            "jsonBody": "={{ JSON.stringify({}) }}",
+            "options": {
+              "timeout": 15000
+            }
+          },
+          "notes": "Subscriptions ending exactly in 7/3/1/0 days.",
+          "credentials": {
+            "supabaseApi": {
+              "id": "mm0MVSRSwHynyDnR",
+              "name": "BC01 Supabase v2"
+            }
+          }
+        },
+        {
+          "id": "042a613c-c7af-4392-b749-e8efd128c44c",
+          "name": "Split Renewal Rows",
+          "type": "n8n-nodes-base.code",
+          "typeVersion": 2,
+          "position": [
+            440,
+            400
+          ],
+          "parameters": {
+            "jsCode": "return ($json.items || []).map(r => ({ json: r }));"
+          }
+        },
+        {
+          "id": "ecc9f6a8-be7f-4c35-b3bf-948b9f21d186",
+          "name": "Is Expiry Day?",
+          "type": "n8n-nodes-base.if",
+          "typeVersion": 2.4,
+          "position": [
+            660,
+            400
+          ],
+          "parameters": {
+            "conditions": {
+              "options": {
+                "caseSensitive": true,
+                "leftValue": "",
+                "typeValidation": "loose",
+                "version": 2
+              },
+              "conditions": [
+                {
+                  "id": "cond-exp",
+                  "leftValue": "={{ $json.stage }}",
+                  "rightValue": "expire",
+                  "operator": {
+                    "type": "string",
+                    "operation": "equals",
+                    "singleValue": true
+                  }
+                }
+              ],
+              "combinator": "and"
+            },
+            "options": {}
+          }
+        },
+        {
+          "id": "3ee64e4d-5bf0-49fe-9228-44fb2d246b0c",
+          "name": "Upsert Expiry Coach Task",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.2,
+          "position": [
+            880,
+            280
+          ],
+          "parameters": {
+            "method": "POST",
+            "url": "https://mqbyjshkocnkxfqoypyj.supabase.co/rest/v1/rpc/upsert_follow_up_task",
+            "authentication": "predefinedCredentialType",
+            "nodeCredentialType": "supabaseApi",
+            "sendBody": true,
+            "specifyBody": "json",
+            "jsonBody": "={{ JSON.stringify({ p_task: { client_code: $json.client_code, source_type: 'system', source_id: ('renewal-expiry:' + $json.subscription_id), category: 'renewal', priority: 'medium', reason: ('باقة ' + $json.package_id + ' لعميل ' + $json.client_code + ' انتهت اليوم بدون تجديد') } }) }}",
+            "options": {
+              "timeout": 15000
+            }
+          },
+          "notes": "Idempotent on (source_type, source_id, category).",
+          "credentials": {
+            "supabaseApi": {
+              "id": "mm0MVSRSwHynyDnR",
+              "name": "BC01 Supabase v2"
+            }
+          }
+        },
+        {
+          "id": "a15f6e0c-f5d8-47ae-922b-88548ef0f440",
+          "name": "Notify Coach - Expiry",
+          "type": "n8n-nodes-base.telegram",
+          "typeVersion": 1.2,
+          "position": [
+            1100,
+            280
+          ],
+          "parameters": {
+            "resource": "message",
+            "operation": "sendMessage",
+            "chatId": "-1003977860508",
+            "text": "={{ 'عميل ' + $json.client_name + ' (' + $json.client_code + ') انتهت باقته (' + $json.package_id + ') اليوم بدون تجديد — راجع حالة الاشتراك ومهام تحتاج انتباه.' }}",
+            "additionalFields": {
+              "appendAttribution": false,
+              "disable_web_page_preview": true
+            }
+          },
+          "retryOnFail": true,
+          "maxTries": 3,
+          "waitBetweenTries": 2000,
+          "onError": "continueRegularOutput",
+          "webhookId": "972885df-67d7-475b-96e3-324df6aa0602",
+          "credentials": {
+            "telegramApi": {
+              "id": "SBknWSUqMmwwMXNe",
+              "name": "BC01 Telegram v2"
+            }
+          }
+        },
+        {
+          "id": "4b7fb0e0-fb26-4887-ad6d-de996012b74f",
+          "name": "Prepare Renewal Reminder",
+          "type": "n8n-nodes-base.code",
+          "typeVersion": 2,
+          "position": [
+            880,
+            560
+          ],
+          "parameters": {
+            "jsCode": "const r = $json;\nconst stageText = { '7d': 'بعد 7 أيام', '3d': 'بعد 3 أيام', '1d': 'غداً' }[r.stage] || r.stage;\nconst pkg = { 'silver': 'الفضية', 'gold': 'الذهبية' }[r.package_id] || r.package_id;\nconst text = 'الاشتراك في باقة ' + pkg + ' عند المدرب بينتهي ' + stageText + '.\\n' + 'خليك جاهز للفترة الجديدة أو كلمنا لو محتاج دعم 💪';\nreturn [{ json: { chat_id: r.chat_id, text: text, client_code: r.client_code, stage: r.stage } }];"
+          }
+        },
+        {
+          "id": "be3b0476-41b5-4683-865d-b33708e29975",
+          "name": "Send Renewal Reminder",
+          "type": "n8n-nodes-base.telegram",
+          "typeVersion": 1.2,
+          "position": [
+            1100,
+            560
+          ],
+          "parameters": {
+            "resource": "message",
+            "operation": "sendMessage",
+            "chatId": "={{ $json.chat_id }}",
+            "text": "={{ $json.text }}",
+            "additionalFields": {
+              "appendAttribution": false,
+              "disable_web_page_preview": true
+            }
+          },
+          "retryOnFail": true,
+          "maxTries": 3,
+          "waitBetweenTries": 2000,
+          "onError": "continueRegularOutput",
+          "webhookId": "12a16fb2-37ae-437c-99d3-006e6983dcf7",
+          "credentials": {
+            "telegramApi": {
+              "id": "SBknWSUqMmwwMXNe",
+              "name": "BC01 Telegram v2"
+            }
+          }
+        },
+        {
+          "id": "31efb635-5005-4846-b99f-ebe152240109",
+          "name": "Renewal Event Webhook",
+          "type": "n8n-nodes-base.webhook",
+          "typeVersion": 2.2,
+          "position": [
+            0,
+            900
+          ],
+          "parameters": {
+            "httpMethod": "POST",
+            "path": "bc07-renewal-event",
+            "responseMode": "responseNode",
+            "options": {
+              "ignoreBots": true
+            }
+          },
+          "webhookId": "c601860e-22f6-4227-bdcd-5123f73253ee",
+          "notes": "POST verified payment/subscription event: {subscription_code, order_ref, kind, duration_days}"
+        },
+        {
+          "id": "9e5ac07d-f883-4c73-b484-e38b2427b0c6",
+          "name": "Process Renewal Event",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.2,
+          "position": [
+            220,
+            900
+          ],
+          "parameters": {
+            "method": "POST",
+            "url": "https://mqbyjshkocnkxfqoypyj.supabase.co/rest/v1/rpc/process_renewal_event",
+            "authentication": "predefinedCredentialType",
+            "nodeCredentialType": "supabaseApi",
+            "sendBody": true,
+            "specifyBody": "json",
+            "jsonBody": "={{ JSON.stringify({ p_evt: $json.body }) }}",
+            "options": {
+              "timeout": 15000
+            }
+          },
+          "notes": "Extends/cancels only on verified events; idempotent via integration_events.",
+          "credentials": {
+            "supabaseApi": {
+              "id": "mm0MVSRSwHynyDnR",
+              "name": "BC01 Supabase v2"
+            }
+          }
+        },
+        {
+          "id": "5d6837dd-5d54-40a5-be88-e2c2186af75c",
+          "name": "Renewal Verified?",
+          "type": "n8n-nodes-base.if",
+          "typeVersion": 2.4,
+          "position": [
+            440,
+            900
+          ],
+          "parameters": {
+            "conditions": {
+              "options": {
+                "caseSensitive": true,
+                "leftValue": "",
+                "typeValidation": "loose",
+                "version": 2
+              },
+              "conditions": [
+                {
+                  "id": "cond-rv",
+                  "leftValue": "={{ $json.success }}",
+                  "rightValue": true,
+                  "operator": {
+                    "type": "boolean",
+                    "operation": "true",
+                    "singleValue": true
+                  }
+                }
+              ],
+              "combinator": "and"
+            },
+            "options": {}
+          }
+        },
+        {
+          "id": "3e9aa892-6ce4-411c-b18b-abc5d9413c5b",
+          "name": "Notify Coach - Renewal",
+          "type": "n8n-nodes-base.telegram",
+          "typeVersion": 1.2,
+          "position": [
+            660,
+            900
+          ],
+          "parameters": {
+            "resource": "message",
+            "operation": "sendMessage",
+            "chatId": "-1003977860508",
+            "text": "={{ ($json.action === 'cancelled' ? 'إلغاء: ' : 'تم تجديد: ') + 'اشتراك ' + $json.subscription_code + ' لعميل ' + $json.client_code + ' حتى ' + $json.new_end_date }}",
+            "additionalFields": {
+              "appendAttribution": false,
+              "disable_web_page_preview": true
+            }
+          },
+          "retryOnFail": true,
+          "maxTries": 3,
+          "waitBetweenTries": 2000,
+          "onError": "continueRegularOutput",
+          "webhookId": "39a51b53-aaf2-4e5b-9cb4-7ff585524288",
+          "credentials": {
+            "telegramApi": {
+              "id": "SBknWSUqMmwwMXNe",
+              "name": "BC01 Telegram v2"
+            }
+          }
+        },
+        {
+          "id": "346e408f-42e0-4222-a303-1749aca97ca0",
+          "name": "Respond Renewal Verified",
+          "type": "n8n-nodes-base.respondToWebhook",
+          "typeVersion": 1.5,
+          "position": [
+            880,
+            900
+          ],
+          "parameters": {
+            "respondWith": "text",
+            "responseBody": "={{ JSON.stringify($('Process Renewal Event').item.json) }}",
+            "options": {}
+          }
+        },
+        {
+          "id": "5b74ba6a-4a50-4f74-a8ed-33b8ea8d9860",
+          "name": "Respond Renewal Error",
+          "type": "n8n-nodes-base.respondToWebhook",
+          "typeVersion": 1.5,
+          "position": [
+            660,
+            1100
+          ],
+          "parameters": {
+            "respondWith": "text",
+            "responseBody": "={{ JSON.stringify($json) }}",
+            "options": {}
+          }
+        }
+      ],
+      "nodeGroups": [
+        {
+          "id": "grp-rn-exp",
+          "name": "Expiry day handling",
+          "nodeNames": [
+            "Upsert Expiry Coach Task",
+            "Notify Coach - Expiry"
+          ],
+          "description": "Expiry-day coach task and alert"
+        },
+        {
+          "id": "grp-rn-rem",
+          "name": "Renewal reminders",
+          "nodeNames": [
+            "Prepare Renewal Reminder",
+            "Send Renewal Reminder"
+          ],
+          "description": "7/3/1-day client renewal reminders"
+        },
+        {
+          "id": "grp-rn-ev",
+          "name": "Renewal events",
+          "nodeNames": [
+            "Process Renewal Event",
+            "Renewal Verified?",
+            "Notify Coach - Renewal",
+            "Respond Renewal Verified",
+            "Respond Renewal Error"
+          ],
+          "description": "POST intake through verification and coach alert"
+        },
+        {
+          "id": "grp-rn-sweep",
+          "name": "Renewal sweep",
+          "nodeNames": [
+            "Load Renewal Candidates",
+            "Split Renewal Rows",
+            "Is Expiry Day?"
+          ],
+          "description": "Daily sweep entry to candidate split and stage routing"
+        }
+      ],
+      "activeVersion": {
+        "sameAsDraft": true
+      },
+      "meta": {
+        "aiBuilderAssisted": true,
+        "builderVariant": "mcp"
+      }
+    },
+    "triggerInfo": "This workflow has the following trigger(s):\n\n\nWebhook trigger(s):\n\n\n\t\t\t\t<trigger 1>\n\t\t\t\t\t - Node name: Renewal Event Webhook\n\t\t\t\t\t - Production URL: https://n8n.corble.net/webhook/bc07-renewal-event\n\t\t\t\t\t - Test URL: https://n8n.corble.net/webhook-test/bc07-renewal-event\n\t\t\t\t\t - HTTP Method: POST\n\t\t\t\t\t - Response Mode: Webhook is configured to respond using \"Respond to Webhook\" node.\n\t\t\t\t\t - No credentials required for this webhook.\n\t\t\t\t</trigger 1>\n\nTo execute a webhook trigger, pass triggerNodeName and inputs: { triggerNodeName: \"<node name>\", inputs: { webhookData: { headers?, query?, body? } } }.\n\nSchedule trigger(s):\n\n\n\t\t\t\t<trigger 1>\n\t\t\t\t\t - Node name: Renewal Check Sweep\n\t\t\t\t</trigger 1>\n\nScheduled workflows do not take inputs. To execute a specific schedule trigger, pass triggerNodeName only: { triggerNodeName: \"<node name>\" }."
+  }
+}
