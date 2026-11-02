@@ -82,6 +82,8 @@ export async function deliver(
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          // n8n webhook trigger has ignoreBots=true: only Mozilla-style browser UAs pass
+          "User-Agent": "Mozilla/5.0 BelghamdiCoaching-Webhook/1.0",
           "X-BC-Timestamp": ts,
           "X-BC-Signature": signPayload(rawBody, ts, secret),
           "X-BC-Correlation-Id": correlationId,
