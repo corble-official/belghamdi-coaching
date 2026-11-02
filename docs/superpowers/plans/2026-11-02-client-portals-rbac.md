@@ -302,3 +302,48 @@ The heart of "Purchase ≠ Identity ≠ Entitlements." Runs ONLY from the verifi
 - Strict demo sandbox (no Auth/PostgREST/Storage/network; simulated session) → Tasks 1/3/4/9 + final probe. ✓
 - Step 0 pre-work inspection + reconciliation log precedes all implementation. ✓
 - Assistant schema but no UI (#7) → Task 2 only. ✓
+
+---
+
+## Step 0 — Reconciliation log (executed 2026-11-02, before Task 1)
+
+### Live schema verified (Supabase `mqbyjshkocnkxfqoypyj`)
+
+**Tables (public):** `automation_errors`, `chat_conversations`, `chat_messages`, `checkin_requests`, `checkin_submissions`, `client_subscriptions`, `clients`, `communication_logs`, `follow_up_tasks`, `integration_events`, `knowledge_base_items`, `leads`, `onboarding_requests`, `onboarding_submissions`, `sales_notifications`, `telegram_webhook_update_claims`.
+**Planned new tables (`profiles`, `coach_clients`, `coach_assistants`, `checkin_reviews`, `subscription_events`, `notifications`, `automation_error_resolutions`) do NOT exist in any form** — no name collisions. `integration_events` DOES exist and is already the event ledger (see below).
+
+**RLS state:** `rowsecurity=true` with **ZERO policies** for `chat_conversations`, `chat_messages`, `leads`, `sales_notifications`, `knowledge_base_items`, `telegram_webhook_update_claims` (effectively service-role-only — correct for current telegram-sourced flows). `rowsecurity=false` for: `automation_errors`, `checkin_requests`, `checkin_submissions`, `client_subscriptions`, `clients`, `communication_logs`, `follow_up_tasks`, `integration_events`, `onboarding_requests`, `onboarding_submissions` (the 10 advisory tables).
+
+### Existing RPCs that MUST be preserved (not recreated)
+
+- **`process_order_event(jsonb)` — SECURITY DEFINER.** Already implements: integration_events dedupe (`UNIQUE(event_type, provider, order_ref)`, `on conflict do nothing`), find-or-create client (telegram_user_id → email → phone fallback chain), renewal-vs-new subscription logic (`client_subscriptions` upsert on `(client_id, package_id, start_date)`), onboarding request creation with 5-day token, client status transitions. **provisionFromOrder (Task 2.5) is a THIN WRAPPER over this RPC**, not a fork: call it via service role, then layer auth-identity/profile/invite on its result.
+- **`process_renewal_event(jsonb)` — SECURITY DEFINER.** Subscription_code lookup, cancel/downgrade vs extend (`greatest(end_date, current_date) + dur`). Refund/dispute lifecycle does NOT exist yet → new logic (Task 1 lifecycle + migration extension) handles it; **do not duplicate event recording** (`integration_events` stays ledger).
+- Telegram-sourced form RPCs: `get_onboarding_form`, `submit_onboarding`, `get_checkin_form`, `submit_checkin`, `schedule_checkin_requests`, `get_renewal_candidates`, `log_automation_error`, `upsert_lead`, `save_conversation_turn`, `claim_telegram_webhook_update`, `get_coach_tasks`, `get_daily_report` — all used by n8n; leave untouched.
+
+### Critical security finding (must fix in Task 2 migration)
+
+**Every DEFINER RPC is EXECUTE-granted to `PUBLIC`/`anon`/`authenticated`** — including `process_order_event`, `process_renewal_event`, `submit_checkin`, `submit_onboarding`, `get_checkin_form`. PostgREST on the anon key could therefore forge order events / activations, making the HMAC layer decorative. **Task 2 MUST `REVOKE EXECUTE ... FROM anon, authenticated`** on n8n-write RPCs (keep `service_role`, `postgres`); portal-owned reads/writes go through RLS policies + new JWT-scoped paths, not these RPCs.
+
+### Data-model reconciliations
+
+1. `integration_events(id, event_type, provider, order_ref UNIQUE triple, payload, status, processed_at, processed_by, error)` = existing **dedupe/ledger layer**. `subscription_events` (new, Task 1/2.5) = entitlement-lifecycle audit referencing ledger events; idempotency via `ON CONFLICT (idempotency_key)` as planned; the ledger UNIQUE triple stays the first-line dedupe for order/renewal events.
+2. `onboarding_requests(event_id → integration_events, channel('telegram'), token, token_expires_at 5d)` exists with token format `encode(gen_random_bytes(24),'hex')`. Portal onboarding (Task 5) reuses these rows: set `channel='web'` for portal-created paths, status machine `sent → completed/completed_late` unchanged.
+3. `chat_conversations(conversation_id text PK, source('telegram'), chat_id bigint NOT NULL, ...)` — **chat_id is NOT NULL with no client FK**. Web conversations: `conversation_id='web-{client_id}'`, `source='web'`, `chat_id=0` sentinel (no FK constraint on the column; verified). Rows reconciled per Step-0: one persistent web conversation per client, created/linked on first portal message.
+4. `checkin_submissions.photos` is already **jsonb** → stores object-path arrays per plan (no schema change needed for that field).
+5. `automation_errors` already has `status('open')` + `resolved_at` columns written by BC-99 workflow — unaffected; app-code reads only, resolutions go to the new `automation_error_resolutions` table per client rule.
+6. `clients.status` is enum `bc_client_status` (observed: `needs_onboarding`, `onboarding`, `active`); `clients.telegram_user_id` is nullable (email-only clients allowed). `client_subscriptions.created_from_event` already links subscription → ledger event.
+7. `client_subscriptions` has `UNIQUE(client_id, package_id, start_date)` — relied on by `process_order_event`; provisioning upsert complements, does not fight, it.
+8. `follow_up_tasks(source_type, source_id, ...)` + `sales_notifications` unchanged; `notifications` (new, Task 10) is additive and distinct.
+
+### n8n workflow reconciliation (additive only)
+
+- BC-03 (`aPt7y8swl0aq3Mka`) verifies orders + notifies, calling `process_order_event` (ledger shows `processed_by='n8n-bc03'`) — its writes are EXACTLY what Task 2.5 wraps. BC-06 (`4w7DX62b6wCOpPiI`) check-in scheduling/submission; BC-07 (`hE3RuIkr82XHZqmA`) renewal comms → `process_renewal_event`; BC-99 (`dkzI3KyB8ygSWGus`) errors → `automation_errors` via `log_automation_error`. No workflow modification required by reconciliation; the Phase 2 HMAC guards (`bc03-order-event`, `bc07-renewal-event` via `src/lib/integrations/contracts.ts`) stay the entry points.
+- Existing app routes confirmed: `/api/orders/verify` (BC-03 dispatch), `/api/renew` (BC-07), `/api/leads` (BC-02), `/api/tasks/complete` — Task 2.5 extends the verified-order path additively.
+
+### Binding adjustments inherited by tasks
+
+- Task 2 SQL adds: REVOKEs (security finding), all-policies RLS enablement for the 10 disabled tables + policy review of the 6 already-enabled-but-policyless tables (they stay as-is unless portal needs JWT SELECT granularity — chat/leads stay service/telegram-only for now; portal chat INSERT/SELECT handled by Task 6 policies on the same tables), plus planned new tables.
+- Task 2.5 refactor target: wrapper over `process_order_event` + `layers/auth/provisioning` (auth user create by email, profile insert, invite, subscription_events append, notifications for missing-email gate).
+- Task 6 uses `chat_conversations`/`chat_messages` as verified in-place (sentinel chat_id + `with check (role='client')` policy).
+- Task 8 photos → `checkin_submissions.photos jsonb` object paths (verified compatible).
+- Task 9 renewal: `process_renewal_event` still ONLY invoked from the verified payment webhook path; portal POST stays request-only.
