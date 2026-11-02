@@ -1,0 +1,427 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "Belghamdi Coaching بلعمزي كوتشينج" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img "Belghamdi Coaching" [ref=e5]
+        - generic [ref=e6]: بلعمزي كوتشينج
+      - navigation [ref=e7]:
+        - link "الرئيسية" [ref=e8] [cursor=pointer]:
+          - /url: /
+        - link "برامج التدريب" [ref=e9] [cursor=pointer]:
+          - /url: /programs
+        - link "التدريب الأونلاين" [ref=e10] [cursor=pointer]:
+          - /url: /coaching
+        - link "النتائج" [ref=e11] [cursor=pointer]:
+          - /url: /transformations
+        - link "من أنا" [ref=e12] [cursor=pointer]:
+          - /url: /about
+        - link "تواصل معي" [ref=e13] [cursor=pointer]:
+          - /url: /contact
+      - generic [ref=e14]:
+        - button "Switch language" [ref=e15] [cursor=pointer]: EN
+        - link "السلة" [ref=e19] [cursor=pointer]:
+          - /url: /cart
+        - link "ابدأ دلوقتي" [ref=e23] [cursor=pointer]:
+          - /url: /programs
+  - main [ref=e24]:
+    - region [ref=e25]:
+      - generic [ref=e27]:
+        - generic [ref=e28]:
+          - paragraph [ref=e29]: برامج تدريب جاهزة — بالعربي
+          - heading "جسمك اللي بتحلم بيه... ابدأ تبنيه صح" [level=1] [ref=e32]
+          - paragraph [ref=e33]: برامج تدريبية عملية تناسب هدفك وميزانيتك، بخطوات واضحة تساعدك تتمرن بثقة ومن غير عشوائية.
+          - generic [ref=e34]:
+            - link "اكتشف البرامج" [ref=e35] [cursor=pointer]:
+              - /url: /programs
+            - link "اعرف أكتر عن الكابتن" [ref=e38] [cursor=pointer]:
+              - /url: /about
+          - paragraph [ref=e39]: برامج للمبتدئين والمحترفين — من 3 لأيام 6 تدريب
+        - generic [ref=e42]:
+          - img "Captain Belghamdi" [ref=e49]
+          - generic [ref=e50]:
+            - text: مدربك في رحلتك
+            - generic [ref=e51]: Bassam El Ghamdi
+          - generic [ref=e52]: شرح فيديو لكل تمرين
+          - generic [ref=e53]: ابتداءً من 380 جنيه
+    - list [ref=e56]:
+      - listitem [ref=e57]:
+        - generic [ref=e62]: برامج بأسعار مناسبة
+      - listitem [ref=e63]:
+        - generic [ref=e69]: مناسب للمبتدئين
+      - listitem [ref=e70]:
+        - generic [ref=e75]: شرح فيديو للتمارين
+      - listitem [ref=e76]:
+        - generic [ref=e83]: بدائل لكل مستوى
+      - listitem [ref=e84]:
+        - generic [ref=e89]: فودافون كاش و إنستاباي
+    - generic [ref=e91]:
+      - generic [ref=e92]:
+        - generic [ref=e93]:
+          - paragraph [ref=e94]: برامج التدريب
+          - heading "اختار برنامجك وابدأ التغيير" [level=2] [ref=e95]
+          - paragraph [ref=e96]: مش محتاج تدفع كتير عشان تبدأ تتمرن صح.
+        - link "شوف كل البرامج" [ref=e97] [cursor=pointer]:
+          - /url: /programs
+      - generic [ref=e100]:
+        - article [ref=e101]:
+          - link [ref=e102] [cursor=pointer]:
+            - /url: /programs/full-body-3-days-high-frequency-split
+            - img "Muscle Mommies" [ref=e103]
+          - generic [ref=e104]:
+            - generic [ref=e105]:
+              - generic [ref=e106]: مبتدئ
+              - generic [ref=e107]: 4 أيام / أسبوع
+            - heading "Muscle Mommies" [level=3] [ref=e108]
+            - paragraph [ref=e109]: The signature Belghamdi women's split built on a 3-day full-body, high-frequency structure — developed for the Muscle Mommies community and available with selectable training days (4–5 day options inside).
+            - generic [ref=e110]:
+              - generic [ref=e111]:
+                - paragraph [ref=e112]: 699 EGP
+                - paragraph [ref=e113]: 380 EGP
+              - generic [ref=e114]:
+                - button "أضف إلى السلة" [ref=e115] [cursor=pointer]
+                - link "عرض التفاصيل — Muscle Mommies" [ref=e118] [cursor=pointer]:
+                  - /url: /programs/full-body-3-days-high-frequency-split
+                  - text: عرض التفاصيل
+        - article [ref=e119]:
+          - link [ref=e120] [cursor=pointer]:
+            - /url: /programs/upper-lower-4-days
+            - img "Upper Lower" [ref=e121]
+          - generic [ref=e122]:
+            - generic [ref=e123]:
+              - generic [ref=e124]: مبتدئ
+              - generic [ref=e125]: 4 أيام / أسبوع
+            - heading "Upper Lower" [level=3] [ref=e126]
+            - paragraph [ref=e127]: The store's classic 4-day Upper/Lower split — a step up from the 3-day plan with dedicated upper and lower sessions twice a week, engineered for balanced strength and size when you can commit four consistent days.
+            - generic [ref=e128]:
+              - generic [ref=e129]:
+                - paragraph [ref=e130]: 699 EGP
+                - paragraph [ref=e131]: 380 EGP
+              - generic [ref=e132]:
+                - button "أضف إلى السلة" [ref=e133] [cursor=pointer]
+                - link "عرض التفاصيل — Upper Lower" [ref=e136] [cursor=pointer]:
+                  - /url: /programs/upper-lower-4-days
+                  - text: عرض التفاصيل
+        - article [ref=e137]:
+          - link [ref=e138] [cursor=pointer]:
+            - /url: /programs/anterior-x-posterior
+            - img "Anterior x Posterior" [ref=e139]
+          - generic [ref=e140]:
+            - generic [ref=e141]:
+              - generic [ref=e142]: متوسط
+              - generic [ref=e143]: 4 أيام / أسبوع
+            - heading "Anterior x Posterior" [level=3] [ref=e144]
+            - paragraph [ref=e145]: A complete training program, 4+ days a week at high frequency for every muscle group. Anterior/posterior structure that develops your whole body scientifically, building balanced muscular mass with high frequency and intensity — no dedicated lower-body days, in a flexible, resilient plan.
+            - generic [ref=e146]:
+              - generic [ref=e147]:
+                - paragraph [ref=e148]: 699 EGP
+                - paragraph [ref=e149]: 380 EGP
+              - generic [ref=e150]:
+                - button "أضف إلى السلة" [ref=e151] [cursor=pointer]
+                - link "عرض التفاصيل — Anterior x Posterior" [ref=e154] [cursor=pointer]:
+                  - /url: /programs/anterior-x-posterior
+                  - text: عرض التفاصيل
+    - generic [ref=e156]:
+      - generic [ref=e157]:
+        - paragraph [ref=e158]: ليه بلعمزي؟
+        - heading "مش لازم ميزانية كبيرة عشان تبدأ صح" [level=2] [ref=e159]
+      - generic [ref=e160]:
+        - generic [ref=e161]:
+          - generic [aria-hidden] [ref=e162]: "01"
+          - heading "برنامج واضح" [level=3] [ref=e163]
+          - paragraph [ref=e164]: بدل ما تفضل محتار تتمرن إيه كل يوم.
+        - generic [ref=e165]:
+          - generic [aria-hidden] [ref=e166]: "02"
+          - heading "شرح بالفيديو" [level=3] [ref=e167]
+          - paragraph [ref=e168]: اتعلم الأداء الصحيح لكل تمرين.
+        - generic [ref=e169]:
+          - generic [aria-hidden] [ref=e170]: "03"
+          - heading "مناسب لوقتك" [level=3] [ref=e171]
+          - paragraph [ref=e172]: اختار عدد أيام يناسب جدولك.
+        - generic [ref=e173]:
+          - generic [aria-hidden] [ref=e174]: "04"
+          - heading "بدائل للتمارين" [level=3] [ref=e175]
+          - paragraph [ref=e176]: مش كل تمرين محتاج جهاز معين.
+        - generic [ref=e177]:
+          - generic [aria-hidden] [ref=e178]: "05"
+          - heading "مناسب لمستواك" [level=3] [ref=e179]
+          - paragraph [ref=e180]: سواء أول مرة تدخل الجيم أو عندك خبرة.
+        - generic [ref=e181]:
+          - generic [aria-hidden] [ref=e182]: "06"
+          - heading "اختيارات تناسب ميزانيتك" [level=3] [ref=e183]
+          - paragraph [ref=e184]: ابدأ بالبرنامج المناسب لإمكانياتك.
+    - generic [ref=e186]:
+      - generic [ref=e187]:
+        - paragraph [ref=e188]: التحولات
+        - heading "النتائج بتتكلم" [level=2] [ref=e189]
+        - paragraph [ref=e190]: رحلات حقيقية من عملاء حقيقيين — أهداف مختلفة ومنهج واحد.
+      - generic [ref=e191]:
+        - generic [ref=e192]:
+          - paragraph [ref=e193]: رحلة مدتها 24 أسبوعاً
+          - paragraph [ref=e194]: Demo Client A
+          - paragraph [ref=e195]: Demo transformation entry. Stages show a recommended 16-week build cycle.
+          - list [ref=e196]:
+            - listitem [ref=e197]:
+              - generic [ref=e198]: "1"
+              - generic [ref=e199]:
+                - text: Assessment
+                - generic [ref=e200]: — Power clean 65 kg
+            - listitem [ref=e201]:
+              - generic [ref=e202]: "8"
+              - generic [ref=e203]:
+                - text: Volume phase
+                - generic [ref=e204]: — Power clean 78 kg
+            - listitem [ref=e205]:
+              - generic [ref=e206]: "20"
+              - generic [ref=e207]:
+                - text: Peak block
+                - generic [ref=e208]: — Power clean 90 kg
+        - generic [ref=e209]:
+          - paragraph [ref=e210]: رحلة مدتها 16 أسبوعاً
+          - paragraph [ref=e211]: Demo Client B
+          - paragraph [ref=e212]: Demo transformation entry. Stages show a recommended cutting cycle.
+          - list [ref=e213]:
+            - listitem [ref=e214]:
+              - generic [ref=e215]: "1"
+              - generic [ref=e216]:
+                - text: Baseline
+                - generic [ref=e217]: — Weight 92 kg
+            - listitem [ref=e218]:
+              - generic [ref=e219]: "8"
+              - generic [ref=e220]:
+                - text: Mid cut
+                - generic [ref=e221]: — Weight 85 kg
+            - listitem [ref=e222]:
+              - generic [ref=e223]: "16"
+              - generic [ref=e224]:
+                - text: Finish
+                - generic [ref=e225]: — Weight 79 kg
+      - generic [ref=e226]:
+        - link "شوف كل التحولات" [ref=e227] [cursor=pointer]:
+          - /url: /transformations
+        - paragraph [ref=e230]: النتائج بتختلف من شخص لشخص حسب الالتزام والاستمرارية.
+    - generic [ref=e232]:
+      - generic [ref=e233]:
+        - paragraph [ref=e234]: طريقة العمل
+        - heading "من اختيار البرنامج لحد أول تمرينة" [level=2] [ref=e235]
+      - list [ref=e236]:
+        - listitem [ref=e237]:
+          - generic [ref=e238]: "1"
+          - heading "اختار هدفك" [level=3] [ref=e243]
+          - paragraph [ref=e244]: حدد البرنامج المناسب ليك.
+        - listitem [ref=e245]:
+          - generic [ref=e247]: "2"
+          - heading "اشترك بسهولة" [level=3] [ref=e252]
+          - paragraph [ref=e253]: اختار طريقة الدفع المناسبة.
+        - listitem [ref=e254]:
+          - generic [ref=e256]: "3"
+          - heading "استلم برنامجك" [level=3] [ref=e261]
+          - paragraph [ref=e262]: اتبع تعليمات الاستلام.
+        - listitem [ref=e263]:
+          - generic [ref=e265]: "4"
+          - heading "ابدأ التمرين" [level=3] [ref=e273]
+          - paragraph [ref=e274]: شوف شرح التمارين وابدأ تنفيذ خطتك.
+      - generic [ref=e275]:
+        - generic [ref=e276]: Vodafone Cash
+        - generic [ref=e279]: Instapay
+        - generic [ref=e282]: Visa / Credit
+        - generic [ref=e285]: فوري (رقمي)
+    - generic [ref=e290]:
+      - generic [ref=e291]:
+        - paragraph [ref=e292]: التدريب الأونلاين
+        - heading "محتاج متابعة شخصية؟" [level=2] [ref=e293]
+        - paragraph [ref=e294]: لو محتاج خطة معمولة على هدفك وظروفك مع متابعة وتعديلات مستمرة، التدريب الأونلاين هو اختيارك.
+        - list [ref=e295]:
+          - listitem [ref=e296]: تدريب شخصي
+          - listitem [ref=e300]: تخطيط التغذية
+          - listitem [ref=e304]: متابعة مستمرة
+          - listitem [ref=e308]: تعديلات على البرنامج
+          - listitem [ref=e312]: شرح التمارين
+        - generic [ref=e316]:
+          - generic [ref=e317]:
+            - text: Silver
+            - generic [ref=e318]: — $89/mo
+          - generic [ref=e319]:
+            - text: Gold
+            - generic [ref=e320]: — $149/mo
+        - generic [ref=e321]:
+          - link "اكتشف التدريب الأونلاين" [ref=e322] [cursor=pointer]:
+            - /url: /coaching
+          - paragraph [ref=e325]: "البرنامج الجاهز: تشتريه وتبدأ النهارده. التدريب الأونلاين: خطة مبنية ليك مع متابعة شخصية."
+      - img "Captain Belghamdi" [ref=e329]
+    - generic [ref=e331]:
+      - generic [ref=e332]:
+        - generic [ref=e333]:
+          - img "Captain Belghamdi" [ref=e335]
+          - generic [ref=e336]: مدربك في رحلتك
+        - generic [ref=e337]:
+          - link "65.5K" [ref=e338] [cursor=pointer]:
+            - /url: https://www.instagram.com/belghamdi.coaching/
+          - link "♪ 232K" [ref=e342] [cursor=pointer]:
+            - /url: https://www.tiktok.com/@belghamdi.coaching
+      - generic [ref=e343]:
+        - paragraph [ref=e344]: مين الكابتن؟
+        - heading "بسام الغامدي" [level=2] [ref=e345]
+        - paragraph [ref=e346]: "أنا بسام الغامدي، من سنين بتدفع في آلاف من المجتمع العربي كل أسبوع، وهدفي بسيط: أخلي التمرين الصح في متناول الكل، وبسعر يستاهله كل واحد."
+        - paragraph [ref=e348]: "الفلسفة دي مش خطة تمرين بس — دي طريقة تفكر بيها: برنامج واضح، وتنفيذ صح، واستمرارية بلا تخمين."
+        - link "اعرف أكتر عن الكابتن" [ref=e352] [cursor=pointer]:
+          - /url: /about
+    - generic [ref=e356]:
+      - generic [ref=e357]:
+        - generic [ref=e358]:
+          - paragraph [ref=e359]: اتعلم معايا
+          - heading "فيديوهات مختارة من محتواي الأسبوعي — نصائح تمرين، أخطاء شائعة، و تغذية." [level=2] [ref=e360]
+        - link "شوف كل الفيديوهات" [ref=e361] [cursor=pointer]:
+          - /url: https://www.youtube.com/@Belghamdi.Coaching
+      - generic [ref=e364]:
+        - link "يوتيوب" [ref=e365] [cursor=pointer]:
+          - /url: https://www.youtube.com/@Belghamdi.Coaching
+        - link "انستجرام" [ref=e375] [cursor=pointer]:
+          - /url: https://www.youtube.com/@Belghamdi.Coaching
+        - link "♪ تيك توك" [ref=e385] [cursor=pointer]:
+          - /url: https://www.youtube.com/@Belghamdi.Coaching
+          - generic [ref=e391]:
+            - generic [ref=e392]: ♪
+            - text: تيك توك
+        - link "يوتيوب" [ref=e393] [cursor=pointer]:
+          - /url: https://www.youtube.com/@Belghamdi.Coaching
+        - link "انستجرام" [ref=e403] [cursor=pointer]:
+          - /url: https://www.youtube.com/@Belghamdi.Coaching
+        - link "يوتيوب" [ref=e413] [cursor=pointer]:
+          - /url: https://www.youtube.com/@Belghamdi.Coaching
+      - paragraph [ref=e423]: معرض فيديوهات — استبدله بمحتوى يوتيوب و انستجرام الفعلي
+    - generic [ref=e425]:
+      - generic [ref=e426]:
+        - paragraph [ref=e427]: الكلام اللي بنسمعه
+        - heading "ملاحظات المتدربين" [level=2] [ref=e428]
+      - generic [ref=e429]:
+        - figure "Demo Athlete 01 Push Pull Leg x Upper Lower — 5 Days" [ref=e430]:
+          - generic "5/5" [ref=e431]:
+            - generic [aria-hidden] [ref=e432]: ★
+            - generic [aria-hidden] [ref=e433]: ★
+            - generic [aria-hidden] [ref=e434]: ★
+            - generic [aria-hidden] [ref=e435]: ★
+            - generic [aria-hidden] [ref=e436]: ★
+          - blockquote [ref=e437]: "“This is a demo testimonial. Replace with a real client quote: the structure is clear, the coaching accountability kept me consistent.”"
+          - generic [ref=e438]:
+            - text: Demo Athlete 01
+            - generic [ref=e439]: Push Pull Leg x Upper Lower — 5 Days
+        - figure "Demo Athlete 02 Muscle Mommies" [ref=e440]:
+          - generic "5/5" [ref=e441]:
+            - generic [aria-hidden] [ref=e442]: ★
+            - generic [aria-hidden] [ref=e443]: ★
+            - generic [aria-hidden] [ref=e444]: ★
+            - generic [aria-hidden] [ref=e445]: ★
+            - generic [aria-hidden] [ref=e446]: ★
+          - blockquote [ref=e447]: "“This is a demo testimonial. Replace with a real client quote: I gained visible arm size while maintaining bodyweight progress.”"
+          - generic [ref=e448]:
+            - text: Demo Athlete 02
+            - generic [ref=e449]: Muscle Mommies
+        - figure "Demo Athlete 03 Gold Coaching" [ref=e450]:
+          - generic "5/5" [ref=e451]:
+            - generic [aria-hidden] [ref=e452]: ★
+            - generic [aria-hidden] [ref=e453]: ★
+            - generic [aria-hidden] [ref=e454]: ★
+            - generic [aria-hidden] [ref=e455]: ★
+            - generic [aria-hidden] [ref=e456]: ★
+          - blockquote [ref=e457]: "“This is a demo testimonial. Replace with a real client quote: weekly video reviews caught what I never would have.”"
+          - generic [ref=e458]:
+            - text: Demo Athlete 03
+            - generic [ref=e459]: Gold Coaching
+    - generic [ref=e461]:
+      - generic [ref=e462]:
+        - paragraph [ref=e463]: الأسئلة الشائعة
+        - heading "الأسئلة الشائعة." [level=2] [ref=e464]
+      - generic [ref=e465]:
+        - generic [ref=e466]:
+          - button "ما الفرق بين برامج التدريب والكوتشينج أونلاين؟" [expanded] [ref=e467] [cursor=pointer]
+          - paragraph [ref=e473]: "الكوتشينج أونلاين هو الخدمة الكاملة: خطة تدريب وتغذية مبنية خصيصاً لك، مع متابعة مستمرة. برامج التدريب خطة جاهزة للتنفيذ تبدأ بها فوراً — دون خطة تغذية أو متابعة — لتصل إلى هدفك بأقل تكلفة."
+        - generic [ref=e474]:
+          - button "هل البرامج أو الكوتشينج تناسبني إذا كنت مبتدئاً؟" [ref=e475] [cursor=pointer]
+          - paragraph [ref=e479]: بالتأكيد — الخدمة بأكملها تراعي مستواك، مبتدئاً كنت أو متقدماً. ستحصل على تعليمات كاملة لكل شيء في برنامجك مع شرح فيديو تفصيلي لكل تمرين لتتدرب بأعلى كفاءة وأمان.
+        - generic [ref=e480]:
+          - button "وقتي ضيق ولا أستطيع التدريب كثيراً؟" [ref=e481] [cursor=pointer]
+          - paragraph [ref=e485]: أنت تحدد عدد أيام التدريب الذي يناسب حياتك. البرامج تتراوح من 3 أيام حتى 6 أيام في الأسبوع حسب ما يناسب جدولك.
+        - generic [ref=e486]:
+          - button "هل تتطلب هذه الأنظمة صالة رياضية مكلفة؟" [ref=e487] [cursor=pointer]
+          - paragraph [ref=e491]: لا. يمكنك تنفيذ البرامج في أي مكان في العالم، بأي تجهيزات — كل تمرين في خطتك له بدائل، والتغذية مبنية على المتاح لك وعلى ميزانيتك.
+        - generic [ref=e492]:
+          - button "كيف أختار التقسيمة التدريبية المناسبة لي؟" [ref=e493] [cursor=pointer]
+          - paragraph [ref=e497]: "اسأل نفسك أولاً: كم يوم يمكنني الالتزام به بنسبة 100% خلال الأشهر الستة القادمة؟ 3 أيام ← فول بودي. 4 أيام ← أبر لور. 5 أيام ← PPL مع أبر لور. ثم اسأل أي تقسيمة تستمتع بها فعلاً."
+        - generic [ref=e498]:
+          - button "كيف تتم عملية الدفع والتفعيل؟" [ref=e499] [cursor=pointer]
+          - paragraph [ref=e503]: اختر برنامجك من الموقع وادفع بأي وسيلة مقبولة — فودافون كاش، أو إنستاباي، أو فيزا. ثم أرسل صورة الدفع مع البرنامج المختار على واتساب ليتم تفعيلك فوراً.
+        - generic [ref=e504]:
+          - button "لماذا يختلف هذا عن أي شيء آخر متاح؟" [ref=e505] [cursor=pointer]
+          - paragraph [ref=e509]: كل شيء مصمم على مبادئ علمية — بلا تجارب عشوائية ولا وقت ضائع. إنه نظام واضح نجح مع آلاف العملاء، وسينجح معك مهما كان هدفك.
+    - generic [ref=e516]:
+      - generic [ref=e517]:
+        - heading "مستني إيه عشان تبدأ؟" [level=2] [ref=e518]
+        - paragraph [ref=e519]: اختار برنامجك وخد أول خطوة ناحية جسم أقوى وحياة أنشط.
+        - link "ابدأ ببرنامجك" [ref=e520] [cursor=pointer]:
+          - /url: /programs
+      - img "Captain Belghamdi" [ref=e526]
+  - contentinfo [ref=e527]:
+    - generic [ref=e528]:
+      - generic [ref=e529]:
+        - generic [ref=e530]:
+          - generic [ref=e531]: بلعمزي كوتشينج
+          - paragraph [ref=e533]: برامج تدريب جاهزة بأسعار في المتناول، وشرح بالفيديو لكل تمرين — عشان تتمرن صح من غير عشوائية.
+          - generic [ref=e534]:
+            - link "Instagram" [ref=e535] [cursor=pointer]:
+              - /url: https://www.instagram.com/belghamdi.coaching/
+            - link "TikTok" [ref=e539] [cursor=pointer]:
+              - /url: https://www.tiktok.com/@belghamdi.coaching
+            - link "YouTube" [ref=e542] [cursor=pointer]:
+              - /url: https://www.youtube.com/@Belghamdi.Coaching
+        - generic [ref=e546]:
+          - paragraph [ref=e547]: برامج التدريب
+          - list [ref=e548]:
+            - listitem [ref=e549]:
+              - link "برامج التدريب" [ref=e550] [cursor=pointer]:
+                - /url: /programs
+            - listitem [ref=e551]:
+              - link "التدريب الأونلاين" [ref=e552] [cursor=pointer]:
+                - /url: /coaching
+            - listitem [ref=e553]:
+              - link "التحولات" [ref=e554] [cursor=pointer]:
+                - /url: /transformations
+            - listitem [ref=e555]:
+              - link "من أنا" [ref=e556] [cursor=pointer]:
+                - /url: /about
+        - generic [ref=e557]:
+          - paragraph [ref=e558]: تواصل معي
+          - list [ref=e559]:
+            - listitem [ref=e560]:
+              - link "coach@belghamdicoaching.com" [ref=e564] [cursor=pointer]:
+                - /url: mailto:coach@belghamdicoaching.com
+            - listitem [ref=e565]:
+              - generic [ref=e566]: ✆
+              - link "+201028796338" [ref=e567] [cursor=pointer]:
+                - /url: https://wa.me/201028796338
+            - listitem [ref=e568]: Cairo, Egypt
+        - generic [ref=e572]:
+          - paragraph [ref=e573]: تجارب وتوثيق
+          - list [ref=e574]:
+            - listitem [ref=e575]:
+              - link "اختيار البرنامج" [ref=e576] [cursor=pointer]:
+                - /url: /selector
+            - listitem [ref=e577]:
+              - link "الأسئلة الشائعة" [ref=e578] [cursor=pointer]:
+                - /url: /faq
+            - listitem [ref=e579]:
+              - link "دخول العملاء" [ref=e580] [cursor=pointer]:
+                - /url: /login
+            - listitem [ref=e581]:
+              - link "استكشاف العضلات ثلاثي الأبعاد" [ref=e582] [cursor=pointer]:
+                - /url: /explore
+      - generic [ref=e586]:
+        - paragraph [ref=e587]: © 2026 Belghamdi-Coaching. كل الحقوق محفوظة.
+        - generic [ref=e588]:
+          - link "سياسة الخصوصية" [ref=e589] [cursor=pointer]:
+            - /url: /faq
+          - link "الشروط والأحكام" [ref=e590] [cursor=pointer]:
+            - /url: /faq
+  - link "اسأل على واتساب" [ref=e591] [cursor=pointer]:
+    - /url: https://wa.me/201028796338
+  - alert [ref=e594]

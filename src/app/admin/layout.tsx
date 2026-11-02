@@ -18,6 +18,7 @@ import {
   X,
   Cloud,
   Database,
+  Workflow,
 } from "lucide-react";
 import { isDemoMode, integrationStatus } from "@/lib/mode";
 
@@ -30,6 +31,7 @@ const NAV = [
   { href: "/admin/subscriptions", label: "Subscriptions", icon: RefreshCcw },
   { href: "/admin/progress", label: "Progress", icon: TrendingUp },
   { href: "/admin/content", label: "Content", icon: FileText },
+  { href: "/admin/automation", label: "Automation", icon: Workflow },
   { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
 
@@ -50,7 +52,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   };
 
   return (
-    <div className="min-h-screen bg-graphite flex">
+    <div dir="ltr" className="min-h-screen bg-graphite flex">
       <aside
         className={`fixed lg:sticky top-0 h-screen w-64 shrink-0 bg-obsidian border-r border-wgray-dim/50 z-40 flex flex-col transition-transform duration-300 lg:translate-x-0 ${
           open ? "translate-x-0" : "-translate-x-full"
@@ -63,6 +65,14 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           <span className="font-display font-semibold text-sm uppercase tracking-widest text-bone">
             Admin<span className="text-copper">.</span>
           </span>
+          {demo && (
+            <span
+              title="Demo environment — simulated data, no real payments or production notifications"
+              className="text-[10px] font-display font-bold uppercase tracking-widest bg-copper/15 text-copper border border-copper/40 px-2 py-0.5 rounded-full"
+            >
+              Demo
+            </span>
+          )}
           <button className="ml-auto text-wgray lg:hidden" onClick={() => setOpen(false)} aria-label="Close sidebar">
             <X className="h-5 w-5" />
           </button>

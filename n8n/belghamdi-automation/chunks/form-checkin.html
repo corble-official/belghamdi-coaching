@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Belghamdi Coaching — البطاقة الأسبوعية</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body{font-family:system-ui,'Segoe UI',Tahoma,sans-serif;background:#0b0b0f;color:#e7e7ea}
+  .field{width:100%;background:#15151c;border:1px solid #2a2a35;border-radius:.75rem;padding:.7rem .9rem;color:#e7e7ea;font-size:1rem}
+  .field:focus{outline:none;border-color:#f0712d}
+  label{display:block;font-size:.85rem;color:#9a9aa6;margin:.9rem 0 .3rem}
+  .primary{width:100%;background:#f0712d;color:#fff;font-weight:700;border-radius:.75rem;padding:.8rem;margin-top:1.2rem;font-size:1.05rem;cursor:pointer;border:none}
+  .primary:disabled{opacity:.6;cursor:default}
+  .card{max-width:560px;margin:2.5rem auto;background:#101016;border:1px solid #23232d;border-radius:1.25rem;padding:1.75rem}
+  .badge{display:inline-block;background:#1b1b25;color:#f0712d;border:1px solid #3a2a1d;border-radius:.5rem;padding:.25rem .7rem;font-size:.8rem}
+  input[type=range]{width:100%;accent-color:#f0712d}
+  .val{color:#f0712d;font-weight:700}
+  .row{display:flex;justify-content:space-between;align-items:center}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="flex items-center justify-between mb-4">
+    <span class="badge">Belghamdi Coaching</span>
+    <span id="stage" class="text-xs text-gray-500"></span>
+  </div>
+  <h1 class="text-xl font-bold mb-1">البطاقة الأسبوعية للعميل</h1>
+  <p class="text-sm text-gray-400 mb-2">أهلاً <span id="cname">—</span> · الفترة: <span id="plabel">—</span></p>
+  <div id="wait" class="text-sm text-gray-500 py-6 text-center">جارٍ التحقق من الرابط…</div>
+  <form id="f" style="display:none" novalidate>
+    <label for="weight_kg">الوزن الحالي (كجم) *</label>
+    <input id="weight_kg" class="field" type="number" step="0.1" min="30" max="300" required>
+    <p id="lastw" class="text-xs text-gray-500 mt-1"></p>
+    <div class="row mt-4"><label style="margin:0">نسبة الالتزام بالتمرين </label><span class="val" id="v-workout_pct">100%</span></div>
+    <input type="range" id="workout_pct" min="0" max="100" step="5" value="100">
+    <div class="row mt-2"><label style="margin:0">نسبة الالتزام بالتغذية </label><span class="val" id="v-nutrition_pct">100%</span></div>
+    <input type="range" id="nutrition_pct" min="0" max="100" step="5" value="100">
+    <label for="training_days_made">عدد أيام التمرين المنفذة فعلياً</label>
+    <input id="training_days_made" class="field" type="number" min="0" max="7">
+    <label for="energy">مستوى الطاقة (1-10)</label>
+    <input id="energy" class="field" type="number" min="1" max="10" value="5">
+    <label for="sleep">جودة النوم (1-10)</label>
+    <input id="sleep" class="field" type="number" min="1" max="10" value="5">
+    <label for="difficulties">صعوبات / إصابات هذا الأسبوع</label>
+    <textarea id="difficulties" class="field" rows="2"></textarea>
+    <label for="feedback">ملاحظات للمدرب</label>
+    <textarea id="feedback" class="field" rows="3"></textarea>
+    <label for="photos">روابط الصور (اختياري — مفصولة بفاصلة)</label>
+    <input id="photos" class="field" placeholder="https://…">
+    <button id="btn" type="submit" class="primary">إرسال البطاقة ✓</button>
+    <p id="msg" class="text-center text-sm mt-3"></p>
+  </form>
+</div>
+<script id="__data" type="application/json">__DATA_PLACEHOLDER__</script>
+<script>
+const params=new URLSearchParams(location.search);
+const token=params.get('t');
+const DATA=JSON.parse(atob(document.getElementById('__data').textContent));
+for (const id of ['workout_pct','nutrition_pct']) {
+  document.getElementById(id).addEventListener('input',e=>{
+    document.getElementById('v-'+id).textContent=e.target.value+'%';});
+}
+function boot(){
+  if(!DATA.success||DATA.already_completed){
+    document.getElementById('wait').textContent = DATA.error==='already_completed'
+      ? 'أرسلت بطاقتك بالفعل هذا الأسبوع — شكراً ✅'
+      : (DATA.error==='token_expired'?'انتهت صلاحية الرابط — تواصل مع المدرب':'يبدو أن الرابط غير صحيح');
+    return;
+  }
+  document.getElementById('cname').textContent=DATA.client_name||'';
+  document.getElementById('plabel').textContent=DATA.period_label||'';
+  if(DATA.last_weight) document.getElementById('lastw').textContent='آخر وزن مسجل: '+DATA.last_weight+' كجم';
+  document.getElementById('wait').style.display='none';
+  document.getElementById('f').style.display='';
+  document.getElementById('stage').textContent='صالحة حتى '+new Date(DATA.expires_at).toLocaleDateString('ar-EG');
+}
+document.getElementById('f').addEventListener('submit',async ev=>{
+  ev.preventDefault();
+  const btn=document.getElementById('btn'); btn.disabled=true;
+  const d=Object.fromEntries(new FormData(document.getElementById('f')).entries());
+  const photos=(d.photos||'').split(',').map(s=>s.trim()).filter(Boolean); delete d.photos;
+  const data={
+    weight_kg: d.weight_kg, workout_pct: parseInt(d.workout_pct||'100'),
+    nutrition_pct: parseInt(d.nutrition_pct||'100'),
+    training_days_made: parseInt(d.training_days_made||'0')||0,
+    energy: parseInt(d.energy||'5'), sleep: parseInt(d.sleep||'5'),
+    difficulties: d.difficulties||'', feedback: d.feedback||''
+  };
+  const r=await fetch('/webhook/form/checkin-submit?t='+encodeURIComponent(token),{
+    method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({data,photos})});
+  const j=await r.json();
+  const msg=document.getElementById('msg');
+  if(j.success){ document.getElementById('f').innerHTML=''; msg.className='text-center text-green-400 mt-3';
+    msg.textContent='تم إرسال البطاقة ✅ سيراجعها المدرب ويوافيك بالملاحظات.'; }
+  else { msg.className='text-center text-red-400 mt-3';
+    msg.textContent=(j.error==='already_completed')?'أرسلت البطاقة بالفعل':'حدث خطأ — حاول مرة أخرى'; btn.disabled=false; }
+});
+boot();
+</script>
+</body>
+</html>
+
+

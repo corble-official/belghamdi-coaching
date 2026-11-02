@@ -6,14 +6,16 @@ import { Check, Minus, Send, HelpCircle, ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
 import { COACHING_PACKAGES } from "@/lib/catalog";
 import { logEvent } from "@/lib/integrations/dispatcher";
+import { recordDelivery } from "@/lib/integrations/outbox";
 import { useI18n } from "@/lib/i18n";
 
 const silver = COACHING_PACKAGES[0];
 const gold = COACHING_PACKAGES[1];
 
 export default function CoachingPage() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const [sent, setSent] = useState(false);
+  const [sendFailed, setSendFailed] = useState(false);
 
   const silverFeatures = [
     t("coaching_silver_feat_1"),
@@ -151,13 +153,51 @@ export default function CoachingPage() {
                 </p>
               </div>
             ) : (
+              <>
+            {sendFailed && (
+              <div className="mt-6 border border-red-400/40 bg-red-400/10 p-4 text-sm text-wgray">
+                {t("contact_failed_copy")}
+              </div>
+            )}
               <form
                 className="mt-8 space-y-5"
-                onSubmit={(e) => {
+                onSubmit={async (e) => {
                   e.preventDefault();
-                  const data = new FormData(e.currentTarget);
-                  logEvent("lead.created", `coaching-application:${data.get("name")}`);
-                  setSent(true);
+                  const formEl = e.currentTarget;
+                  const btn = formEl.querySelector('button[type="submit"]') as HTMLButtonElement | null;
+                  const data = new FormData(formEl);
+                  if (btn) btn.disabled = true;
+                  try {
+                    const res = await fetch("/api/leads", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        name: data.get("name"),
+                        email: data.get("email"),
+                        interest_type: "coaching",
+                        program_name: data.get("goal"),
+                        message: data.get("msg"),
+                        source: "coaching-application",
+                        language: lang,
+                      }),
+                    });
+                    const json = (await res.json()) as {
+                      ok?: boolean;
+                      lead_id?: string;
+                      delivery?: import("@/lib/integrations/contracts").DeliveryRecord;
+                      error?: string;
+                    };
+                    if (!res.ok || !json.ok) throw new Error(String(json.error || "send_failed"));
+                    if (json.delivery) {
+                      recordDelivery(json.delivery);
+                      logEvent("lead.created", json.lead_id || json.delivery.id || "lead");
+                    }
+                    setSent(true);
+                  } catch {
+                    setSendFailed(true);
+                  } finally {
+                    if (btn) btn.disabled = false;
+                  }
                 }}
               >
                 <div>
@@ -185,6 +225,7 @@ export default function CoachingPage() {
                   <Send className="h-4 w-4" /> {t("coaching_apply_submit")}
                 </button>
               </form>
+              </>
             )}
           </div>
         </div>

@@ -1,0 +1,190 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "Belghamdi Coaching بلعمزي كوتشينج" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img "Belghamdi Coaching" [ref=e5]
+        - generic [ref=e6]: بلعمزي كوتشينج
+      - navigation [ref=e7]:
+        - link "الرئيسية" [ref=e8] [cursor=pointer]:
+          - /url: /
+        - link "برامج التدريب" [ref=e9] [cursor=pointer]:
+          - /url: /programs
+        - link "التدريب الأونلاين" [ref=e10] [cursor=pointer]:
+          - /url: /coaching
+        - link "النتائج" [ref=e11] [cursor=pointer]:
+          - /url: /transformations
+        - link "من أنا" [ref=e12] [cursor=pointer]:
+          - /url: /about
+        - link "تواصل معي" [ref=e13] [cursor=pointer]:
+          - /url: /contact
+      - generic [ref=e14]:
+        - button "Switch language" [ref=e15] [cursor=pointer]: EN
+        - link "السلة" [ref=e19] [cursor=pointer]:
+          - /url: /cart
+        - link "ابدأ دلوقتي" [ref=e23] [cursor=pointer]:
+          - /url: /programs
+  - main [ref=e24]:
+    - generic [ref=e26]:
+      - paragraph [ref=e27]: الكوتشينج أونلاين
+      - heading "خطتك تتكيف مع تطورك." [level=1] [ref=e28]
+      - paragraph [ref=e29]: "فلسفة الكوتشينج: تدريب بهدف واضح، وبرمجة علمية، واستمرارية، وزيادة أحمال تدريجية — بدعم من كوتش يراجع متابعاتك أسبوعياً."
+      - generic [ref=e30]:
+        - generic [ref=e31]:
+          - paragraph [ref=e32]: سيلفر — LE 89/شهر
+          - heading "مساءلة منظمة." [level=3] [ref=e33]
+          - list [ref=e34]:
+            - listitem [ref=e35]: تحديثات الخطة كل أسبوعين
+            - listitem [ref=e38]: متابعة تقرير التقدم
+            - listitem [ref=e41]: نافذة رد خلال 48 ساعة
+            - listitem [ref=e44]: مكتبة فيديوهات التمارين
+            - listitem [ref=e47]: دعم عبر البريد الإلكتروني
+        - generic [ref=e50]:
+          - generic [ref=e51]: الأشمل
+          - paragraph [ref=e52]: جولد — LE 149/شهر
+          - heading "نظام تحوّل متكامل." [level=3] [ref=e53]
+          - list [ref=e54]:
+            - listitem [ref=e55]: تحديثات الخطة أسبوعياً
+            - listitem [ref=e58]: تقارير أسبوعية تفصيلية
+            - listitem [ref=e61]: رد ذو أولوية خلال 24 ساعة
+            - listitem [ref=e64]: خطط تغذية شخصية
+            - listitem [ref=e67]: دعم ذو أولوية عبر البريد الإلكتروني
+      - generic [ref=e70]:
+        - heading "مقارنة الميزات" [level=2] [ref=e71]
+        - table [ref=e72]:
+          - rowgroup [ref=e73]:
+            - row [ref=e74]:
+              - columnheader "الميزة" [ref=e75]
+              - columnheader "سيلفر" [ref=e76]
+              - columnheader "جولد" [ref=e77]
+          - rowgroup [ref=e78]:
+            - row [ref=e79]:
+              - cell "تكرار المتابعة" [ref=e80]
+              - cell "كل أسبوعين" [ref=e81]
+              - cell "أسبوعياً" [ref=e82]
+            - row [ref=e83]:
+              - cell "التقارير" [ref=e84]
+              - cell "تقرير تقدم كل أسبوعين" [ref=e85]
+              - cell "تقرير تفصيلي أسبوعياً" [ref=e86]
+            - row [ref=e87]:
+              - cell "زمن الرد" [ref=e88]
+              - cell "نافذة رد خلال 48 ساعة" [ref=e89]
+              - cell "رد ذو أولوية خلال 24 ساعة" [ref=e90]
+            - row [ref=e91]:
+              - cell "الدعم" [ref=e92]
+              - cell "دعم عبر البريد الإلكتروني" [ref=e93]
+              - cell "دعم ذو أولوية عبر البريد الإلكتروني + مراجعة فيديو أسبوعية" [ref=e94]
+            - row [ref=e95]:
+              - cell "تدريب شخصي" [ref=e96]
+              - cell "نعم" [ref=e97]
+              - cell "نعم" [ref=e98]
+            - row [ref=e99]:
+              - cell "خطط التغذية" [ref=e100]
+              - cell "لا" [ref=e101]
+              - cell "نعم" [ref=e102]
+            - row [ref=e103]:
+              - cell "شرح التمارين" [ref=e104]
+              - cell "نعم" [ref=e105]
+              - cell "نعم" [ref=e106]
+            - row [ref=e107]:
+              - cell "تعديلات حسب التقدم" [ref=e108]
+              - cell "كل أسبوعين" [ref=e109]
+              - cell "كل أسبوع" [ref=e110]
+      - generic [ref=e111]:
+        - generic [ref=e112]:
+          - heading "أسئلة شائعة عن الكوتشينج" [level=2] [ref=e113]
+          - generic [ref=e117]:
+            - group [ref=e118]:
+              - generic "ما مدى سرعة استلام خطتي؟" [ref=e119] [cursor=pointer]
+            - group [ref=e121]:
+              - generic "هل يمكنني التبديل بين سيلفر وجولد؟" [ref=e122] [cursor=pointer]
+            - group [ref=e124]:
+              - generic "ماذا لو فاتتني بعض الجلسات؟" [ref=e125] [cursor=pointer]
+          - link "الأسئلة الشائعة العامة" [ref=e127] [cursor=pointer]:
+            - /url: /faq
+        - generic [ref=e130]:
+          - paragraph [ref=e131]: طلب تقديم
+          - heading "قدّم على الكوتشينج." [level=2] [ref=e132]
+          - paragraph [ref=e133]: أخبرنا أين أنت الآن وإلى أين تريد الوصول. الكوتش يراجع كل طلب.
+          - generic [ref=e134]:
+            - generic [ref=e135]:
+              - text: الاسم الكامل
+              - textbox "الاسم الكامل" [ref=e136]
+            - generic [ref=e137]:
+              - text: البريد الإلكتروني
+              - textbox "البريد الإلكتروني" [ref=e138]
+            - generic [ref=e139]:
+              - text: الهدف الأساسي
+              - combobox "الهدف الأساسي" [ref=e140]:
+                - option "بناء العضلات" [selected]
+                - option "خسارة الدهون"
+                - option "زيادة القوة"
+                - option "الأداء الرياضي"
+            - generic [ref=e141]:
+              - text: وضعك الحالي
+              - textbox "وضعك الحالي" [ref=e142]:
+                - /placeholder: خبرتك، جدولك، أرقامك الحالية...
+            - button "أرسل الطلب" [ref=e143] [cursor=pointer]
+  - contentinfo [ref=e147]:
+    - generic [ref=e148]:
+      - generic [ref=e149]:
+        - generic [ref=e150]:
+          - generic [ref=e151]: بلعمزي كوتشينج
+          - paragraph [ref=e153]: برامج تدريب جاهزة بأسعار في المتناول، وشرح بالفيديو لكل تمرين — عشان تتمرن صح من غير عشوائية.
+          - generic [ref=e154]:
+            - link "Instagram" [ref=e155] [cursor=pointer]:
+              - /url: https://www.instagram.com/belghamdi.coaching/
+            - link "TikTok" [ref=e159] [cursor=pointer]:
+              - /url: https://www.tiktok.com/@belghamdi.coaching
+            - link "YouTube" [ref=e162] [cursor=pointer]:
+              - /url: https://www.youtube.com/@Belghamdi.Coaching
+        - generic [ref=e166]:
+          - paragraph [ref=e167]: برامج التدريب
+          - list [ref=e168]:
+            - listitem [ref=e169]:
+              - link "برامج التدريب" [ref=e170] [cursor=pointer]:
+                - /url: /programs
+            - listitem [ref=e171]:
+              - link "التدريب الأونلاين" [ref=e172] [cursor=pointer]:
+                - /url: /coaching
+            - listitem [ref=e173]:
+              - link "التحولات" [ref=e174] [cursor=pointer]:
+                - /url: /transformations
+            - listitem [ref=e175]:
+              - link "من أنا" [ref=e176] [cursor=pointer]:
+                - /url: /about
+        - generic [ref=e177]:
+          - paragraph [ref=e178]: تواصل معي
+          - list [ref=e179]:
+            - listitem [ref=e180]:
+              - link "coach@belghamdicoaching.com" [ref=e184] [cursor=pointer]:
+                - /url: mailto:coach@belghamdicoaching.com
+            - listitem [ref=e185]:
+              - generic [ref=e186]: ✆
+              - link "+201028796338" [ref=e187] [cursor=pointer]:
+                - /url: https://wa.me/201028796338
+            - listitem [ref=e188]: Cairo, Egypt
+        - generic [ref=e192]:
+          - paragraph [ref=e193]: تجارب وتوثيق
+          - list [ref=e194]:
+            - listitem [ref=e195]:
+              - link "اختيار البرنامج" [ref=e196] [cursor=pointer]:
+                - /url: /selector
+            - listitem [ref=e197]:
+              - link "الأسئلة الشائعة" [ref=e198] [cursor=pointer]:
+                - /url: /faq
+            - listitem [ref=e199]:
+              - link "دخول العملاء" [ref=e200] [cursor=pointer]:
+                - /url: /login
+            - listitem [ref=e201]:
+              - link "استكشاف العضلات ثلاثي الأبعاد" [ref=e202] [cursor=pointer]:
+                - /url: /explore
+      - generic [ref=e206]:
+        - paragraph [ref=e207]: © 2026 Belghamdi-Coaching. كل الحقوق محفوظة.
+        - generic [ref=e208]:
+          - link "سياسة الخصوصية" [ref=e209] [cursor=pointer]:
+            - /url: /faq
+          - link "الشروط والأحكام" [ref=e210] [cursor=pointer]:
+            - /url: /faq
+  - link "اسأل على واتساب" [ref=e211] [cursor=pointer]:
+    - /url: https://wa.me/201028796338

@@ -1,0 +1,133 @@
+- generic [ref=f2e2]:
+  - complementary [ref=f2e3]:
+    - generic [ref=f2e4]:
+      - generic [ref=f2e5]: B
+      - generic [ref=f2e6]: Admin.
+      - generic "Demo environment — simulated data, no real payments or production notifications" [ref=f2e7]: Demo
+    - navigation [ref=f2e8]:
+      - link "Overview" [ref=f2e9] [cursor=pointer]:
+        - /url: /admin
+      - link "Leads" [ref=f2e15] [cursor=pointer]:
+        - /url: /admin/leads
+      - link "Clients" [ref=f2e21] [cursor=pointer]:
+        - /url: /admin/clients
+      - link "Products" [ref=f2e26] [cursor=pointer]:
+        - /url: /admin/products
+      - link "Orders" [ref=f2e31] [cursor=pointer]:
+        - /url: /admin/orders
+      - link "Subscriptions" [ref=f2e36] [cursor=pointer]:
+        - /url: /admin/subscriptions
+      - link "Progress" [ref=f2e42] [cursor=pointer]:
+        - /url: /admin/progress
+      - link "Content" [ref=f2e46] [cursor=pointer]:
+        - /url: /admin/content
+      - link "Automation" [ref=f2e50] [cursor=pointer]:
+        - /url: /admin/automation
+      - link "Settings" [ref=f2e55] [cursor=pointer]:
+        - /url: /admin/settings
+    - generic [ref=f2e59]:
+      - generic [ref=f2e60]:
+        - paragraph [ref=f2e61]: "Supabase: not configured"
+        - paragraph [ref=f2e66]: "Shopify: not configured"
+        - paragraph [ref=f2e69]: Demo mode active — data is simulated and clearly labeled.
+      - generic [ref=f2e70]:
+        - link "View Site" [ref=f2e71] [cursor=pointer]:
+          - /url: /
+        - button "Logout" [ref=f2e72] [cursor=pointer]
+  - generic [ref=f2e77]:
+    - generic [ref=f2e78]:
+      - heading "Settings" [level=1] [ref=f2e79]
+      - paragraph [ref=f2e80]: Business, integrations, and platform preferences
+    - generic [ref=f2e81]:
+      - generic [ref=f2e82]:
+        - heading "Business information" [level=2] [ref=f2e83]
+        - generic [ref=f2e84]:
+          - generic [ref=f2e85]:
+            - text: Business name
+            - textbox [ref=f2e86]: Belghamdi Coaching
+          - generic [ref=f2e87]:
+            - text: Contact email
+            - textbox [ref=f2e88]: coach@belghamdicoaching.com
+          - generic [ref=f2e89]:
+            - text: Phone
+            - textbox [ref=f2e90]: +212 6XX XXX XXX
+          - generic [ref=f2e91]:
+            - text: WhatsApp number
+            - textbox [ref=f2e92]
+          - generic [ref=f2e93]:
+            - text: Instagram URL
+            - textbox [ref=f2e94]
+          - generic [ref=f2e95]:
+            - text: YouTube URL
+            - textbox [ref=f2e96]
+          - button "Save Settings" [ref=f2e97] [cursor=pointer]
+      - generic [ref=f2e102]:
+        - generic [ref=f2e103]:
+          - heading "Commerce & locale" [level=2] [ref=f2e104]
+          - generic [ref=f2e105]:
+            - generic [ref=f2e106]:
+              - text: Currency
+              - combobox [ref=f2e107]:
+                - option "EGP" [selected]
+                - option "USD"
+                - option "MAD"
+                - option "EUR"
+            - generic [ref=f2e108]:
+              - text: Language
+              - combobox [ref=f2e109]:
+                - option "English" [selected]
+                - option "العربية"
+          - heading "Notification preferences" [level=3] [ref=f2e110]
+          - generic [ref=f2e111]:
+            - generic [ref=f2e112] [cursor=pointer]:
+              - text: New lead captured
+              - button "Toggle New lead captured" [ref=f2e113]
+            - generic [ref=f2e115] [cursor=pointer]:
+              - text: New order paid
+              - button "Toggle New order paid" [ref=f2e116]
+            - generic [ref=f2e118] [cursor=pointer]:
+              - text: Progress submitted
+              - button "Toggle Progress submitted" [ref=f2e119]
+        - generic [ref=f2e121]:
+          - heading "Environment" [level=2] [ref=f2e122]
+          - generic [ref=f2e125]:
+            - generic [ref=f2e126]:
+              - generic [ref=f2e127]: Current environment
+              - generic [ref=f2e128]: Demo
+            - paragraph [ref=f2e129]: "Demo: simulated clients, orders, and deliveries. No real payments and no production notifications. Demo actions never modify live records."
+            - paragraph [ref=f2e131]:
+              - text: "Live mode is not available yet: no Supabase project is configured. Configure the live project credentials in"
+              - code [ref=f2e132]: .env
+              - text: first — then switching environments re-provisions data and automation routing server-side (with confirmation). Frontend filtering alone is never treated as isolation.
+        - generic [ref=f2e133]:
+          - heading "Integration status" [level=2] [ref=f2e134]
+          - generic [ref=f2e135]:
+            - paragraph [ref=f2e136]:
+              - generic [ref=f2e137]: Supabase
+              - generic [ref=f2e142]: Not configured (demo)
+            - paragraph [ref=f2e143]:
+              - generic [ref=f2e144]: Shopify Storefront
+              - generic [ref=f2e147]: Not configured (demo)
+            - paragraph [ref=f2e148]:
+              - generic [ref=f2e149]: Shopify Admin API
+              - generic [ref=f2e152]: Not configured (demo)
+          - paragraph [ref=f2e153]:
+            - text: Fill the environment variables in
+            - code [ref=f2e154]: .env
+            - text: (see
+            - code [ref=f2e155]: .env.example
+            - text: ) and restart to switch this platform from demo to live mode. Shopify stays the source of truth for products, orders, and checkout.
+    - generic [ref=f2e156]:
+      - heading "Automation (n8n)" [level=2] [ref=f2e157]
+      - paragraph [ref=f2e160]:
+        - text: The n8n connection, workflow inventory, and webhook delivery log now live in the
+        - link "Automation Center" [ref=f2e161] [cursor=pointer]:
+          - /url: /admin/automation
+        - text: . Every business lead, verified order, and renewal still dispatches into the integration event stream below.
+      - generic [ref=f2e162]:
+        - paragraph [ref=f2e163]: Integration event stream
+        - paragraph [ref=f2e166]: No events dispatched yet.
+    - generic [ref=f2e167]:
+      - heading "Danger zone" [level=2] [ref=f2e168]
+      - paragraph [ref=f2e171]: Reset the demo dataset to its seeded state. This only affects demo data.
+      - button "Reset demo data" [ref=f2e172] [cursor=pointer]

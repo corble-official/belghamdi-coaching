@@ -521,6 +521,10 @@ const DICT: Record<string, { en: string; ar: string }> = {
   results_cta: { en: "See all transformations", ar: "شوف كل التحولات" },
   results_note: { en: "Results vary from person to person according to commitment and consistency.", ar: "النتائج بتختلف من شخص لشخص حسب الالتزام والاستمرارية." },
   results_empty: { en: "No published transformations yet — check back soon.", ar: "مفيش تحولات منشورة لسه — تابعنا قريب." },
+  contact_failed_copy: {
+    en: "The message could not be sent — check your details and try again, or reach us on WhatsApp.",
+    ar: "الرسالة ما اتبعتتش — راجع بياناتك وحاول تاني، أو كلمنا على واتساب.",
+  },
   hiw2_headline: { en: "From choosing a program to your first exercise", ar: "من اختيار البرنامج لحد أول تمرينة" },
   hiw2_step1: { en: "Pick your goal", ar: "اختار هدفك" },
   hiw2_step1_copy: { en: "Find the program that suits you.", ar: "حدد البرنامج المناسب ليك." },

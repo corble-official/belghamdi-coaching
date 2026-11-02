@@ -4,12 +4,15 @@ import { useState } from "react";
 import { Send, MessageCircle, Mail, MapPin, Instagram, Youtube } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
 import { logEvent } from "@/lib/integrations/dispatcher";
+import { recordDelivery } from "@/lib/integrations/outbox";
+import type { DeliveryRecord } from "@/lib/integrations/contracts";
 import { BUSINESS } from "@/lib/catalog";
 import { useI18n } from "@/lib/i18n";
 
 export default function ContactPage() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const [sent, setSent] = useState(false);
+  const [sendFailed, setSendFailed] = useState(false);
 
   return (
     <div className="pt-32 pb-28">
@@ -116,14 +119,45 @@ export default function ContactPage() {
               </p>
             </div>
           ) : (
+            <>
+            {sendFailed && (
+              <div className="mb-4 border border-red-400/40 bg-red-400/10 p-4 text-sm text-wgray">
+                {t("contact_failed_copy")}
+              </div>
+            )}
             <form
               className="space-y-5"
-              onSubmit={(e) => {
+              onSubmit={async (e) => {
                 e.preventDefault();
                 const data = new FormData(e.currentTarget);
-                const type = data.get("type");
-                logEvent("lead.created", `contact:${type}:${data.get("name")}`);
-                setSent(true);
+                const btn = e.currentTarget.querySelector('button[type="submit"]') as HTMLButtonElement | null;
+                if (btn) btn.disabled = true;
+                try {
+                  const res = await fetch("/api/leads", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      name: data.get("name"),
+                      email: data.get("email"),
+                      phone: data.get("phone"),
+                      message: data.get("message"),
+                      interest_type: data.get("type") === "programs" ? "training_program" : data.get("type") === "coaching" ? "coaching" : "general",
+                      source: "contact-page",
+                      language: lang,
+                    }),
+                  });
+                  const json = (await res.json()) as { ok?: boolean; lead_id?: string; delivery?: import("@/lib/integrations/contracts").DeliveryRecord };
+                  if (!res.ok || !json.ok) throw new Error(String((json as { error?: string }).error || "send_failed"));
+                  if (json.delivery) {
+                    recordDelivery(json.delivery);
+                    logEvent("lead.created", json.lead_id || json.delivery.id || "lead");
+                  }
+                  setSent(true);
+                } catch {
+                  setSendFailed(true);
+                } finally {
+                  if (btn) btn.disabled = false;
+                }
               }}
             >
               <div>
@@ -154,6 +188,7 @@ export default function ContactPage() {
                 <Send className="h-4 w-4" /> {t("contact_submit")}
               </button>
             </form>
+            </>
           )}
         </Reveal>
       </div>

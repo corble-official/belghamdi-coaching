@@ -129,6 +129,49 @@ export default function AdminSettingsPage() {
           </div>
 
           <div className="card-surface p-8">
+            <h2 className="font-display font-semibold text-bone mb-6 flex items-center gap-3">
+              <ShieldAlert className="h-5 w-5 text-copper" /> Environment
+            </h2>
+            <div className="space-y-4 text-sm">
+              <div className="flex items-center justify-between">
+                <span className="text-wgray">Current environment</span>
+                <span
+                  className={`text-xs font-display font-bold uppercase tracking-widest px-3 py-1 rounded-full border ${
+                    demo
+                      ? "bg-copper/15 text-copper border-copper/40"
+                      : "bg-emerald-400/10 text-emerald-300 border-emerald-300/30"
+                  }`}
+                >
+                  {demo ? "Demo" : "Live"}
+                </span>
+              </div>
+              <p className="text-xs text-wgray leading-relaxed">
+                {demo
+                  ? "Demo: simulated clients, orders, and deliveries. No real payments and no production notifications. Demo actions never modify live records."
+                  : "Live: real business records, real Shopify payments, production notifications."}
+              </p>
+              <div className="border-t border-wgray-dim/40 pt-4">
+                {integrations.supabase ? (
+                  <p className="text-xs text-emerald-300">
+                    Live prerequisites met (Supabase configured). The environment is selected by the
+                    configured <code className="text-bone">.env</code> credentials — switching to Live
+                    requires setting <code className="text-bone">NEXT_PUBLIC_SUPABASE_URL</code>, Shopify
+                    credentials, and <code className="text-bone">N8N_*</code> variables, then restarting.
+                    All live dispatches are enforced server-side; this UI never switches data stores on its own.
+                  </p>
+                ) : (
+                  <p className="text-xs text-wgray-dim">
+                    Live mode is not available yet: no Supabase project is configured. Configure the live
+                    project credentials in <code className="text-bone">.env</code> first — then switching
+                    environments re-provisions data and automation routing server-side (with confirmation).
+                    Frontend filtering alone is never treated as isolation.
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="card-surface p-8">
             <h2 className="font-display font-semibold text-bone mb-6">Integration status</h2>
             <div className="space-y-3 text-sm">
               <p className="flex items-center justify-between">
@@ -174,12 +217,15 @@ export default function AdminSettingsPage() {
 
       <div className="card-surface p-8 mt-8">
         <h2 className="font-display font-semibold text-bone mb-6 flex items-center gap-3">
-          <Zap className="h-5 w-5 text-copper" /> Automation readiness (n8n)
+          <Zap className="h-5 w-5 text-copper" /> Automation (n8n)
         </h2>
         <p className="text-sm text-wgray max-w-3xl leading-relaxed">
-          Automation is intentionally out of scope for this phase. However every key business
-          action already dispatches into the integration event stream below — so future n8n
-          workflows (WhatsApp, email journeys, subscriptions) can attach without backend changes.
+          The n8n connection, workflow inventory, and webhook delivery log now live in the{" "}
+          <a href="/admin/automation" className="text-copper hover:underline">
+            Automation Center
+          </a>
+          . Every business lead, verified order, and renewal still dispatches into the integration
+          event stream below.
         </p>
         <EventLog />
       </div>

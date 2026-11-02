@@ -1,0 +1,161 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "Belghamdi Coaching بلعمزي كوتشينج" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img "Belghamdi Coaching" [ref=e5]
+        - generic [ref=e6]: بلعمزي كوتشينج
+      - navigation [ref=e7]:
+        - link "الرئيسية" [ref=e8] [cursor=pointer]:
+          - /url: /
+        - link "برامج التدريب" [ref=e9] [cursor=pointer]:
+          - /url: /programs
+        - link "التدريب الأونلاين" [ref=e10] [cursor=pointer]:
+          - /url: /coaching
+        - link "النتائج" [ref=e11] [cursor=pointer]:
+          - /url: /transformations
+        - link "من أنا" [ref=e12] [cursor=pointer]:
+          - /url: /about
+        - link "تواصل معي" [ref=e13] [cursor=pointer]:
+          - /url: /contact
+      - generic [ref=e14]:
+        - button "Switch language" [ref=e15] [cursor=pointer]: EN
+        - link "السلة" [ref=e19] [cursor=pointer]:
+          - /url: /cart
+        - link "ابدأ دلوقتي" [ref=e23] [cursor=pointer]:
+          - /url: /programs
+  - main [ref=e24]:
+    - generic [ref=e26]:
+      - generic [ref=e27]:
+        - generic [ref=e28]:
+          - link "جميع البرامج" [ref=e29] [cursor=pointer]:
+            - /url: /programs
+          - generic [ref=e32]:
+            - img "Upper Lower" [ref=e33]
+            - generic [ref=e34]: Upper / Lower
+          - generic [ref=e35]:
+            - link "عرض 1" [ref=e36] [cursor=pointer]:
+              - /url: https://belghamdicoaching.com/products/upper-lower-4-days
+            - link "عرض 2" [ref=e37] [cursor=pointer]:
+              - /url: https://belghamdicoaching.com/products/upper-lower-4-days
+            - link "عرض 3" [ref=e38] [cursor=pointer]:
+              - /url: https://belghamdicoaching.com/products/upper-lower-4-days
+        - generic [ref=e39]:
+          - paragraph [ref=e40]: Upper / Lower
+          - heading "Upper Lower" [level=1] [ref=e41]
+          - generic [ref=e42]:
+            - generic [ref=e43]: LE 380
+            - generic [ref=e44]: LE 699
+          - paragraph [ref=e45]: The store's classic 4-day Upper/Lower split — a step up from the 3-day plan with dedicated upper and lower sessions twice a week, engineered for balanced strength and size when you can commit four consistent days.
+          - generic [ref=e46]:
+            - paragraph [ref=e47]: ملاحظة هامة
+            - paragraph [ref=e48]: This program is not suitable for those with current injuries or during rehabilitation.
+          - generic [ref=e49]:
+            - generic [ref=e50]:
+              - term [ref=e51]: التكرار
+              - definition [ref=e52]: 4 sessions / week
+            - generic [ref=e53]:
+              - term [ref=e54]: المستوى
+              - definition [ref=e55]: beginner
+          - paragraph [ref=e56]: "مناسب لـ: Lifters who can commit 4 consistent days (the pick between Full Body and PPL x U-L)"
+          - button "Add to Cart — LE 380" [ref=e59] [cursor=pointer]
+      - generic [ref=e64]:
+        - generic [ref=e65]:
+          - heading "ما يتضمنه البرنامج" [level=2] [ref=e66]
+          - list [ref=e67]:
+            - listitem [ref=e68]:
+              - generic [ref=e71]: Video exercise explanations — Detailed video walkthroughs (voice + visuals) for every exercise, so you execute perfect technique with ease.
+            - listitem [ref=e72]:
+              - generic [ref=e75]: Carefully selected exercises — Professional exercise selection for maximum muscle stimulus with minimum fatigue.
+            - listitem [ref=e76]:
+              - generic [ref=e79]: Weight & rep tracking sheet — A log file to record your weights and reps — watch your progress day after day.
+            - listitem [ref=e80]:
+              - generic [ref=e83]: Full training details — Precise rep ranges, rest periods, and intensity targets — every element calculated for peak performance.
+            - listitem [ref=e84]:
+              - generic [ref=e87]: Private community & support — An interactive private community sharing the same goal, with direct support inside the group.
+            - listitem [ref=e88]:
+              - generic [ref=e91]: Complete guidelines guide — A comprehensive guide to avoid mistakes and achieve the best results.
+            - listitem [ref=e92]:
+              - generic [ref=e95]: Exclusive discount file — Exclusive partner discounts from fitness and nutrition brands.
+        - generic [ref=e96]:
+          - heading "فوائد البرنامج" [level=2] [ref=e97]
+          - list [ref=e98]:
+            - listitem [ref=e99]:
+              - generic [ref=e102]: Balanced upper/lower weekly rhythm
+            - listitem [ref=e103]:
+              - generic [ref=e106]: Strength + size progression
+            - listitem [ref=e107]:
+              - generic [ref=e110]: Sinto structure you can sustain for months
+            - listitem [ref=e111]:
+              - generic [ref=e114]: Video-guided execution
+          - generic [ref=e115]:
+            - paragraph [ref=e116]: مكتبة فيديوهات التمارين
+            - generic [ref=e117]:
+              - generic [ref=e118]: ▶ 1
+              - generic [ref=e119]: ▶ 2
+              - generic [ref=e120]: ▶ 3
+              - generic [ref=e121]: ▶ 4
+  - contentinfo [ref=e122]:
+    - generic [ref=e123]:
+      - generic [ref=e124]:
+        - generic [ref=e125]:
+          - generic [ref=e126]: بلعمزي كوتشينج
+          - paragraph [ref=e128]: برامج تدريب جاهزة بأسعار في المتناول، وشرح بالفيديو لكل تمرين — عشان تتمرن صح من غير عشوائية.
+          - generic [ref=e129]:
+            - link "Instagram" [ref=e130] [cursor=pointer]:
+              - /url: https://www.instagram.com/belghamdi.coaching/
+            - link "TikTok" [ref=e134] [cursor=pointer]:
+              - /url: https://www.tiktok.com/@belghamdi.coaching
+            - link "YouTube" [ref=e137] [cursor=pointer]:
+              - /url: https://www.youtube.com/@Belghamdi.Coaching
+        - generic [ref=e141]:
+          - paragraph [ref=e142]: برامج التدريب
+          - list [ref=e143]:
+            - listitem [ref=e144]:
+              - link "برامج التدريب" [ref=e145] [cursor=pointer]:
+                - /url: /programs
+            - listitem [ref=e146]:
+              - link "التدريب الأونلاين" [ref=e147] [cursor=pointer]:
+                - /url: /coaching
+            - listitem [ref=e148]:
+              - link "التحولات" [ref=e149] [cursor=pointer]:
+                - /url: /transformations
+            - listitem [ref=e150]:
+              - link "من أنا" [ref=e151] [cursor=pointer]:
+                - /url: /about
+        - generic [ref=e152]:
+          - paragraph [ref=e153]: تواصل معي
+          - list [ref=e154]:
+            - listitem [ref=e155]:
+              - link "coach@belghamdicoaching.com" [ref=e159] [cursor=pointer]:
+                - /url: mailto:coach@belghamdicoaching.com
+            - listitem [ref=e160]:
+              - generic [ref=e161]: ✆
+              - link "+201028796338" [ref=e162] [cursor=pointer]:
+                - /url: https://wa.me/201028796338
+            - listitem [ref=e163]: Cairo, Egypt
+        - generic [ref=e167]:
+          - paragraph [ref=e168]: تجارب وتوثيق
+          - list [ref=e169]:
+            - listitem [ref=e170]:
+              - link "اختيار البرنامج" [ref=e171] [cursor=pointer]:
+                - /url: /selector
+            - listitem [ref=e172]:
+              - link "الأسئلة الشائعة" [ref=e173] [cursor=pointer]:
+                - /url: /faq
+            - listitem [ref=e174]:
+              - link "دخول العملاء" [ref=e175] [cursor=pointer]:
+                - /url: /login
+            - listitem [ref=e176]:
+              - link "استكشاف العضلات ثلاثي الأبعاد" [ref=e177] [cursor=pointer]:
+                - /url: /explore
+      - generic [ref=e181]:
+        - paragraph [ref=e182]: © 2026 Belghamdi-Coaching. كل الحقوق محفوظة.
+        - generic [ref=e183]:
+          - link "سياسة الخصوصية" [ref=e184] [cursor=pointer]:
+            - /url: /faq
+          - link "الشروط والأحكام" [ref=e185] [cursor=pointer]:
+            - /url: /faq
+  - link "اسأل على واتساب" [ref=e186] [cursor=pointer]:
+    - /url: https://wa.me/201028796338
+  - alert [ref=e189]

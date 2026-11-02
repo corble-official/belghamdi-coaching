@@ -1,0 +1,220 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]: B
+        - generic [ref=e6]: Admin.
+        - generic "Demo environment — simulated data, no real payments or production notifications" [ref=e7]: Demo
+      - navigation [ref=e8]:
+        - link "Overview" [ref=e9] [cursor=pointer]:
+          - /url: /admin
+        - link "Leads" [ref=e15] [cursor=pointer]:
+          - /url: /admin/leads
+        - link "Clients" [ref=e21] [cursor=pointer]:
+          - /url: /admin/clients
+        - link "Products" [ref=e26] [cursor=pointer]:
+          - /url: /admin/products
+        - link "Orders" [ref=e31] [cursor=pointer]:
+          - /url: /admin/orders
+        - link "Subscriptions" [ref=e36] [cursor=pointer]:
+          - /url: /admin/subscriptions
+        - link "Progress" [ref=e42] [cursor=pointer]:
+          - /url: /admin/progress
+        - link "Content" [ref=e46] [cursor=pointer]:
+          - /url: /admin/content
+        - link "Automation" [ref=e50] [cursor=pointer]:
+          - /url: /admin/automation
+        - link "Settings" [ref=e55] [cursor=pointer]:
+          - /url: /admin/settings
+      - generic [ref=e59]:
+        - generic [ref=e60]:
+          - paragraph [ref=e61]: "Supabase: not configured"
+          - paragraph [ref=e66]: "Shopify: not configured"
+          - paragraph [ref=e69]: Demo mode active — data is simulated and clearly labeled.
+        - generic [ref=e70]:
+          - link "View Site" [ref=e71] [cursor=pointer]:
+            - /url: /
+          - button "Logout" [ref=e72] [cursor=pointer]
+    - generic [ref=e106]:
+      - generic [ref=e107]:
+        - generic [ref=e108]:
+          - heading "Overview" [level=1] [ref=e109]
+          - paragraph [ref=e110]: Business snapshot — demo data
+        - generic [ref=e111]: Demo Mode
+      - generic [ref=e112]:
+        - generic [ref=e113]:
+          - generic [ref=e114]: Revenue
+          - paragraph [ref=e118]: LE 1,140
+          - paragraph [ref=e119]: 3 paid orders
+        - generic [ref=e120]:
+          - generic [ref=e121]: Orders
+          - paragraph [ref=e127]: "5"
+        - generic [ref=e128]:
+          - generic [ref=e129]: Leads
+          - paragraph [ref=e136]: "5"
+          - paragraph [ref=e137]: 1 new
+        - generic [ref=e138]:
+          - generic [ref=e139]: Clients
+          - paragraph [ref=e145]: "4"
+          - paragraph [ref=e146]: 3 active
+        - generic [ref=e147]:
+          - generic [ref=e148]: Subscriptions
+          - paragraph [ref=e154]: "2"
+          - paragraph [ref=e155]: active
+        - generic [ref=e156]:
+          - generic [ref=e157]: Conversion
+          - paragraph [ref=e162]: 20%
+          - paragraph [ref=e163]: leads → clients
+      - generic [ref=e164]:
+        - generic [ref=e165]:
+          - heading "Revenue over time" [level=2] [ref=e166]
+          - generic [ref=e167]:
+            - generic [ref=e168]: Oct
+            - generic [ref=e169]: Sep
+          - img "Revenue over time" [ref=e170]
+        - generic [ref=e173]:
+          - heading "Orders by product" [level=2] [ref=e174]
+          - img "Orders by product" [ref=e175]:
+            - generic [ref=e176]:
+              - generic [ref=e177]: Upper Lower
+              - generic [ref=e180]: "1"
+            - generic [ref=e181]:
+              - generic [ref=e182]: Muscle Mommies
+              - generic [ref=e185]: "1"
+            - generic [ref=e186]:
+              - generic [ref=e187]: Full Body
+              - generic [ref=e190]: "1"
+            - generic [ref=e191]:
+              - generic [ref=e192]: Push Pull Leg x Upper Lower — 5 Days
+              - generic [ref=e195]: "1"
+            - generic [ref=e196]:
+              - generic [ref=e197]: Anterior x Posterior
+              - generic [ref=e200]: "1"
+        - generic [ref=e201]:
+          - heading "Leads by source" [level=2] [ref=e202]
+          - img "Leads by source" [ref=e203]:
+            - generic [ref=e204]:
+              - generic [ref=e205]: program-selector
+              - generic [ref=e208]: "1"
+            - generic [ref=e209]:
+              - generic [ref=e210]: website-form
+              - generic [ref=e213]: "2"
+            - generic [ref=e214]:
+              - generic [ref=e215]: contact-page
+              - generic [ref=e218]: "1"
+            - generic [ref=e219]:
+              - generic [ref=e220]: referral
+              - generic [ref=e223]: "1"
+        - generic [ref=e224]:
+          - heading "Subscription distribution" [level=2] [ref=e225]
+          - generic [ref=e226]:
+            - img "Subscription distribution" [ref=e227]
+            - list [ref=e231]:
+              - listitem [ref=e232]:
+                - text: silver
+                - generic [ref=e234]: "1"
+              - listitem [ref=e235]:
+                - text: gold
+                - generic [ref=e237]: "2"
+        - generic [ref=e238]:
+          - heading "New customers" [level=2] [ref=e239]
+          - generic [ref=e240]:
+            - generic [ref=e241]: Oct
+            - generic [ref=e242]: Sep
+            - generic [ref=e243]: Aug
+          - img "New customers" [ref=e244]
+      - generic [ref=e247]:
+        - generic [ref=e248]:
+          - generic [ref=e249]:
+            - heading "Recent orders" [level=2] [ref=e250]
+            - link "View all" [ref=e251] [cursor=pointer]:
+              - /url: /admin/orders
+          - table [ref=e253]:
+            - rowgroup [ref=e254]:
+              - row [ref=e255]:
+                - columnheader "Order" [ref=e256]
+                - columnheader "Customer" [ref=e257]
+                - columnheader "Total" [ref=e258]
+                - columnheader "Payment" [ref=e259]
+            - rowgroup [ref=e260]:
+              - row [ref=e261]:
+                - cell "od-0777" [ref=e262]
+                - cell "Karim Zerhouni" [ref=e263]
+                - cell "LE 380" [ref=e264]
+                - cell "paid" [ref=e265]
+              - row [ref=e267]:
+                - cell "od-0776" [ref=e268]
+                - cell "Nadia Rami" [ref=e269]
+                - cell "LE 380" [ref=e270]
+                - cell "paid" [ref=e271]
+              - row [ref=e273]:
+                - cell "od-0775" [ref=e274]
+                - cell "Yassine Hadi" [ref=e275]
+                - cell "LE 380" [ref=e276]
+                - cell "paid" [ref=e277]
+              - row [ref=e279]:
+                - cell "od-0774" [ref=e280]
+                - cell "Guest (demo)" [ref=e281]
+                - cell "LE 380" [ref=e282]
+                - cell "pending" [ref=e283]
+              - row [ref=e285]:
+                - cell "od-0773" [ref=e286]
+                - cell "Laila Drissi" [ref=e287]
+                - cell "LE 380" [ref=e288]
+                - cell "refunded" [ref=e289]
+        - generic [ref=e291]:
+          - generic [ref=e292]:
+            - heading "Recent leads" [level=2] [ref=e293]
+            - link "View all" [ref=e294] [cursor=pointer]:
+              - /url: /admin/leads
+          - table [ref=e296]:
+            - rowgroup [ref=e297]:
+              - row [ref=e298]:
+                - columnheader "Name" [ref=e299]
+                - columnheader "Interest" [ref=e300]
+                - columnheader "Status" [ref=e301]
+            - rowgroup [ref=e302]:
+              - row [ref=e303]:
+                - cell "Yasmine Ait" [ref=e304]
+                - cell "Push Pull Leg x Upper Lower — 5 Days" [ref=e305]
+                - cell "new" [ref=e306]
+              - row [ref=e308]:
+                - cell "Omar Benali" [ref=e309]
+                - cell "Gold Coaching" [ref=e310]
+                - cell "contacted" [ref=e311]
+              - row [ref=e313]:
+                - cell "Sara El Fassi" [ref=e314]
+                - cell "Muscle Mommies" [ref=e315]
+                - cell "qualified" [ref=e316]
+              - row [ref=e318]:
+                - cell "Karim Zerhouni" [ref=e319]
+                - cell "Upper Lower" [ref=e320]
+                - cell "converted" [ref=e321]
+              - row [ref=e323]:
+                - cell "Demo Visitor" [ref=e324]
+                - cell "Arnold x U-L" [ref=e325]
+                - cell "lost" [ref=e326]
+      - generic [ref=e328]:
+        - heading "Recent client activity" [level=2] [ref=e329]
+        - generic [ref=e330]:
+          - generic [ref=e331]:
+            - generic [ref=e332]:
+              - paragraph [ref=e333]: Karim Zerhouni submitted a check-in
+              - paragraph [ref=e334]: Nov 1, 2026 — 100% workout adherence
+            - generic [ref=e335]: active
+          - generic [ref=e336]:
+            - generic [ref=e337]:
+              - paragraph [ref=e338]: Karim Zerhouni submitted a check-in
+              - paragraph [ref=e339]: Oct 26, 2026 — 100% workout adherence
+            - generic [ref=e340]: active
+          - generic [ref=e341]:
+            - generic [ref=e342]:
+              - paragraph [ref=e343]: Nadia Rami submitted a check-in
+              - paragraph [ref=e344]: Oct 30, 2026 — 85% workout adherence
+            - generic [ref=e345]: active
+          - generic [ref=e346]:
+            - generic [ref=e347]:
+              - paragraph [ref=e348]: Nadia Rami submitted a check-in
+              - paragraph [ref=e349]: Oct 23, 2026 — 100% workout adherence
+            - generic [ref=e350]: active
+  - alert [ref=e105]
