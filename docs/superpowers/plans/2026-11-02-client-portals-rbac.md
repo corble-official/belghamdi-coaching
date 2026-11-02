@@ -115,7 +115,7 @@ Supabase Auth emails            ← Resend hook configured at CUTOVER ONLY (no d
 - `createServiceClient()` — server-only service client (admin/provisioning/signed URLs only).
 - `computeEntitlements(sub: SubscriptionState | null, today): Entitlements` — the 6-feature matrix. **The only entitlement logic in the app**: consumed by portal UI, portal APIs, admin dashboard, and mirrored in RLS via the `has_followup_client_access()` helper implementing the identical lifecycle (test parity explicitly).
 - `resolveLifecycle(subEvent)` — frozen decision #3 events: `active` → full; `cancelled_unexpired` → full until period end; `expired` → read-only history; `refunded_full` → immediate revoke; `disputed` → suspended; `renewed` → restored.
-- **`subscription_events`** append-only audit history is the event source; current status derived — status column is a convenience cache, never the sole truth.
+- **`subscription_events`** append-only audit history is the event source; current status derived — status column is a convenience cache, never the sole truth. Columns: `id uuid PK`, `client_id`, **`event_id` (Shopify event/webhook id, UNIQUE — duplicate-event protection)**, `event_type` (ordered set: `payment_verified|activated|cancelled|expired|refunded|dispute_opened|dispute_resolved|extended|renewed|manual_admin`), `source` (shopify|webhook|admin|system), `occurred_at` (business-effective time), `processed_at`, `payload_reference` (order/payment reference), `idempotency_key` (UNIQUE: `event_id + event_type`), `created_at`. Processing is **transactional** (event insert + derived state change in one transaction); ordering by `occurred_at`, and a late/conflicting event (e.g. refunded arriving after a renewal of the same period) never re-activates: `resolveLifecycle()` evaluates against the latest `occurred_at` events and refund/dispute always wins for the affected period. Shopify retries hit `ON CONFLICT (idempotency_key) DO NOTHING` and return the original outcome.
 - `getPortalContext()` — user-JWT path; strict demo path (`isDemoMode()`): **zero** Auth/PostgREST/Storage/network calls, simulated session + client + entitlements, all flagged `demo: true`.
 
 - [ ] Step 1: `npm i @supabase/supabase-js @supabase/ssr`
@@ -130,7 +130,8 @@ Supabase Auth emails            ← Resend hook configured at CUTOVER ONLY (no d
 **SQL contract (exact):**
 - `profiles(id uuid PK refs auth.users ON DELETE CASCADE, role text NOT NULL CHECK IN ('admin','coach','coach_assistant','client'), email, full_name, client_id uuid UNIQUE REFERENCES clients(id) ON DELETE SET NULL, capabilities jsonb DEFAULT '{}', created_at, updated_at)`.
 - `coach_clients(id uuid PK, profile_id → profiles, client_id → clients, granted_by, created_at, UNIQUE(profile_id, client_id))` — single truth for assignments.
-- **`coach_assistants(id uuid PK, coach_profile_id → profiles, assistant_profile_id → profiles, granted_by uuid, created_at, UNIQUE(coach_profile_id, assistant_profile_id))`** — assistant inherits ALL of the coach's `coach_clients` assignments via `is_coach_of()`/`has_followup_client_access()` transitively (assistant can never inherit admin; `capabilities` jsonb may narrow, never widen).
+- **`coach_assistants(id uuid PK, coach_profile_id → profiles, assistant_profile_id → profiles, granted_by uuid, status text NOT NULL DEFAULT 'active' CHECK IN ('active','revoked'), granted_at, revoked_at timestamptz NULL, created_at, UNIQUE(coach_profile_id, assistant_profile_id))`** — assistant inherits the coach's `coach_clients` assignments **only while `status='active'`** (revocation is immediate: a revoked row blocks all inherited access; "re-granted later" = new row or status flip with new audit). Assistants **cannot create, modify, or revoke `coach_clients`/`coach_assistants` rows** (only admin/coach per policies); an assistant can never access another coach's clients (inheritance is via their own rows only).
+- Helpers: `is_admin()`, `owns_client(uuid)`, **`is_coach_of(uuid)` (coach-role only)**, **`can_access_client(uuid)` (single entry point for coach/assistant read access — evaluates coach assignments + active assistant inheritance; used by ALL data-table policies)**, `has_followup_client_access(uuid)` — `SECURITY DEFINER STABLE SET search_path = public, pg_temp`.
 - `checkin_reviews(id uuid PK, submission_id → checkin_submissions UNIQUE, reviewer_profile_id → profiles, status CHECK IN ('pending','approved','needs_work'), feedback, created_at, updated_at)`.
 - Helpers `is_admin()`, `owns_client(uuid)`, `is_coach_of(uuid)`, `has_followup_client_access(uuid)` — `SECURITY DEFINER STABLE SET search_path = public, pg_temp`.
 - **Self-escalation guard policy on `profiles`:** a `client`-role session may UPDATE only display-ish fields (`full_name`); `WITH CHECK` blocks any change to `role`, `client_id`, `capabilities` (probe: authenticated client UPDATE role → `admin` must fail).
@@ -138,6 +139,7 @@ Supabase Auth emails            ← Resend hook configured at CUTOVER ONLY (no d
 - Private buckets `checkin-photos` + `onboarding-photos`; object paths `{client_id}/{request_id}/`; owner-prefix policies; coach/service read via helper.
 
 - [ ] Step 1: write 001/002/003; reconcile with Step-0 log; commit (`feat: rbac + assistant inheritance migrations`)
+- [ ] Step 1b: **Rollback strategy (mandatory before apply):** export existing policies (`pg_policies`), grants tables, and a schema+data backup (pg_dump of public schema / Supabase backup) into `supabase/migrations/rollback-pre-phase3/`; write paired rollback SQL (`DOWN-001/002/003`) that drops exactly what each migration creates — never assume reverting restores prior permissions; re-apply pre-existing grants/policies explicitly in the rollback scripts. Verify the DB dump exists before `execute_sql` runs.
 - [ ] Step 2: apply; verify `rowsecurity = true` on ALL public tables
 - [ ] Step 3: **self-escalation probe**: client session UPDATE `profiles.role='admin'` → denied
 - [ ] Step 4: n8n probe: signed BC-02 lead insert + BC-03/06/07 service-key writes still succeed
@@ -152,13 +154,15 @@ The heart of "Purchase ≠ Identity ≠ Entitlements." Runs ONLY from the verifi
 - Modify: existing verified-order webhook route (`/api/webhooks/bc03-order` or current equivalent from Step-0 log) to hand off to provisioning — additive, does not change BC-03's other outputs (Telegram literal untouched).
 
 **Interfaces (Produces):**
-- `provisionFromOrder(Bc03OrderEvent): Promise<ProvisionResult>` — idempotent pipeline:
-  1. **Find-or-create client** keyed on Shopify `customer.id` (`clients.shopify_customer_id` unique — added in 004). Existing customer ⇒ reuse (renewal/repurchase NEVER creates a second identity); new ⇒ insert.
-  2. **Email gate (decision #1):** email missing ⇒ NO auth identity; create/maintain pending client record + `notifications` row for coach to collect email; return `pending_email`.
-  3. **Auth identity:** Supabase Admin API `createUser` (signups disabled publicly) keyed by email; dedupe by email lookup first.
-  4. **Profile:** insert `profiles(role='client', client_id=…)`; ON CONFLICT no-op.
-  5. **Entitlements:** subscription rows extended/created **only here** (verified event) + `subscription_events` append.
-  6. **Invitation:** send invite (Supabase Auth `inviteUserByEmail` / OTA link). Retry policy: 3 attempts, backoff; each attempt logged in invite-tracking tables (state machine: `pending → sent → accepted → failed`). Renewal of an already-onboarded client reuses account, skips onboarding, restores entitlements.
+- `provisionFromOrder(Bc03OrderEvent): Promise<ProvisionResult>` — idempotent + **race-safe** pipeline:
+  1. **Identity separation (one identity, many orders/subscriptions):** Shopify *customer* → `clients` row (one identity, keyed `shopify_customer_id` UNIQUE); Shopify *order* → its own record keyed by Shopify order/event id (UNIQUE); *auth identity* → one `auth.users` + `profiles` row per client; *subscription* → one active row per product period with full history in `subscription_events`. A customer with multiple orders/renewals keeps exactly one client identity.
+  2. **Find-or-create client** keyed on Shopify `customer.id` — DB-level **upsert** (`ON CONFLICT (shopify_customer_id) DO NOTHING … SELECT`), not read-then-insert.
+  3. **Event dedupe:** the order/event row upserted by UNIQUE event id (`ON CONFLICT DO NOTHING`; already-processed event returns the original outcome immediately).
+  4. **Email gate (decision #1):** email missing ⇒ NO auth identity; create/maintain pending client record + `notifications` row for coach to collect email; return `pending_email`.
+  5. **Auth identity:** Supabase Admin API `createUser` (signups disabled publicly) keyed by email; dedupe by email lookup first. **Partial-failure recovery:** if Auth creation succeeds but profile/binding insert fails, the next delivery of the same event (or a repair pass over clients with `auth_user_id` set but no profile) repairs state — every step is re-runnable from recorded ids; auth user dedupe by email prevents duplicate users.
+  6. **Profile:** insert `profiles(role='client', client_id=…)`; ON CONFLICT no-op.
+  7. **Entitlements:** subscription rows extended/created **only here** (verified event) + `subscription_events` append, within the same transaction as the event-record upsert (see Task 1 lifecycle contract).
+  8. **Invitation:** send invite (Supabase Auth `inviteUserByEmail` / OTA link). Retry policy: 3 attempts, backoff; each attempt logged in invite-tracking tables (state machine: `pending → sent → accepted → failed`). Renewal of an already-onboarded client reuses account, skips onboarding, restores entitlements.
 - **No n8n workflow modifications.** BC-03's Supabase writes are reconciled with this pipeline (Step-0 findings decide whether provisioning lives in the webhook route before n8n's own writes, with BC-03's notification behavior preserved verbatim).
 - `createProvisioningCredentials()` — service key used HERE only + admin routes; never portal routes.
 
@@ -199,7 +203,7 @@ The heart of "Purchase ≠ Identity ≠ Entitlements." Runs ONLY from the verifi
 
 **Files:** Create `src/app/api/portal/messages/route.ts`, `messages/send/route.ts`, `src/app/(site)/portal/follow-up/page.tsx`.
 
-**Interfaces:** `GET ?conversation_id=` → own conversation only (**user JWT**; RLS second guard); `POST /send` → `chat_messages(role='client', source='web')`; creates conversation if none. Existing telegram-sourced messages unified read-only in thread. Coach replies happen via Telegram/BC-06 (dashboards reply route added in Task 7 with JWT).
+**Interfaces:** REUSE the EXISTING `chat_conversations`/`chat_messages` tables (no new conversation system). Initially **one persistent conversation per client-coach relationship**. `GET ?conversation_id=` → own conversation only (**user JWT**; RLS second guard); `POST /send` → `chat_messages(role='client', source='web')`; creates/voices the conversation if none. Telegram-sourced messages unified read-only in thread; coach replies via Telegram continue working, coach replies through the website (Task 7) write `role='coach', source='web'` into the SAME conversation. **Sender authorization enforced by RLS:** a client-session INSERT has `WITH CHECK (role='client')` with `role` ignored/taken server-side — a client caller cannot write a `role='coach'` row (probe included). Existing conversations/messages are reconciled with Step-0 findings (one conversation per client created/linked if missing).
 
 - [ ] Step 1: API + chat UI (poll 8s); blocked UI when `entitlements.coach_chat === false`, expired ⇒ history read-only
 - [ ] Step 2: **Isolation probe:** second session GET/POST other client's conversation → 403/404, zero rows
@@ -227,6 +231,17 @@ The heart of "Purchase ≠ Identity ≠ Entitlements." Runs ONLY from the verifi
 
 - [ ] Step 1: list/detail/submit APIs + pages; expired/revoked ⇒ read-only mode enforced by `getPortalContext()` AND API guard (not UI only)
 - [ ] Step 2: probes: authed upload → 200 + path under own prefix; cross-client path → RLS/policy failure; signed URL for owner/coach (service, validated); public URL → fails; type/size validation rejects junk
+- [ ] Step 2b: **Storage access lifecycle (binding):**
+
+  | Event | Photo behavior |
+  |---|---|
+  | Subscription expires | **Preserve** (never auto-delete); coach retains access; client keeps read-only view of own history |
+  | Coach assignment removed | Old coach loses access immediately (policy re-evaluates via `can_access_client()`) |
+  | Client account disabled | Client session gets no access; admin/coach per authorization |
+  | Account deletion request | Follow retention/deletion policy: purge on confirmed deletion (admin action), documented in resolution/audit |
+  | Admin access | Retained per authorization (role-checked service path) |
+
+  Implement as Storage/RLS policy semantics + documented deletion runbook (deletion is admin-initiated only; no automatic expiry cleanup).
 - [ ] Step 3: expiry probe: past `end_date` sub → submit 403, history still readable
 - [ ] Step 4: `npx tsc --noEmit` → 0; commit `feat: check-in submission + progress + private storage (object paths)`
 
