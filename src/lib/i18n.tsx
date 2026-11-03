@@ -402,26 +402,51 @@ const DICT: Record<string, { en: string; ar: string }> = {
   contact_label_phone: { en: "Phone number", ar: "رقم الهاتف" },
   contact_label_message: { en: "Message", ar: "الرسالة" },
   contact_submit: { en: "Send Message", ar: "أرسل الرسالة" },
+  /* ===== Login / auth (OTP email sign-in) ===== */
   login_title_welcome: { en: "Welcome back.", ar: "أهلاً بعودتك." },
-  login_title_recovery: { en: "Recover access", ar: "استعادة الوصول" },
   login_label_email: { en: "Email", ar: "البريد الإلكتروني" },
-  login_label_password: { en: "Password", ar: "كلمة المرور" },
-  login_submit: { en: "Sign In", ar: "تسجيل الدخول" },
-  login_forgot: { en: "Forgot your password?", ar: "نسيت كلمة المرور؟" },
-  login_notice_not_connected: {
-    en: "Client area is not connected to Supabase Authentication yet — this experience is ready for future integration. Please contact the coach.",
-    ar: "منطقة العملاء غير متصلة بـ Supabase Authentication بعد — هذه التجربة جاهزة للتكامل مستقبلاً. يرجى التواصل مع الكوتش.",
+  login_submit: { en: "Send sign-in link", ar: "أرسل رابط الدخول" },
+  login_sending: { en: "Sending…", ar: "جارٍ الإرسال…" },
+  login_check_inbox_title: { en: "Check your inbox.", ar: "افحص بريدك الإلكتروني." },
+  login_use_different_email: {
+    en: "Use a different email",
+    ar: "استخدم بريداً إلكترونياً آخر",
   },
-  login_notice_recovery_simulated: {
-    en: "Recovery link simulated. An email would be dispatched when authentication is live.",
-    ar: "رابط الاستعادة تجريبي. ستُرسل رسالة البريد الإلكتروني عند تشغيل نظام المصادقة الفعلي.",
+  login_check_inbox_email: {
+    en: "We sent a temporary sign-in link to {email}. It expires after one hour.",
+    ar: "أرسلنا رابط دخول مؤقت إلى {email}. تنتهي صلاحيته بعد ساعة.",
   },
-  login_label_account_email: { en: "Account email", ar: "بريد الحساب" },
-  login_submit_recovery: { en: "Send Recovery Link", ar: "أرسل رابط الاستعادة" },
-  login_back_to_signin: { en: "Back to sign in", ar: "العودة لتسجيل الدخول" },
+  login_check_inbox_hint: {
+    en: "Didn't get it? Wait a few minutes, check the spam folder, or request a new link.",
+    ar: "لم يصلك البريد؟ انتظر بضع دقائق، وتفقد مجلد الرسائل غير المرغوبة، أو اطلب رابطاً جديداً.",
+  },
+  login_demo_submit: {
+    en: "Enter the client portal (demo)",
+    ar: "الدخول إلى بوابة العملاء (تجريبي)",
+  },
+  login_demo_note: {
+    en: "Demo mode: this opens a simulated client session with sample data — nothing is sent by email.",
+    ar: "وضع تجريبي: هذا يفتح جلسة عميل محاكاة ببيانات نموذجية — لا يُرسل أي بريد إلكتروني.",
+  },
+  login_error_rate_limit: {
+    en: "Too many attempts. Wait a few minutes, then try again.",
+    ar: "عدد كبير من المحاولات. انتظر بضع دقائق ثم أعد المحاولة.",
+  },
+  login_error_invalid_email: {
+    en: "This email address doesn't look valid. Check it and try again.",
+    ar: "يبدو هذا البريد الإلكتروني غير صحيح. تأكد منه وأعد المحاولة.",
+  },
+  login_error_generic: {
+    en: "Couldn't send the sign-in email right now. Try again shortly, or contact the coach.",
+    ar: "تعذّر إرسال بريد الدخول الآن. أعد المحاولة بعد قليل، أو تواصل مع الكوتش.",
+  },
+  auth_callback_error: {
+    en: "This sign-in link is invalid or expired. Request a new one from the login page.",
+    ar: "رابط الدخول غير صالح أو منتهي الصلاحية. اطلب رابطاً جديداً من صفحة الدخول.",
+  },
   login_status_prefix: {
-    en: "Account status: this portal is prepared for Supabase Authentication integration. New here?",
-    ar: "حالة الحساب: هذه البوابة مهيأة للتكامل مع Supabase Authentication. جديد هنا؟",
+    en: "No portal access yet?",
+    ar: "ليس لديك وصول للبوابة بعد؟",
   },
   login_status_cta: { en: "Start with a program", ar: "ابدأ ببرنامج" },
   checkout_confirmed_title: { en: "Order confirmed.", ar: "تم تأكيد الطلب." },
