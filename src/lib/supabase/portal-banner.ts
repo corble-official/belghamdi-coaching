@@ -20,23 +20,24 @@ export type PortalBannerVariant =
   | "pending";
 
 /**
- * Banner precedence mirrors the entitlement matrix:
- * - full access (coach chat on)              → active (green)
+ * Banner precedence (Task 4 review ruling):
  * - expired / cancelled-past-end             → history_only (amber)
  * - refunded full                            → revoked (red)
  * - suspended / disputed / partial refund    → suspended (red)
- * - no subscription yet / pending activation
- *   / onboarding outstanding                 → pending (blue, informational)
+ * - onboarding outstanding / pending
+ *   activation / no subscription             → pending (blue, informational)
+ * - full access (coach chat on)              → active (green)
  *
- * Revocation and suspension are checked BEFORE the onboarding fallback: an
- * onboarding-pending client whose access was suspended must still see the
- * red banner, never the informational blue one.
+ * RED/AMBER beat the informational blue pending banner; BLUE PENDING WINS
+ * over the green active banner (an active subscription with outstanding
+ * onboarding still shows the eligibility notice, and the hub keeps its
+ * onboarding card enabled). Demo (active, onboarding complete) stays green:
+ * its `onboarding_available` is false when `coach_chat` is on.
  */
 export function derivePortalBanner(
   ent: Entitlements,
   subscription: PortalSubscriptionSnapshot
 ): PortalBannerVariant {
-  if (ent.coach_chat) return "active";
   if (ent.checkin_history_readonly) return "history_only";
 
   if (subscription?.status === "refunded") return "revoked";
@@ -47,7 +48,11 @@ export function derivePortalBanner(
     return "suspended";
   }
 
-  // Everything else is either "not activated yet" or a closed account whose
-  // gate is onboarding-only (`onboarding_available` true).
+  if (ent.onboarding_available) return "pending";
+  if (ent.coach_chat) return "active";
+
+  // Residual fully-closed account whose status is outside the refunded /
+  // suspended / disputed vocabulary — treat as the informational pending
+  // state rather than lying with a green banner.
   return "pending";
 }
