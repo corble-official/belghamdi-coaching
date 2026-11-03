@@ -722,6 +722,121 @@ const DICT: Record<string, { en: string; ar: string }> = {
   portal_card_locked: { en: "Locked", ar: "مقفل" },
   portal_card_readonly: { en: "Read-only", ar: "قراءة فقط" },
   portal_period_ends: { en: "Period ends {date}", ar: "تنتهي الفترة في {date}" },
+
+  /* ===== Portal onboarding form (BC-03 native surface) ===== */
+  onboarding_title: {
+    en: "Complete onboarding",
+    ar: "إكمال بيانات الالتحاق",
+  },
+  onboarding_intro: {
+    en: "Five minutes to fill in; the coach uses these details to build your program.",
+    ar: "خمس دقائق تعبئة — الكوتش بيستخدم هذه البيانات لبناء برنامجك.",
+  },
+  onboarding_label_full_name: { en: "Full name", ar: "الاسم الكامل" },
+  onboarding_label_phone: { en: "WhatsApp number", ar: "رقم الواتساب" },
+  onboarding_label_email: { en: "Email", ar: "البريد الإلكتروني" },
+  onboarding_email_locked: {
+    en: "Your verified login email — not editable.",
+    ar: "بريد الدخول الموثوق لك — غير قابل للتعديل.",
+  },
+  onboarding_label_goal: {
+    en: "Primary fitness goal",
+    ar: "بهدف الاشتراك",
+  },
+  onboarding_goal_weight: { en: "Weight loss", ar: "خسارة وزن" },
+  onboarding_goal_muscle: { en: "Muscle gain", ar: "زيادة عضل" },
+  onboarding_goal_fitness: { en: "General fitness", ar: "لياقة عامة" },
+  onboarding_goal_nutrition: { en: "Nutrition", ar: "تغذية" },
+  onboarding_goal_injury: {
+    en: "Post-injury rehab",
+    ar: "ترميم بعد إصابة",
+  },
+  onboarding_goal_hint: {
+    en: "Pick a quick option or write your own.",
+    ar: "اختر خياراً سريعاً أو اكتب هدفك بنفسك.",
+  },
+  onboarding_label_days: {
+    en: "Training days per week",
+    ar: "أيام التدريب أسبوعياً",
+  },
+  onboarding_days_1_2: { en: "1–2 days", ar: "1-2 أيام" },
+  onboarding_days_3_4: { en: "3–4 days", ar: "3-4 أيام" },
+  onboarding_days_5_6: { en: "5–6 days", ar: "5-6 أيام" },
+  onboarding_label_location: {
+    en: "Training location",
+    ar: "مكان التدريب",
+  },
+  onboarding_location_gym: { en: "The gym", ar: "النادي" },
+  onboarding_location_home: { en: "At home", ar: "المنزل" },
+  onboarding_label_level: {
+    en: "Current level",
+    ar: "المستوى الحالي",
+  },
+  onboarding_level_beginner: { en: "Beginner", ar: "مبتدئ" },
+  onboarding_level_intermediate: { en: "Intermediate", ar: "متوسط" },
+  onboarding_level_advanced: { en: "Advanced", ar: "متقدم" },
+  onboarding_label_health: {
+    en: "Injuries / health notes",
+    ar: "إصابات أو ملاحظات صحية",
+  },
+  onboarding_health_hint: {
+    en: "Optional — anything the coach should know.",
+    ar: "اختياري — أي شيء يجب أن يعرفه الكوتش.",
+  },
+  onboarding_label_referral: {
+    en: "How did you hear about us?",
+    ar: "كيف سمعت عنّا؟",
+  },
+  onboarding_label_extra: {
+    en: "Anything else?",
+    ar: "أي شيء إضافي؟",
+  },
+  onboarding_submit: { en: "Submit onboarding", ar: "إرسال بيانات الالتحاق" },
+  onboarding_submitting: { en: "Submitting…", ar: "جارٍ الإرسال…" },
+  onboarding_success_title: {
+    en: "Onboarding submitted.",
+    ar: "تم إرسال بيانات الالتحاق.",
+  },
+  onboarding_success_body: {
+    en: "The coach received your details and will reach out with your plan.",
+    ar: "استلم الكوتش بياناتك وسيتواصل معك بخطتك.",
+  },
+  onboarding_error_required: {
+    en: "Please enter your full name.",
+    ar: "يرجى إدخال الاسم الكامل.",
+  },
+  onboarding_error_generic: {
+    en: "Something went wrong — please try again.",
+    ar: "حدث خطأ ما — يرجى المحاولة مرة أخرى.",
+  },
+  onboarding_error_already_completed: {
+    en: "Your onboarding was already completed.",
+    ar: "تم إكمال بيانات التحاقك مسبقاً.",
+  },
+  onboarding_error_unavailable: {
+    en: "Your onboarding isn't open right now — please contact the coach.",
+    ar: "التحاقك غير متاح حالياً — يرجى التواصل مع الكوتش.",
+  },
+  onboarding_completed_title: {
+    en: "All set.",
+    ar: "تم إكمال التحاقك.",
+  },
+  onboarding_completed_body: {
+    en: "Your onboarding details were already submitted — nothing pending here.",
+    ar: "تم إرسال بيانات التحاقك سابقاً — لا يوجد شيء مطلوب هنا.",
+  },
+  onboarding_no_request_title: {
+    en: "No open onboarding",
+    ar: "لا يوجد التحاق مفتوح",
+  },
+  onboarding_no_request_body: {
+    en: "There is no onboarding request open for your account right now. Contact the coach if this looks wrong.",
+    ar: "لا يوجد طلب التحاق مفتوح لحسابك حالياً. تواصل مع الكوتش إذا رأيت أن ذلك خطأ.",
+  },
+  onboarding_back_to_hub: {
+    en: "Back to portal",
+    ar: "العودة إلى البوابة",
+  },
 };
 
 type I18nCtx = { lang: Lang; t: (k: keyof typeof DICT) => string; setLang: (l: Lang) => void };
