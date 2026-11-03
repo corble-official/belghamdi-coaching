@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import type { AdminClientRow, AdminSegment } from "@/lib/admin/types";
 import { toRowBase } from "@/lib/admin/segments";
 import { assertStaff } from "@/lib/supabase/admin-context";
-import { createServiceClient } from "@/lib/supabase/supabase-service";
+import { tryCreateServiceClient } from "@/lib/supabase/supabase-service";
 
 /**
  * GET /api/admin/clients?segment=all|active|inactive|expired
@@ -36,7 +36,10 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ ok: true, demo: false, role: ctx.role, rows: [] });
   }
 
-  const service = createServiceClient();
+  const service = tryCreateServiceClient();
+  if (!service) {
+    return NextResponse.json({ ok: false, error: "db_down" }, { status: 503 });
+  }
 
   const clientsQuery = service
     .from("clients")

@@ -30,7 +30,8 @@
 
 do $$
 begin
-  if not exists (
+  if to_regclass('public.chat_messages') is null
+     or not exists (
     select 1
     from information_schema.columns
     where table_schema = 'public'
@@ -39,7 +40,7 @@ begin
     group by table_name
     having count(*) = 3
   ) then
-    raise warning '004: chat_messages columns incomplete — coach reply policy SKIPPED';
+    raise warning '004: chat_messages table/columns missing — coach reply policy SKIPPED';
     return;
   end if;
 

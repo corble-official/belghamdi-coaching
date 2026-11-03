@@ -58,6 +58,8 @@ export type OverrideRequestBody = {
     /** How many days `extend` adds to end_date. */
     extend_days?: number;
     reason?: string;
+    /** Coach request intent (`request_override`); defaults to extend. */
+    requested_action?: OverrideAction;
   };
 };
 

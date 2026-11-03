@@ -28,19 +28,66 @@ export function createServiceClient(): SupabaseClient {
 }
 
 /**
- * Signed read URL for a check-in photo (bucket `checkin-photos`, 10-min TTL).
- *
- * OWNERSHIP RULE: `objectPath` must be derived server-side from a DB row the
- * caller ALREADY validated through role/scope checks (folder prefix is the
- * owning client id) — this helper is never reachable from unauthenticated
- * routes because createServiceClient itself is service-role-only and every
- * admin route re-checks the staff role before its first DB read.
+ * Non-throwing variant for route handlers: returns null when the service
+ * environment is missing/misconfigured so the caller can answer a clean
+ * 503 {ok:false,error:"db_down"} instead of a raw 500.
  */
+export function tryCreateServiceClient(): SupabaseClient | null {
+  try {
+    return createServiceClient();
+  } catch (err) {
+    console.error(
+      "[supabase] service client unavailable",
+      err instanceof Error ? err.message : "unknown"
+    );
+    return null;
+  }
+}
+
+/**
+ * Signed read URLs for check-in photos (bucket `checkin-photos`, 10-min TTL).
+ *
+ * OWNERSHIP RULE: each `objectPath` must be derived server-side from a DB row
+ * the caller ALREADY validated through role/scope checks. The service client
+ * is constructed ONCE and reused; signing runs in bounded parallel batches.
+ */
+export async function createSignedPhotoUrls(
+  objectPaths: string[],
+  ttlSeconds = 60 * 10,
+  clientOverride?: SupabaseClient
+): Promise<(string | null)[]> {
+  const out: (string | null)[] = objectPaths.map(() => null);
+  if (objectPaths.length === 0) return out;
+
+  const client = clientOverride ?? createServiceClient();
+  const BATCH = 20;
+
+  for (let start = 0; start < objectPaths.length; start += BATCH) {
+    const batch = objectPaths.slice(start, start + BATCH);
+    const results = await Promise.all(
+      batch.map(async (path) => {
+        try {
+          const { data } = await client.storage
+            .from("checkin-photos")
+            .createSignedUrl(path, ttlSeconds);
+          return data?.signedUrl ?? null;
+        } catch {
+          return null;
+        }
+      })
+    );
+    results.forEach((url, i) => {
+      out[start + i] = url;
+    });
+  }
+
+  return out;
+}
+
+/** Single-path convenience wrapper over `createSignedPhotoUrls`. */
 export async function createSignedPhotoUrl(
   objectPath: string
 ): Promise<string | null> {
-  const { data } = await createServiceClient()
-    .storage.from("checkin-photos")
-    .createSignedUrl(objectPath, 60 * 10);
-  return data?.signedUrl ?? null;
+  const [url] = await createSignedPhotoUrls([objectPath]);
+  return url ?? null;
 }

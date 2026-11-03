@@ -12,8 +12,8 @@ import {
   scopeDenied,
 } from "@/lib/supabase/admin-context";
 import {
-  createServiceClient,
-  createSignedPhotoUrl,
+  createSignedPhotoUrls,
+  tryCreateServiceClient,
 } from "@/lib/supabase/supabase-service";
 import { webConversationId } from "@/lib/supabase/portal-chat";
 
@@ -74,7 +74,10 @@ export async function GET(
 
   if (!canAccessClient(ctx, clientId)) return scopeDenied();
 
-  const service = createServiceClient();
+  const service = tryCreateServiceClient();
+  if (!service) {
+    return NextResponse.json({ ok: false, error: "db_down" }, { status: 503 });
+  }
   const webConversation = webConversationId(clientId);
 
   /* ------------------------------------------------------------ *
@@ -225,8 +228,15 @@ export async function GET(
   /* ------------------------------------------------------------ *
    * Photos — signed URLs from the bucket the client owns
    * ------------------------------------------------------------ */
-  const photoRows: AdminClientBundle["photos"] = [];
+  const photoCandidates: {
+    submission_id: string;
+    submitted_at: string | null;
+    path: string;
+  }[] = [];
+  const MAX_PHOTOS = 40;
+
   for (const s of submissionRows) {
+    if (photoCandidates.length >= MAX_PHOTOS) break;
     const photos = Array.isArray(s.photos) ? s.photos : [];
     // Accept both bare object paths and {path|name|url} objects from the
     // (Task 8) submission writer; every candidate is validated below.
@@ -242,6 +252,7 @@ export async function GET(
       .filter((v): v is string => Boolean(v))
       .slice(0, 12);
     for (const pathStr of candidates) {
+      if (photoCandidates.length >= MAX_PHOTOS) break;
       if (pathStr.includes("..")) continue;
       // Ownership validated against the row we already scope-checked: the
       // object path MUST live under this client's folder.
@@ -249,21 +260,29 @@ export async function GET(
         ? pathStr
         : `${clientId}/${pathStr}`;
       if (!objectPath.startsWith(`${clientId}/`)) continue;
-      let url: string | null = null;
-      try {
-        url = await createSignedPhotoUrl(objectPath);
-      } catch {
-        url = null;
-      }
-      photoRows.push({
+      photoCandidates.push({
         submission_id: s.id as string,
         submitted_at: unknownStr(s.submitted_at),
-        url,
         path: objectPath,
-        demo: false,
       });
     }
   }
+
+  // One reused service client + bounded parallel batches (no per-photo N+1).
+  const photoUrls = await createSignedPhotoUrls(
+    photoCandidates.map((p) => p.path),
+    60 * 10,
+    service
+  );
+  const photoRows: AdminClientBundle["photos"] = photoCandidates.map(
+    (p, i) => ({
+      submission_id: p.submission_id,
+      submitted_at: p.submitted_at,
+      url: photoUrls[i] ?? null,
+      path: p.path,
+      demo: false,
+    })
+  );
 
   /* ------------------------------------------------------------ *
    * Conversations — pragmatic join: web thread + telegram threads
@@ -388,17 +407,37 @@ export async function GET(
    * Payments + activity (integration_events, light read)
    * ------------------------------------------------------------ */
   const idFilter = `payload->>client_id.eq.${clientId}`;
-  const emailFilter = client.email
-    ? `,payload->>email.eq.${String(client.email)}`
-    : "";
+  // Only interpolate an email that cannot break the PostgREST `.or()` grammar
+  // (no comma / parentheses / whitespace); otherwise skip the email arm.
+  const emailValue = unknownStr(client.email);
+  const emailSafe =
+    emailValue &&
+    /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(emailValue)
+      ? emailValue
+      : null;
+  const ledgerFilter = emailSafe
+    ? `${idFilter},payload->>email.eq.${emailSafe}`
+    : idFilter;
   const ledgerRes = await service
     .from("integration_events")
     .select("id, event_type, order_ref, status, created_at, payload")
-    .or(`${idFilter}${emailFilter}`)
+    .or(ledgerFilter)
     .order("created_at", { ascending: false })
     .limit(50);
 
-  const ledger = ((ledgerRes.data ?? []) as Record<string, unknown>[]).map(
+  if (ledgerRes.error) {
+    // Light-read section: degrade to empty rather than failing the drawer.
+    console.error(
+      "[admin/client] ledger read failed",
+      ledgerRes.error.message
+    );
+  }
+
+  const ledger = (
+    ledgerRes.error
+      ? []
+      : ((ledgerRes.data ?? []) as Record<string, unknown>[])
+  ).map(
     (r) => {
       const payload = (r.payload ?? {}) as Record<string, unknown>;
       return {

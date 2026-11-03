@@ -7,8 +7,8 @@ import {
 } from "@/components/admin/notifications-view";
 import type { AdminRole } from "@/lib/admin/types";
 import { demoNotifications, demoSalesNotifications } from "@/lib/demo/admin-crm";
-import { getAdminContext } from "@/lib/supabase/admin-context";
-import { createServiceClient } from "@/lib/supabase/supabase-service";
+import { getAdminContext, isStaffRole } from "@/lib/supabase/admin-context";
+import { tryCreateServiceClient } from "@/lib/supabase/supabase-service";
 
 export const dynamic = "force-dynamic";
 
@@ -30,70 +30,103 @@ export default async function AdminNotificationsPage() {
   const ctx = await getAdminContext();
   const role = ctx.role;
 
+  // Defense-in-depth: middleware masks /admin today, but it is not the
+  // security boundary. Non-staff (role null / client) must never reach the
+  // service read below — return before any data branch.
+  if (!isStaffRole(role)) {
+    return (
+      <div className="p-6 lg:p-10 max-w-7xl mx-auto">
+        <h1 className="font-display font-bold text-3xl text-bone">
+          Notifications
+        </h1>
+        <p className="text-sm text-red-300 border border-red-400/30 bg-red-500/10 px-4 py-3 mt-6">
+          Forbidden — staff scope required.
+        </p>
+      </div>
+    );
+  }
+
   let portal: PortalNotifRow[] = [];
   let sales: SalesNotifRow[] = [];
 
   if (ctx.demo) {
     portal = demoNotifications();
     sales = demoSalesNotifications().map((s) => ({ ...s }));
-  } else if (role === "admin") {
-    const service = createServiceClient();
-    const [portalRes, salesRes] = await Promise.all([
-      service
+  } else {
+    const service = tryCreateServiceClient();
+    if (!service) {
+      return (
+        <div className="p-6 lg:p-10 max-w-7xl mx-auto">
+          <h1 className="font-display font-bold text-3xl text-bone">
+            Notifications
+          </h1>
+          <p className="text-sm text-red-300 border border-red-400/30 bg-red-500/10 px-4 py-3 mt-6">
+            Database unavailable (db_down) — retry once the service connection
+            is configured.
+          </p>
+        </div>
+      );
+    }
+
+    if (role === "admin") {
+      const [portalRes, salesRes] = await Promise.all([
+        service
+          .from("notifications")
+          .select(
+            "id, audience_role, client_id, kind, title, body, created_at, read"
+          )
+          .order("created_at", { ascending: false })
+          .limit(100),
+        service
+          .from("sales_notifications")
+          .select("*")
+          .order("created_at", { ascending: false })
+          .limit(100),
+      ]);
+      portal = ((portalRes.data ?? []) as Record<string, unknown>[]).map((r) => ({
+        id: String(r.id),
+        audience_role: String(r.audience_role),
+        client_id: r.client_id ? String(r.client_id) : null,
+        kind: String(r.kind),
+        title: String(r.title),
+        body: typeof r.body === "string" ? r.body : null,
+        created_at: String(r.created_at),
+        read: r.read === true,
+        demo: false,
+      }));
+      sales = ((salesRes.data ?? []) as Record<string, unknown>[]).map((r) => ({
+        id: String(r.id),
+        lead_id: typeof r.lead_id === "string" ? r.lead_id : null,
+        qualified: r.qualified === true,
+        handoff: r.handoff === true,
+        success: r.success === true,
+        error: typeof r.error === "string" ? r.error : null,
+        created_at: String(r.created_at),
+        demo: false,
+      }));
+    } else {
+      // coach/assistant: same scope the RLS policy grants them (service read
+      // keeps parity with bc_notifications_select_staff).
+      const portalRes = await service
         .from("notifications")
         .select(
           "id, audience_role, client_id, kind, title, body, created_at, read"
         )
+        .in("audience_role", ["coach", "coach_assistant"])
         .order("created_at", { ascending: false })
-        .limit(100),
-      service
-        .from("sales_notifications")
-        .select("*")
-        .order("created_at", { ascending: false })
-        .limit(100),
-    ]);
-    portal = ((portalRes.data ?? []) as Record<string, unknown>[]).map((r) => ({
-      id: String(r.id),
-      audience_role: String(r.audience_role),
-      client_id: r.client_id ? String(r.client_id) : null,
-      kind: String(r.kind),
-      title: String(r.title),
-      body: typeof r.body === "string" ? r.body : null,
-      created_at: String(r.created_at),
-      read: r.read === true,
-      demo: false,
-    }));
-    sales = ((salesRes.data ?? []) as Record<string, unknown>[]).map((r) => ({
-      id: String(r.id),
-      lead_id: typeof r.lead_id === "string" ? r.lead_id : null,
-      qualified: r.qualified === true,
-      handoff: r.handoff === true,
-      success: r.success === true,
-      error: typeof r.error === "string" ? r.error : null,
-      created_at: String(r.created_at),
-      demo: false,
-    }));
-  } else {
-    // coach/assistant: same scope the RLS policy grants them (service read
-    // keeps parity with bc_notifications_select_staff).
-    const service = createServiceClient();
-    const portalRes = await service
-      .from("notifications")
-      .select("id, audience_role, client_id, kind, title, body, created_at, read")
-      .in("audience_role", ["coach", "coach_assistant"])
-      .order("created_at", { ascending: false })
-      .limit(100);
-    portal = ((portalRes.data ?? []) as Record<string, unknown>[]).map((r) => ({
-      id: String(r.id),
-      audience_role: String(r.audience_role),
-      client_id: r.client_id ? String(r.client_id) : null,
-      kind: String(r.kind),
-      title: String(r.title),
-      body: typeof r.body === "string" ? r.body : null,
-      created_at: String(r.created_at),
-      read: r.read === true,
-      demo: false,
-    }));
+        .limit(100);
+      portal = ((portalRes.data ?? []) as Record<string, unknown>[]).map((r) => ({
+        id: String(r.id),
+        audience_role: String(r.audience_role),
+        client_id: r.client_id ? String(r.client_id) : null,
+        kind: String(r.kind),
+        title: String(r.title),
+        body: typeof r.body === "string" ? r.body : null,
+        created_at: String(r.created_at),
+        read: r.read === true,
+        demo: false,
+      }));
+    }
   }
 
   return (

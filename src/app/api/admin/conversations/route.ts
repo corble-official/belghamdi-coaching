@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 import type { ConversationMessageRow } from "@/lib/admin/types";
 import { assertStaff, canAccessClient, scopeDenied } from "@/lib/supabase/admin-context";
-import { createServiceClient } from "@/lib/supabase/supabase-service";
+import { tryCreateServiceClient } from "@/lib/supabase/supabase-service";
 import { webConversationId } from "@/lib/supabase/portal-chat";
 
 const uuidLike = (value: string): boolean =>
@@ -56,7 +56,10 @@ export async function GET(req: NextRequest) {
     });
   }
 
-  const service = createServiceClient();
+  const service = tryCreateServiceClient();
+  if (!service) {
+    return NextResponse.json({ ok: false, error: "db_down" }, { status: 503 });
+  }
 
   const scopedIds = ctx.assignedClientIds;
   if (scopedIds !== null && scopedIds.length === 0) {
@@ -234,6 +237,17 @@ export async function POST(req: NextRequest) {
   const { ctx, error } = await assertStaff();
   if (error) return error;
 
+  // Matrix: assistants inherit VIEW access only (same block as tasks/review).
+  if (ctx.role === "coach_assistant") {
+    console.warn("[admin/conversations] assistant reply attempt denied", {
+      role: ctx.role,
+    });
+    return NextResponse.json(
+      { ok: false, error: "forbidden", role: ctx.role },
+      { status: 403 }
+    );
+  }
+
   const body = (await req.json().catch(() => null)) as {
     client_id?: string;
     content?: string;
@@ -266,7 +280,10 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  const service = createServiceClient();
+  const service = tryCreateServiceClient();
+  if (!service) {
+    return NextResponse.json({ ok: false, error: "db_down" }, { status: 503 });
+  }
 
   // Lazy-create the persistent web conversation row (Task 6 identity).
   const convIns = await service

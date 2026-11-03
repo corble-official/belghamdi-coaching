@@ -10,7 +10,7 @@ import {
   canAccessClient,
   scopeDenied,
 } from "@/lib/supabase/admin-context";
-import { createServiceClient } from "@/lib/supabase/supabase-service";
+import { tryCreateServiceClient } from "@/lib/supabase/supabase-service";
 import { webConversationId } from "@/lib/supabase/portal-chat";
 
 const uuidLike = (value: string): boolean =>
@@ -51,7 +51,7 @@ const numOrNull = (value: unknown): number | null => {
 
 async function resolveReviewer(
   ctx: Awaited<ReturnType<typeof assertStaff>>["ctx"],
-  service: ReturnType<typeof createServiceClient>
+  service: NonNullable<ReturnType<typeof tryCreateServiceClient>>
 ): Promise<{ id: string } | null> {
   if (ctx.profileId) {
     const own = await service
@@ -84,7 +84,10 @@ export async function GET() {
     });
   }
 
-  const service = createServiceClient();
+  const service = tryCreateServiceClient();
+  if (!service) {
+    return NextResponse.json({ ok: false, error: "db_down" }, { status: 503 });
+  }
   const scopedIds = ctx.assignedClientIds;
   if (scopedIds !== null && scopedIds.length === 0) {
     return NextResponse.json({
@@ -216,6 +219,23 @@ export async function POST(req: NextRequest) {
   const { ctx, error } = await assertStaff();
   if (error) return error;
 
+  // Matrix: reviews are admin+coach only (assistants inherit VIEW access).
+  if (ctx.role === "coach_assistant") {
+    console.warn("[admin/tasks] assistant review attempt denied", {
+      role: ctx.role,
+    });
+    return NextResponse.json(
+      { ok: false, error: "forbidden", role: ctx.role },
+      { status: 403 }
+    );
+  }
+
+  // Demo short-circuit FIRST: no service client, no DB read, no network.
+  // (The demo page applies the verdict in-memory via the admin-crm module.)
+  if (ctx.demo) {
+    return NextResponse.json({ ok: true, simulated: true });
+  }
+
   const body = (await req.json().catch(() => null)) as {
     submission_id?: string;
     status?: string;
@@ -232,18 +252,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, error: "bad_body" }, { status: 400 });
   }
 
-  // Matrix: reviews are admin+coach only (assistants inherit VIEW access).
-  if (ctx.role === "coach_assistant") {
-    console.warn("[admin/tasks] assistant review attempt denied", {
-      role: ctx.role,
-    });
-    return NextResponse.json(
-      { ok: false, error: "forbidden", role: ctx.role },
-      { status: 403 }
-    );
+  const service = tryCreateServiceClient();
+  if (!service) {
+    return NextResponse.json({ ok: false, error: "db_down" }, { status: 503 });
   }
-
-  const service = createServiceClient();
 
   // ownership from the stored row — never from the body
   const subRes = await service
@@ -256,12 +268,6 @@ export async function POST(req: NextRequest) {
   }
   const clientId = String((subRes.data as { client_id: unknown }).client_id);
   if (!canAccessClient(ctx, clientId)) return scopeDenied();
-
-  if (ctx.demo) {
-    // Demo simulation is applied by the page via the demo module; the route
-    // still validates the same shape (no network, no store touch).
-    return NextResponse.json({ ok: true, simulated: true });
-  }
 
   const reviewer = await resolveReviewer(ctx, service);
   if (!reviewer) {

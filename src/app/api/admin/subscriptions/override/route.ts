@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import type { OverrideRequestBody } from "@/lib/admin/types";
 import { OVERRIDE_ACTIONS } from "@/lib/admin/types";
 import { assertStaff, canAccessClient, scopeDenied } from "@/lib/supabase/admin-context";
-import { createServiceClient } from "@/lib/supabase/supabase-service";
+import { tryCreateServiceClient } from "@/lib/supabase/supabase-service";
 import {
   resolveLifecycle,
   type LifecycleResult,
@@ -106,6 +106,11 @@ export async function POST(req: NextRequest) {
   const payload = body.payload ?? {};
   const reasonTrimmed =
     typeof payload.reason === "string" ? payload.reason.slice(0, 500) : undefined;
+  const requestedAction =
+    payload.requested_action &&
+    (OVERRIDE_ACTIONS as string[]).includes(payload.requested_action)
+      ? payload.requested_action
+      : "extend";
 
   // Scope first for non-admins (admin is unbounded): a coach may only ask for
   // an override on a client they are actually assigned to.
@@ -141,7 +146,10 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  const service = createServiceClient();
+  const service = tryCreateServiceClient();
+  if (!service) {
+    return NextResponse.json({ ok: false, error: "db_down" }, { status: 503 });
+  }
 
   const subRes = await service
     .from("client_subscriptions")
@@ -171,7 +179,7 @@ export async function POST(req: NextRequest) {
         title: "Coach requested an override",
         body: reasonTrimmed ?? null,
         metadata: {
-          requested_action: "extend",
+          requested_action: requestedAction,
           extend_days: payload.extend_days ?? null,
           via: "admin_dashboard",
           requested_by_role: ctx.role,
