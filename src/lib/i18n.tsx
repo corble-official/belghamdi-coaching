@@ -809,10 +809,8 @@ const DICT: Record<string, { en: string; ar: string }> = {
     en: "Something went wrong — please try again.",
     ar: "حدث خطأ ما — يرجى المحاولة مرة أخرى.",
   },
-  onboarding_error_already_completed: {
-    en: "Your onboarding was already completed.",
-    ar: "تم إكمال بيانات التحاقك مسبقاً.",
-  },
+  // (no i18n "already completed" error string: a 409 renders the terminal
+  // "completed" card instead of an inline message; see OnboardingForm)
   onboarding_error_unavailable: {
     en: "Your onboarding isn't open right now — please contact the coach.",
     ar: "التحاقك غير متاح حالياً — يرجى التواصل مع الكوتش.",

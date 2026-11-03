@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { isDemoMode } from "@/lib/mode";
 import { getPortalContext } from "@/lib/supabase/portal-context";
 import { createPortalClient } from "@/lib/supabase/supabase-auth";
@@ -103,8 +104,17 @@ async function flipOwnRequest(
   clientId: string,
   requestId: string
 ): Promise<StatusFlip> {
+  // Only a missing/unusable service credential counts as "skipped": the
+  // createServiceClient() throw is the single place that can mean it.
+  let svc: SupabaseClient;
   try {
-    const svc = createServiceClient();
+    svc = createServiceClient();
+  } catch {
+    // SUPABASE_SERVICE_ROLE_KEY not configured (demo/local) — never fatal.
+    return "skipped_no_service_key";
+  }
+
+  try {
     const flip = await svc
       .from("onboarding_requests")
       .update({ status: "completed", completed_at: new Date().toISOString() })
@@ -118,8 +128,9 @@ async function flipOwnRequest(
     if (!flip.data || flip.data.length === 0) return "not_applied";
     return "applied";
   } catch {
-    // SUPABASE_SERVICE_ROLE_KEY not configured (demo/local) — never fatal.
-    return "skipped_no_service_key";
+    // Any runtime failure mid-flip (network, REST error) is a real failure —
+    // the submission already succeeded, so the response stays ok:true.
+    return "failed";
   }
 }
 

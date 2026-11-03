@@ -81,7 +81,6 @@ export default function OnboardingForm({
   const [busy, setBusy] = useState(false);
   const [errorKey, setErrorKey] = useState<
     | "onboarding_error_required"
-    | "onboarding_error_already_completed"
     | "onboarding_error_unavailable"
     | "onboarding_error_generic"
     | null
@@ -140,16 +139,21 @@ export default function OnboardingForm({
       }
 
       const data = (await res.json().catch(() => ({}))) as { error?: unknown };
+      // 409 = already submitted → show the terminal "completed" card instead
+      // of an inline error the user could then act on.
+      if (data?.error === "already_completed") {
+        setView("completed");
+        return;
+      }
+
       setErrorKey(
-        data?.error === "already_completed"
-          ? "onboarding_error_already_completed"
-          : data?.error === "full_name_required"
-            ? "onboarding_error_required"
-            : data?.error === "no_onboarding_request" ||
-                data?.error === "request_cancelled" ||
-                data?.error === "no_linked_client"
-              ? "onboarding_error_unavailable"
-              : "onboarding_error_generic"
+        data?.error === "full_name_required"
+          ? "onboarding_error_required"
+          : data?.error === "no_onboarding_request" ||
+              data?.error === "request_cancelled" ||
+              data?.error === "no_linked_client"
+            ? "onboarding_error_unavailable"
+            : "onboarding_error_generic"
       );
     } catch {
       setErrorKey("onboarding_error_generic");
@@ -255,11 +259,16 @@ export default function OnboardingForm({
           </Field>
 
           {/* 5. training days — chips only */}
-          <Field icon={ClipboardList} labelKey="onboarding_label_days">
+          <Field
+            icon={ClipboardList}
+            labelKey="onboarding_label_days"
+            labelId="onb-days-group"
+          >
             <ChipRow
               chips={DAYS_CHIPS}
               activeValue={fields.training_days}
               onToggle={(value) => set("training_days", value)}
+              groupLabelId="onb-days-group"
             />
           </Field>
 
@@ -281,11 +290,16 @@ export default function OnboardingForm({
           </Field>
 
           {/* 7. current level — chips only */}
-          <Field icon={ClipboardList} labelKey="onboarding_label_level">
+          <Field
+            icon={ClipboardList}
+            labelKey="onboarding_label_level"
+            labelId="onb-level-group"
+          >
             <ChipRow
               chips={LEVEL_CHIPS}
               activeValue={fields.experience_level}
               onToggle={(value) => set("experience_level", value)}
+              groupLabelId="onb-level-group"
             />
           </Field>
 
@@ -367,6 +381,7 @@ export default function OnboardingForm({
 
 function Field({
   htmlFor,
+  labelId,
   icon: Icon,
   labelKey,
   hintKey,
@@ -375,6 +390,8 @@ function Field({
 }: {
   /** Id of the field's single control; omitted for chip-only groups. */
   htmlFor?: string;
+  /** Id for the label element itself (referenced by `aria-labelledby`). */
+  labelId?: string;
   icon: LucideIcon;
   labelKey: Parameters<TFn>[0];
   hintKey?: Parameters<TFn>[0];
@@ -395,13 +412,15 @@ function Field({
   return (
     <div>
       {/* Chip-only groups have no single control, so they get a plain label
-          element instead of a dangling `for` attribute. */}
+          element (id-able via labelId) instead of a dangling `for`. */}
       {htmlFor ? (
-        <label htmlFor={htmlFor} className={labelClass}>
+        <label htmlFor={htmlFor} id={labelId} className={labelClass}>
           {labelBody}
         </label>
       ) : (
-        <p className={labelClass}>{labelBody}</p>
+        <p id={labelId} className={labelClass}>
+          {labelBody}
+        </p>
       )}
       {children}
       {hintKey && <p className="text-[11px] text-muted mt-1.5">{t(hintKey)}</p>}
@@ -413,14 +432,21 @@ function ChipRow({
   chips,
   activeValue,
   onToggle,
+  groupLabelId,
 }: {
   chips: ChipOption[];
   activeValue: string;
   onToggle: (value: string) => void;
+  /** Set for chip-only groups that have no single labelled control. */
+  groupLabelId?: string;
 }) {
   const { t } = useI18n();
   return (
-    <div className="flex flex-wrap gap-2">
+    <div
+      role={groupLabelId ? "group" : undefined}
+      aria-labelledby={groupLabelId}
+      className="flex flex-wrap gap-2"
+    >
       {chips.map((chip) => {
         const active = activeValue === chip.value;
         return (
