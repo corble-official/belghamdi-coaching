@@ -309,8 +309,13 @@ begin
       select 1
       from public.coach_assistants ca
       join public.coach_clients cc on cc.profile_id = ca.coach_profile_id
+      join public.profiles coach_p on coach_p.id = ca.coach_profile_id
       where ca.assistant_profile_id = auth.uid()
         and ca.status = 'active'
+        -- Reviewer Minor #3: only trust the link while the coach side is
+        -- still actually a coach — a stale row for a demoted coach grants
+        -- nothing.
+        and coach_p.role = 'coach'
         and cc.client_id = p_client_id
     );
   end if;
@@ -794,7 +799,10 @@ create policy bc_aer_select_admin on public.automation_error_resolutions
 
 drop policy if exists bc_aer_insert_admin on public.automation_error_resolutions;
 create policy bc_aer_insert_admin on public.automation_error_resolutions
-  for insert with check (public.is_admin() or resolved_by = auth.uid());
+  -- Review finding: INSERT is admin-only. The previous `resolved_by =
+  -- auth.uid()` branch let ANY authenticated client-role user fabricate
+  -- audit rows. Operators record resolutions via the admin/service path.
+  for insert with check (public.is_admin());
 -- UPDATE/DELETE: none (audit trail immutable once written)
 
 alter table public.notifications enable row level security;
