@@ -1,7 +1,11 @@
 import "server-only";
 
 import { isDemoMode } from "@/lib/mode";
-import { computeEntitlements, type SubscriptionState } from "./entitlements";
+import {
+  computeEntitlements,
+  type SubscriptionState,
+} from "./entitlements";
+import type { PortalSubscriptionSnapshot } from "./portal-banner";
 import { createPortalClient, getAuthUser } from "./supabase-auth";
 
 export type PortalRole = "client" | "coach" | "admin";
@@ -19,7 +23,14 @@ export type PortalClient = {
 };
 
 export type PortalContext =
-  | { demo: true; role: PortalRole; profile: PortalProfile; client: PortalClient; entitlements: ReturnType<typeof computeEntitlements> }
+  | {
+      demo: true;
+      role: PortalRole;
+      profile: PortalProfile;
+      client: PortalClient;
+      subscription: Exclude<PortalSubscriptionSnapshot, null>;
+      entitlements: ReturnType<typeof computeEntitlements>;
+    }
   | { demo: false; authed: false }
   | {
       demo: false;
@@ -27,6 +38,7 @@ export type PortalContext =
       role: PortalRole;
       profile: PortalProfile;
       client: PortalClient;
+      subscription: PortalSubscriptionSnapshot;
       entitlements: ReturnType<typeof computeEntitlements>;
     };
 
@@ -60,6 +72,7 @@ export async function getPortalContext(): Promise<PortalContext> {
       role: "client",
       profile: DEMO_PROFILE,
       client: DEMO_CLIENT,
+      subscription: { status: DEMO_SUB.status, end_date: DEMO_SUB.end_date },
       entitlements: computeEntitlements(DEMO_SUB, new Date()),
     };
   }
@@ -132,6 +145,7 @@ const str = (value: unknown): string | undefined =>
       role: "client",
       profile,
       client: { id: "", full_name: profile.full_name, email: profile.email },
+      subscription: null,
       entitlements: computeEntitlements(null, new Date(), {
         onboardingPending: true,
       }),
@@ -148,6 +162,9 @@ const str = (value: unknown): string | undefined =>
       full_name: str(client.full_name) ?? profile.full_name,
       email: str(client.email) ?? profile.email,
     },
+    subscription: sub
+      ? { status: sub.status, end_date: sub.end_date }
+      : null,
     entitlements: computeEntitlements(sub, new Date(), {
       onboardingPending,
     }),

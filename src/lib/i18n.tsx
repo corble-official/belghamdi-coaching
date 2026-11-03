@@ -653,6 +653,75 @@ const DICT: Record<string, { en: string; ar: string }> = {
     en: "Demo content shown. Real client transformations will replace these entries — never presented without verified consent.",
     ar: "محتوى تجريبي. التحولات الحقيقية للعملاء هتظهر هنا بعد موافقتهم — عمرنا ما بنعرض حاجة من غير إذن صريح.",
   },
+
+  /* ===== Client portal (shell + hub) ===== */
+  portal_title: { en: "Client Portal", ar: "بوابة العملاء" },
+  portal_greeting: { en: "Welcome back, {name}.", ar: "أهلاً بعودتك، {name}." },
+  portal_signout: { en: "Sign out", ar: "تسجيل الخروج" },
+  portal_footer_note: {
+    en: "Belghamdi Coaching — client portal",
+    ar: "كوتش بالغامدي — بوابة العملاء",
+  },
+  portal_nav_home: { en: "Home", ar: "الرئيسية" },
+  portal_nav_chat: { en: "Chat", ar: "المحادثة" },
+  portal_nav_progress: { en: "Progress", ar: "التقدم" },
+  portal_nav_renewal: { en: "Renewal", ar: "التجديد" },
+  portal_banner_active: {
+    en: "Your subscription is active until {date}.",
+    ar: "اشتراكك نشط حتى {date}.",
+  },
+  portal_banner_history_only: {
+    en: "Your subscription period has ended — your history stays available read-only, while new submissions and coach chat are paused. Renew to regain full access.",
+    ar: "انتهت مدة اشتراكك — يبقى سجلك متاحاً للقراءة فقط، بينما توقفت الإرساليات الجديدة والمحادثة مع الكوتش. جدّد اشتراكك لاستعادة الوصول الكامل.",
+  },
+  portal_banner_suspended: {
+    en: "Portal access is temporarily suspended pending a refund review. Contact the coach for details.",
+    ar: "تم إيقاف الوصول إلى البوابة مؤقتاً رهن مراجعة عملية الاسترداد. تواصل مع الكوتش لمعرفة التفاصيل.",
+  },
+  portal_banner_revoked: {
+    en: "Portal access was revoked after a full refund. Contact the coach if you believe this is a mistake.",
+    ar: "تم إلغاء الوصول إلى البوابة بعد الاسترداد الكامل للمبلغ. تواصل مع الكوتش إذا كنت ترى أن ذلك خطأ.",
+  },
+  portal_banner_pending: {
+    en: "Eligibility invite awaiting verification — in the meantime you can complete your onboarding details.",
+    ar: "دعوة الأهلية بانتظار التحقق — يمكنك في هذه الأثناء إكمال بيانات الالتحاق.",
+  },
+  portal_hub_eyebrow: { en: "Your portal", ar: "بوابتك" },
+  portal_hub_title: { en: "Everything in one place.", ar: "كل شيء في مكان واحد." },
+  portal_card_onboarding_title: {
+    en: "Complete onboarding",
+    ar: "إكمال بيانات الالتحاق",
+  },
+  portal_card_onboarding_desc: {
+    en: "Share your intake details so the coach can build your plan.",
+    ar: "أكمل بيانات التحاقك حتى يبني الكوتش خطتك.",
+  },
+  portal_card_chat_title: { en: "Coach chat", ar: "المحادثة مع الكوتش" },
+  portal_card_chat_desc: {
+    en: "Direct follow-up with the coach — questions, feedback, and plan adjustments.",
+    ar: "متابعة مباشرة مع الكوتش — أسئلة وملاحظات وتعديلات على الخطة.",
+  },
+  portal_card_checkins_title: { en: "Weekly check-ins", ar: "المتابعات الأسبوعية" },
+  portal_card_checkins_desc: {
+    en: "Submit your weekly stats and read the coach's feedback.",
+    ar: "أرسل أرقامك الأسبوعية واطلع على ملاحظات الكوتش.",
+  },
+  portal_card_progress_title: {
+    en: "Progress & history",
+    ar: "التقدم والسجل",
+  },
+  portal_card_progress_desc: {
+    en: "Track your measurements and check-in history over time.",
+    ar: "تابع قياساتك وسجل متابعاتك عبر الزمن.",
+  },
+  portal_card_renewal_title: { en: "Renewal", ar: "التجديد" },
+  portal_card_renewal_desc: {
+    en: "Renew or extend your subscription.",
+    ar: "جدّد اشتراكك أو مدّد مدته.",
+  },
+  portal_card_locked: { en: "Locked", ar: "مقفل" },
+  portal_card_readonly: { en: "Read-only", ar: "قراءة فقط" },
+  portal_period_ends: { en: "Period ends {date}", ar: "تنتهي الفترة في {date}" },
 };
 
 type I18nCtx = { lang: Lang; t: (k: keyof typeof DICT) => string; setLang: (l: Lang) => void };
