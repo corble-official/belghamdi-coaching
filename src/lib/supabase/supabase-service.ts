@@ -26,3 +26,21 @@ export function createServiceClient(): SupabaseClient {
     },
   });
 }
+
+/**
+ * Signed read URL for a check-in photo (bucket `checkin-photos`, 10-min TTL).
+ *
+ * OWNERSHIP RULE: `objectPath` must be derived server-side from a DB row the
+ * caller ALREADY validated through role/scope checks (folder prefix is the
+ * owning client id) — this helper is never reachable from unauthenticated
+ * routes because createServiceClient itself is service-role-only and every
+ * admin route re-checks the staff role before its first DB read.
+ */
+export async function createSignedPhotoUrl(
+  objectPath: string
+): Promise<string | null> {
+  const { data } = await createServiceClient()
+    .storage.from("checkin-photos")
+    .createSignedUrl(objectPath, 60 * 10);
+  return data?.signedUrl ?? null;
+}

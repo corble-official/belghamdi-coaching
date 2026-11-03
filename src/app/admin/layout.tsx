@@ -19,26 +19,42 @@ import {
   Cloud,
   Database,
   Workflow,
+  MessageSquare,
+  ClipboardCheck,
+  Bell,
 } from "lucide-react";
 import { isDemoMode, integrationStatus } from "@/lib/mode";
 
-const NAV = [
+const NAV: {
+  href: string;
+  label: string;
+  icon: typeof LayoutDashboard;
+  exact?: boolean;
+  /** Hidden for coach / coach_assistant scopes (admin legacy sees all). */
+  adminOnly?: boolean;
+}[] = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard, exact: true },
-  { href: "/admin/leads", label: "Leads", icon: Users },
+  { href: "/admin/leads", label: "Leads", icon: Users, adminOnly: true },
   { href: "/admin/clients", label: "Clients", icon: UserCheck },
-  { href: "/admin/products", label: "Products", icon: Package },
-  { href: "/admin/orders", label: "Orders", icon: ShoppingCart },
   { href: "/admin/subscriptions", label: "Subscriptions", icon: RefreshCcw },
-  { href: "/admin/progress", label: "Progress", icon: TrendingUp },
-  { href: "/admin/content", label: "Content", icon: FileText },
-  { href: "/admin/automation", label: "Automation", icon: Workflow },
-  { href: "/admin/settings", label: "Settings", icon: Settings },
+  { href: "/admin/conversations", label: "Conversations", icon: MessageSquare },
+  { href: "/admin/tasks", label: "Check-in Reviews", icon: ClipboardCheck },
+  { href: "/admin/notifications", label: "Notifications", icon: Bell },
+  { href: "/admin/products", label: "Products", icon: Package, adminOnly: true },
+  { href: "/admin/orders", label: "Orders", icon: ShoppingCart, adminOnly: true },
+  { href: "/admin/progress", label: "Progress", icon: TrendingUp, adminOnly: true },
+  { href: "/admin/content", label: "Content", icon: FileText, adminOnly: true },
+  { href: "/admin/automation", label: "Automation", icon: Workflow, adminOnly: true },
+  { href: "/admin/settings", label: "Settings", icon: Settings, adminOnly: true },
 ];
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [role, setRole] = useState<"admin" | "coach" | "coach_assistant" | null | "loading">(
+    "loading"
+  );
   const demo = useMemo(() => isDemoMode(), []);
   const integrations = useMemo(() => integrationStatus(), []);
 
@@ -46,10 +62,46 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     setOpen(false);
   }, [pathname]);
 
+  /**
+   * Role-aware nav mapping (Task 7): demo/legacy admin → 'admin' (all
+   * items); live JWT staff → role read from the staff API (pages + routes
+   * enforce the matrix server-side; the nav badge is informative).
+   */
+  useEffect(() => {
+    let alive = true;
+    if (demo) {
+      setRole("admin");
+      return;
+    }
+    fetch("/api/admin/clients?segment=all")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data: { role?: string } | null) => {
+        if (!alive) return;
+        const r = data?.role;
+        setRole(
+          r === "admin" || r === "coach" || r === "coach_assistant" ? r : null
+        );
+      })
+      .catch(() => alive && setRole(null));
+    return () => {
+      alive = false;
+    };
+  }, [demo, pathname]);
+
   const logout = async () => {
     await fetch("/api/admin/auth", { method: "DELETE" });
     router.push("/admin/login");
   };
+
+  /**
+   * Role-aware visibility: admin (legacy cookie or JWT) sees everything; coach
+   * and coach_assistant see only the view-only CRM surfaces. Server routes
+   * remain the enforcement point — this is chrome, not security.
+   */
+  const visibleNav =
+    role === "coach" || role === "coach_assistant"
+      ? NAV.filter((item) => !item.adminOnly)
+      : NAV;
 
   return (
     <div dir="ltr" className="min-h-screen bg-graphite flex">
@@ -79,7 +131,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         </div>
 
         <nav className="flex-1 py-6 px-3 space-y-1 overflow-y-auto">
-          {NAV.map((item) => {
+          {visibleNav.map((item) => {
             const active =
               item.exact ? pathname === item.href : pathname.startsWith(item.href);
             return (
@@ -101,6 +153,15 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
         <div className="p-4 border-t border-wgray-dim/50">
           <div className="mb-4 space-y-2 text-xs">
+            {role !== "loading" && (
+              <p className="flex items-center gap-2 text-wgray" data-role-badge>
+                Scope:{" "}
+                <span className="text-copper font-display uppercase tracking-widest">
+                  {role ?? "none"}
+                  {role === "coach_assistant" ? " (view-only)" : ""}
+                </span>
+              </p>
+            )}
             <p className="flex items-center gap-2 text-wgray">
               <Database className="h-3.5 w-3.5" />
               {integrations.supabase ? "Supabase: connected" : "Supabase: not configured"}
