@@ -835,6 +835,74 @@ const DICT: Record<string, { en: string; ar: string }> = {
     en: "Back to portal",
     ar: "العودة إلى البوابة",
   },
+
+  /* ===== Portal follow-up chat (BC-06 client tunnel) ===== */
+  followup_title: { en: "Follow-up chat", ar: "محادثة المتابعة" },
+  followup_intro: {
+    en: "One thread for everything — your web messages and the Telegram history from the coach in a single place.",
+    ar: "مسار واحد لكل شيء — رسائلك من الموقع وسجل تيليجرام من الكوتش في مكان واحد.",
+  },
+  followup_thread_aria: {
+    en: "Conversation with the coach",
+    ar: "المحادثة مع الكوتش",
+  },
+  followup_input_label: { en: "Message the coach", ar: "راسل الكوتش" },
+  followup_placeholder: {
+    en: "Write your question or update…",
+    ar: "اكتب سؤالك أو ملاحظتك…",
+  },
+  followup_hint: {
+    en: "Up to 2000 characters per message.",
+    ar: "حتى 2000 حرف لكل رسالة.",
+  },
+  followup_send: { en: "Send", ar: "إرسال" },
+  followup_sending: { en: "Sending…", ar: "جارٍ الإرسال…" },
+  followup_empty: {
+    en: "No messages yet — say hello to your coach.",
+    ar: "لا توجد رسائل بعد — رحّب بكوتشك.",
+  },
+  followup_badge_telegram: { en: "Telegram", ar: "تيليجرام" },
+  followup_telegram_note: {
+    en: "Messages from Telegram are part of the same thread — read-only history here.",
+    ar: "رسائل تيليجرام جزء من نفس المحادثة — سجل للقراءة فقط هنا.",
+  },
+  followup_history_banner: {
+    en: "Your subscription period has ended — the conversation stays visible for reading, but sending is paused. Renew to reply to the coach.",
+    ar: "انتهت مدة اشتراكك — المحادثة تبقى ظاهرة للقراءة، لكن الإرسال متوقف. جدّد لتراسل الكوتش من جديد.",
+  },
+  followup_locked_title: { en: "Chat locked", ar: "المحادثة مقفلة" },
+  followup_locked_body: {
+    en: "Chatting with the coach needs an active subscription — renew your plan to reopen the conversation with the coach.",
+    ar: "المحادثة مع الكوتش تحتاج اشتراكاً نشطاً — جدّد باقتك لإعادة فتح المحادثة مع الكوتش.",
+  },
+  followup_locked_cta: {
+    en: "Renew subscription",
+    ar: "جدّد اشتراكك",
+  },
+  followup_checkins_soon: {
+    en: "Coming next",
+    ar: "قريباً",
+  },
+  followup_checkins_teaser_body: {
+    en: "Your weekly check-ins and the coach's feedback will live right here under this anchor.",
+    ar: "متابعاتك الأسبوعية وملاحظات الكوتش ستظهر هنا مباشرة تحت هذا القسم.",
+  },
+  followup_error_required: {
+    en: "Write a message first.",
+    ar: "اكتب رسالة أولاً.",
+  },
+  followup_error_too_long: {
+    en: "Messages are limited to 2000 characters.",
+    ar: "الرسائل محدودة بـ 2000 حرف.",
+  },
+  followup_error_locked: {
+    en: "Sending is unavailable right now — your plan doesn't include chat.",
+    ar: "الإرسال غير متاح حالياً — باقتك لا تتضمن المحادثة.",
+  },
+  followup_error_generic: {
+    en: "The message wasn't sent — check your connection and try again.",
+    ar: "لم تُرسل الرسالة — تحقق من الاتصال وحاول مرة أخرى.",
+  },
 };
 
 type I18nCtx = { lang: Lang; t: (k: keyof typeof DICT) => string; setLang: (l: Lang) => void };
