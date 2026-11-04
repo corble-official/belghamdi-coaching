@@ -24,6 +24,11 @@ export interface Bc03OrderEvent {
   phone?: string | null;
   kind?: string | null;
   subscription_code?: string | null;
+  /* Task 2.5 (additive, optional): Shopify customer id when the verified
+     payload carries one — lets provisioning bind clients.shopify_customer_id
+     ("one identity, many orders"). n8n BC-03 does not send it today; absent
+     ⇒ provisioning skips the binding (email stays the identity anchor). */
+  shopify_customer_id?: number | null;
 }
 
 export interface Bc06TaskUpsert {

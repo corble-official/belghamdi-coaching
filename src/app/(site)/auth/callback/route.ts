@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { isDemoMode, isSupabaseConfigured } from "@/lib/mode";
+import { acceptInviteByUser } from "@/lib/provisioning/invite";
 import { createPortalClient } from "@/lib/supabase/supabase-auth";
 import type { VerifyEmailOtpParams } from "@supabase/supabase-js";
 
@@ -38,23 +39,41 @@ export async function GET(req: NextRequest) {
   const tokenHash = url.searchParams.get("token_hash");
   const type = url.searchParams.get("type");
 
+  let userId: string | null = null;
+
   try {
     const supabase = await createPortalClient();
 
     if (code) {
-      const { error } = await supabase.auth.exchangeCodeForSession(code);
+      const { data, error } = await supabase.auth.exchangeCodeForSession(code);
       if (error) return fail();
+      userId = data.user?.id ?? null;
     } else if (tokenHash && type && OTP_TYPES.includes(type)) {
-      const { error } = await supabase.auth.verifyOtp({
+      const { data, error } = await supabase.auth.verifyOtp({
         token_hash: tokenHash,
         type: type as VerifyEmailOtpParams["type"],
       });
       if (error) return fail();
+      userId = data.user?.id ?? null;
     } else {
       return fail();
     }
   } catch {
     return fail();
+  }
+
+  // Task 2.5 — idempotent invitation acceptance flip: the FIRST authorized
+  // portal login marks clients.invite_status='accepted'. Guarded by the same
+  // auth context as this route: the user id comes from the just-established
+  // session (exchanged code / verified OTP), never from request input. The
+  // update filter (auth_user_id = uid AND invite_status in pending/sent)
+  // keeps repeat logins no-ops. A failed flip must never block the redirect.
+  if (userId) {
+    try {
+      await acceptInviteByUser(userId);
+    } catch {
+      // swallow — login proceeds regardless
+    }
   }
 
   return NextResponse.redirect(new URL("/portal", url.origin));
