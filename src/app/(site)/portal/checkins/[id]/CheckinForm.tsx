@@ -211,8 +211,25 @@ export default function CheckinForm({
     }
   };
 
-  const removePhoto = (path: string) => {
-    setPhotos((prev) => prev.filter((p) => p.path !== path));
+  const removePhoto = async (path: string) => {
+    if (busy || uploading) return;
+    setErrorKey(null);
+    try {
+      // Server-side delete frees the slot under the 3-photo cap — removing
+      // the chip without deleting the object would leak bucket quota.
+      const res = await fetch("/api/portal/checkins/upload", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ request_id: requestId, path }),
+      });
+      if (!res.ok) {
+        setErrorKey("checkin_error_photo_failed");
+        return;
+      }
+      setPhotos((prev) => prev.filter((p) => p.path !== path));
+    } catch {
+      setErrorKey("checkin_error_photo_failed");
+    }
   };
 
   /* ------------------------------------------------------------- submit */
@@ -475,7 +492,11 @@ export default function CheckinForm({
               <Camera className="h-3.5 w-3.5 text-brand" />
               {t("checkin_label_photos")}
               <span className="ms-auto text-[11px] font-normal">
-                {photos.length}/{MAX_CHECKIN_PHOTOS}
+                {photos.length}/{MAX_CHECKIN_PHOTOS} ·{" "}
+                {t("checkin_photos_remaining").replace(
+                  "{count}",
+                  String(MAX_CHECKIN_PHOTOS - photos.length)
+                )}
               </span>
             </p>
 
@@ -489,7 +510,7 @@ export default function CheckinForm({
                     <span className="max-w-[12rem] truncate">{photo.name}</span>
                     <button
                       type="button"
-                      onClick={() => removePhoto(photo.path)}
+                      onClick={() => void removePhoto(photo.path)}
                       className="text-muted hover:text-red-700"
                       aria-label={`${t("checkin_photo_remove")} ${photo.name}`}
                     >

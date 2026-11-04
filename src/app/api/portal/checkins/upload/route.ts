@@ -9,11 +9,12 @@ import {
   checkinPhotoPath,
   extensionForMime,
   isCheckinRequestId,
+  isOwnCheckinPhotoPath,
   sanitizeCheckinFilename,
   sniffImageType,
 } from "@/lib/checkins";
 import { isDemoMode } from "@/lib/mode";
-import { demoCheckinDetail, demoCheckinUploadPath } from "@/lib/demo/portal-checkins";
+import { DEMO_CLIENT_ID, demoCheckinDetail, demoCheckinUploadPath } from "@/lib/demo/portal-checkins";
 import { getPortalContext } from "@/lib/supabase/portal-context";
 import { checkinEntitlements } from "@/lib/supabase/portal-checkins";
 import { createPortalClient } from "@/lib/supabase/supabase-auth";
@@ -57,6 +58,15 @@ function generatedName(originalName: string, mime: string): string {
 }
 
 export async function POST(req: Request) {
+  // Early reject: never buffer a multipart body larger than the cap + slack.
+  const contentLength = Number(req.headers.get("content-length") ?? 0);
+  if (
+    Number.isFinite(contentLength) &&
+    contentLength > MAX_CHECKIN_PHOTO_BYTES + 64 * 1024
+  ) {
+    return NextResponse.json({ error: "file_too_large" }, { status: 413 });
+  }
+
   const ctx = await getPortalContext();
   if (!ctx.demo && !ctx.authed) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
@@ -236,4 +246,176 @@ export async function POST(req: Request) {
     content_type: sniffed,
     size: file.size,
   });
+}
+
+/**
+ * DELETE /api/portal/checkins/upload — remove one uploaded photo.
+ *
+ * JSON body: { request_id, path }. This is the "remove photo" half of the
+ * form's upload flow: it frees a slot under the 3-photo cap by deleting the
+ * object instead of leaking it into the bucket.
+ *
+ * Hard rules (binding):
+ *  - Entitlement gate FIRST (same gate as upload) → 403 feature_locked.
+ *  - `path` must be `checkin-photos/<own client_id>/<request_id>/<name>` —
+ *    anything else → 400 photos_invalid. Ownership comes from the session,
+ *    never from the body.
+ *  - Only unsubmitted requests: a submitted/completed request is immutable
+ *    history, so deleting its photos → 409 already_submitted.
+ *  - Live delete runs through the USER-JWT Storage client — storage RLS
+ *    own-prefix policies govern. No service key.
+ *  - Demo: acknowledged only (no bytes are stored in demo mode).
+ */
+export async function DELETE(req: Request) {
+  const contentLength = Number(req.headers.get("content-length") ?? 0);
+  if (Number.isFinite(contentLength) && contentLength > 64 * 1024) {
+    return NextResponse.json({ error: "invalid_json" }, { status: 413 });
+  }
+
+  const ctx = await getPortalContext();
+  if (!ctx.demo && !ctx.authed) {
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  }
+
+  const ent = checkinEntitlements(ctx, req.headers);
+  const gates = checkinGates(ent);
+  if (!gates.can_submit) {
+    return NextResponse.json(
+      { error: "feature_locked", gate: "progress_submissions" },
+      { status: 403 }
+    );
+  }
+
+  let body: Record<string, unknown>;
+  try {
+    body = (await req.json()) as Record<string, unknown>;
+  } catch {
+    return NextResponse.json({ error: "invalid_json" }, { status: 400 });
+  }
+
+  const requestId =
+    typeof body.request_id === "string" ? body.request_id.trim() : "";
+  const path = typeof body.path === "string" ? body.path.trim() : "";
+  if (!isCheckinRequestId(requestId)) {
+    return NextResponse.json(
+      { error: "request_id_required" },
+      { status: 400 }
+    );
+  }
+
+  const demoMode = isDemoMode();
+  const clientIdForPath = demoMode
+    ? DEMO_CLIENT_ID
+    : !ctx.demo && ctx.authed
+      ? ctx.client.id
+      : "";
+  if (!clientIdForPath) {
+    return NextResponse.json({ error: "no_linked_client" }, { status: 403 });
+  }
+  if (!isOwnCheckinPhotoPath(path, clientIdForPath, requestId)) {
+    return NextResponse.json({ error: "photos_invalid" }, { status: 400 });
+  }
+
+  if (demoMode) {
+    const detail = demoCheckinDetail(requestId);
+    if (!detail.request) {
+      return NextResponse.json(
+        { error: "request_not_found" },
+        { status: 404 }
+      );
+    }
+    if (detail.request.status === "cancelled") {
+      return NextResponse.json(
+        { error: "request_cancelled" },
+        { status: 403 }
+      );
+    }
+    if (detail.request.submitted) {
+      return NextResponse.json(
+        { error: "already_submitted" },
+        { status: 409 }
+      );
+    }
+    // Demo stores no bytes — the removal is acknowledged, nothing to delete.
+    return NextResponse.json({ ok: true, demo: true, deleted: true });
+  }
+
+  // Narrowing only: anonymous + demo responses already returned above.
+  if (ctx.demo || !ctx.authed) {
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  }
+  const clientId = ctx.client.id;
+  if (!clientId) {
+    return NextResponse.json({ error: "no_linked_client" }, { status: 403 });
+  }
+
+  const supabase = await createPortalClient();
+
+  const reqRes = await supabase
+    .from("checkin_requests")
+    .select("id, status, completed_at")
+    .eq("id", requestId)
+    .eq("client_id", clientId)
+    .maybeSingle();
+
+  if (reqRes.error) {
+    console.error(
+      "[portal/checkins] delete request read failed",
+      reqRes.error.message
+    );
+    return NextResponse.json({ error: "db_read_failed" }, { status: 502 });
+  }
+  if (!reqRes.data) {
+    return NextResponse.json(
+      { error: "request_not_found" },
+      { status: 404 }
+    );
+  }
+  const request = reqRes.data as {
+    id: string;
+    status: string;
+    completed_at: string | null;
+  };
+  if (request.status === "cancelled") {
+    return NextResponse.json({ error: "request_cancelled" }, { status: 403 });
+  }
+  if (request.completed_at) {
+    return NextResponse.json(
+      { error: "already_submitted" },
+      { status: 409 }
+    );
+  }
+  const existingRes = await supabase
+    .from("checkin_submissions")
+    .select("id")
+    .eq("request_id", request.id)
+    .limit(1);
+  if (existingRes.error) {
+    console.error(
+      "[portal/checkins] delete existing submission check failed",
+      existingRes.error.message
+    );
+    return NextResponse.json({ error: "db_read_failed" }, { status: 502 });
+  }
+  if ((existingRes.data?.length ?? 0) > 0) {
+    return NextResponse.json(
+      { error: "already_submitted" },
+      { status: 409 }
+    );
+  }
+
+  // USER-JWT storage delete — storage RLS own-prefix policy governs.
+  const removeRes = await supabase.storage
+    .from(CHECKIN_PHOTOS_BUCKET)
+    .remove([path]);
+
+  if (removeRes.error) {
+    console.error(
+      "[portal/checkins] delete failed",
+      removeRes.error.message
+    );
+    return NextResponse.json({ error: "delete_rejected" }, { status: 403 });
+  }
+
+  return NextResponse.json({ ok: true, demo: false, deleted: true });
 }

@@ -975,6 +975,10 @@ const DICT: Record<string, { en: string; ar: string }> = {
     en: "Up to 3 photos — JPG, PNG or WebP, max 10MB each. Photos are private to you and your coach.",
     ar: "حتى 3 صور — JPG أو PNG أو WebP وبحد أقصى 10 ميجا للصورة. الصور خاصة ليك وللكوتش فقط.",
   },
+  checkin_photos_remaining: {
+    en: "{count} spots left",
+    ar: "متبقي {count} أماكن",
+  },
   checkin_photo_add: { en: "Add photo", ar: "إضافة صورة" },
   checkin_photo_uploading: { en: "Uploading…", ar: "جارٍ الرفع…" },
   checkin_photo_remove: { en: "Remove", ar: "إزالة" },

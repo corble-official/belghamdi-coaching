@@ -1,7 +1,7 @@
 /**
  * Demo-mode simulated check-ins (Task 8).
  *
- * In-memory, module-scope state — lives as long as the dev server.
+ * In-memory, keyed per demo visitor — see the storage note below.
  * ZERO Supabase/network by design: every caller is guarded by isDemoMode()
  * BEFORE this module is touched, mirroring src/lib/demo/portal-chat.ts.
  * Every row carries `demo: true` so simulated data stays distinguishable
@@ -13,7 +13,22 @@
  * URL cannot exist without a Supabase project, and a data URI keeps the demo
  * network-free while still rendering a thumbnail. `expires_at` mirrors the
  * live 10-minute TTL so the expiry contract stays observable.
+ *
+ * Per-visitor isolation (2026-11 round 1): the mutation log is keyed by the
+ * `bc_demo_session` cookie value, which /api/auth/demo-session sets to a
+ * random per-login token — two anonymous visitors never share submitted
+ * state. Requests without a cookie (build-time prerendering, probes) share
+ * the "anonymous" bucket; legacy constant-cookie sessions ("1") land there
+ * too. NOTE: the seeded PAST history and the DEMO_OPEN_REQUEST seed stay
+ * identical for everyone (by design); only submissions made in this server's
+ * lifetime diverge per visitor. A restart wipes all of it — acceptable for a
+ * simulated environment, but a multi-user demo deployment must treat this as
+ * best-effort isolation, not a security boundary.
  */
+import "server-only";
+
+import { cookies } from "next/headers";
+
 import type {
   CheckinPhotoView,
   CheckinRequestItem,
@@ -22,6 +37,7 @@ import type {
   CheckinSubmitInput,
 } from "@/lib/checkins";
 import { CHECKIN_SIGNED_URL_TTL, isOwnCheckinPhotoPath } from "@/lib/checkins";
+import { DEMO_SESSION_COOKIE } from "@/lib/demo-session";
 import type { Entitlements } from "@/lib/supabase/entitlements";
 
 /** Sentinel identity — mirrors portal-context's DEMO_CLIENT.id. */
@@ -204,21 +220,34 @@ type DemoCheckinState = {
 
 declare global {
   // eslint-disable-next-line no-var
-  var __bc_demo_checkins_v1: DemoCheckinState | undefined;
+  var __bc_demo_checkins_v2: Record<string, DemoCheckinState> | undefined;
 }
 
 /**
  * Next dev compiles route handlers and pages into separate module registries,
  * so a plain module-scope array would let a POST land in a different instance
- * than the one the progress page reads. Pinning the store on `globalThis`
- * (one process, one store) keeps the demo submit visible across both bundles.
+ * than the one the progress page reads. Pinning the map of per-session stores
+ * on `globalThis` (one process, one registry) keeps the submit visible across
+ * both bundles while still isolating one visitor from another.
  */
-const state: DemoCheckinState = (globalThis.__bc_demo_checkins_v1 ??= {
-  submitted: [],
-  seq: 0,
-});
+const stores: Record<string, DemoCheckinState> = (globalThis.__bc_demo_checkins_v2 ??=
+  {});
 
-const submitted = state.submitted;
+/** Random per-login demo cookie → one store per visitor; else the shared bucket. */
+function currentDemoKey(): string {
+  try {
+    const value = cookies().get(DEMO_SESSION_COOKIE)?.value;
+    return value && value !== "1" ? value : "anonymous";
+  } catch {
+    // No request context (e.g. build-time prerender) — shared bucket is fine there.
+    return "anonymous";
+  }
+}
+
+function stateFor(): DemoCheckinState {
+  const key = currentDemoKey();
+  return (stores[key] ??= { submitted: [], seq: 0 });
+}
 
 /* ------------------------------------------------------------------ *
  * Gate simulation (demo-only probes)
@@ -276,6 +305,7 @@ export function demoGateEntitlements(gate: DemoGate): Entitlements {
  * ------------------------------------------------------------------ */
 
 function openRequests(): CheckinRequestItem[] {
+  const { submitted } = stateFor();
   const submittedIds = new Set(submitted.map((s) => s.request.id));
   return [
     ...(submittedIds.has(OPEN_REQUEST.id) ? [] : [{ ...OPEN_REQUEST }]),
@@ -286,7 +316,7 @@ function openRequests(): CheckinRequestItem[] {
 function completedEntries(): DemoPast[] {
   return [
     ...PAST,
-    ...submitted.slice().reverse(),
+    ...stateFor().submitted.slice().reverse(),
   ];
 }
 
@@ -368,6 +398,9 @@ export type DemoSubmitResult =
  * A second submit for the same request → already_submitted (409 parity).
  */
 export function demoCheckinSubmit(input: CheckinSubmitInput): DemoSubmitResult {
+  const state = stateFor();
+  const { submitted } = state;
+
   if (findDemoEntry(input.request_id)) {
     return { ok: false, error: "already_submitted" };
   }
@@ -437,6 +470,7 @@ export function demoCheckinUploadPath(
   requestId: string,
   filename: string
 ): string {
+  const state = stateFor();
   state.seq += 1;
   const safe = filename
     .replace(/[^A-Za-z0-9._-]+/g, "-")

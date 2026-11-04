@@ -32,13 +32,7 @@ import { createPortalClient } from "@/lib/supabase/supabase-auth";
  */
 
 export async function POST(req: Request) {
-  let body: Record<string, unknown>;
-  try {
-    body = (await req.json()) as Record<string, unknown>;
-  } catch {
-    return NextResponse.json({ error: "invalid_json" }, { status: 400 });
-  }
-
+  // Auth FIRST — never parse a body for a caller we would reject anyway.
   const ctx = await getPortalContext();
   if (!ctx.demo && !ctx.authed) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
@@ -53,6 +47,19 @@ export async function POST(req: Request) {
       { error: "feature_locked", gate: "progress_submissions" },
       { status: 403 }
     );
+  }
+
+  // Submit bodies are tiny (a few hundred bytes of JSON + 3 photo paths).
+  const contentLength = Number(req.headers.get("content-length") ?? 0);
+  if (Number.isFinite(contentLength) && contentLength > 64 * 1024) {
+    return NextResponse.json({ error: "payload_too_large" }, { status: 413 });
+  }
+
+  let body: Record<string, unknown>;
+  try {
+    body = (await req.json()) as Record<string, unknown>;
+  } catch {
+    return NextResponse.json({ error: "invalid_json" }, { status: 400 });
   }
 
   const parsed = parseCheckinSubmission(body);
@@ -150,6 +157,14 @@ export async function POST(req: Request) {
     .select("id")
     .eq("request_id", request.id)
     .limit(1);
+
+  if (existingRes.error) {
+    console.error(
+      "[portal/checkins] duplicate submission check failed",
+      existingRes.error.message
+    );
+    return NextResponse.json({ error: "db_read_failed" }, { status: 502 });
+  }
 
   if ((existingRes.data?.length ?? 0) > 0 || request.completed_at) {
     return NextResponse.json(

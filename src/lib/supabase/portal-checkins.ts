@@ -61,7 +61,7 @@ export type ProgressData = { entries: ProgressEntry[] };
 const SIGN_BUDGET = 12;
 
 const REQUEST_SELECT =
-  "id, period_start, period_end, period_label, due_date, status, sent_at, completed_at";
+  "id, period_start, period_end, period_label, due_date, status, sent_at";
 
 const SUBMISSION_SELECT =
   "id, request_id, client_id, weight_kg, measurements, training_days_made, workout_pct, nutrition_pct, energy, sleep, difficulties, feedback, photos, submitted_at";
@@ -109,8 +109,10 @@ function normalizeRequest(
 }
 
 /**
- * Sign own photo paths. Anything outside the caller's prefix is kept as a
- * path WITHOUT a URL (never signed) — defense in depth on top of storage RLS.
+ * Sign own photo paths with ONE batch storage call. Anything outside the
+ * caller's prefix is kept as a path WITHOUT a URL (never signed) — defense
+ * in depth on top of storage RLS. Per-item signing errors are logged and
+ * degrade to `url: null` rather than failing the whole history read.
  */
 async function signOwnPhotos(
   supabase: SupabaseClient,
@@ -121,25 +123,41 @@ async function signOwnPhotos(
     Date.now() + CHECKIN_SIGNED_URL_TTL * 1000
   ).toISOString();
 
-  return Promise.all(
-    paths.map(async (path): Promise<CheckinPhotoView> => {
-      if (!isOwnCheckinPhotoPath(path, clientId)) {
-        return { path, url: null, expires_at: null };
-      }
-      try {
-        const signed = await supabase.storage
-          .from(CHECKIN_PHOTOS_BUCKET)
-          .createSignedUrl(path, CHECKIN_SIGNED_URL_TTL);
-        return {
-          path,
-          url: signed.data?.signedUrl ?? null,
-          expires_at: signed.data?.signedUrl ? expiresAt : null,
-        };
-      } catch {
-        return { path, url: null, expires_at: null };
-      }
-    })
+  const ownUnique = Array.from(
+    new Set(paths.filter((path) => isOwnCheckinPhotoPath(path, clientId)))
   );
+  const urlByPath = new Map<string, string | null>();
+
+  if (ownUnique.length > 0) {
+    const { data, error } = await supabase.storage
+      .from(CHECKIN_PHOTOS_BUCKET)
+      .createSignedUrls(ownUnique, CHECKIN_SIGNED_URL_TTL);
+
+    if (error) {
+      console.warn(
+        "[portal/progress] batch photo signing failed",
+        error.message
+      );
+    } else {
+      for (const item of data ?? []) {
+        if (item.error) {
+          console.warn(
+            "[portal/progress] photo signing failed",
+            item.path ?? "",
+            item.error
+          );
+        }
+        if (item.path) {
+          urlByPath.set(item.path, item.error ? null : item.signedUrl);
+        }
+      }
+    }
+  }
+
+  return paths.map((path) => {
+    const url = urlByPath.get(path) ?? null;
+    return { path, url, expires_at: url ? expiresAt : null };
+  });
 }
 
 function normalizeSubmission(
@@ -304,6 +322,13 @@ export async function getOwnCheckinDetail(
   if (subRes.error) {
     console.error("[portal/checkins] submission read failed", subRes.error.message);
     return { ok: false, demo: false };
+  }
+
+  if (lastRes.error) {
+    console.warn(
+      "[portal/checkins] last-weight read failed (non-fatal)",
+      lastRes.error.message
+    );
   }
 
   const submissionRow = (subRes.data as Record<string, unknown> | null) ?? null;
