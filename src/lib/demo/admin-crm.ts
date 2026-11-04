@@ -188,6 +188,144 @@ export function demoRequestOverride(input: {
 }
 
 /* ------------------------------------------------------------------ *
+ * BC-99 automation errors + resolutions (demo)
+ *
+ * Mirrors the live `automation_errors` / `automation_error_resolutions`
+ * columns (supabase/migrations/001_rbac.sql). The error rows are NEVER
+ * mutated by the app — "resolve" appends to the resolutions ledger only
+ * (same binding as live: `automation_errors` status/resolved_at stay
+ * owned by the BC-99 n8n workflow).
+ * ------------------------------------------------------------------ */
+
+export type DemoAutomationErrorRow = {
+  id: string;
+  dedupe_key: string | null;
+  workflow: string;
+  execution_id: string | null;
+  node_name: string | null;
+  stage: string | null;
+  error_message: string;
+  severity: string;
+  status: string;
+  occurrences: number;
+  notified: boolean;
+  first_seen_at: string;
+  last_seen_at: string;
+  resolved_at: string | null;
+  demo: true;
+};
+
+export type DemoErrorResolutionRow = {
+  id: string;
+  error_id: string;
+  resolved_by: string | null;
+  resolution_note: string;
+  created_at: string;
+  demo: true;
+};
+
+const automationErrors: DemoAutomationErrorRow[] = [
+  {
+    id: "demo-aerr-1",
+    dedupe_key: "bc05-missed-checkin-telegram-timeout",
+    workflow: "BC-05 — Missed Check-in Follow-up",
+    execution_id: "184213",
+    node_name: "Send Telegram reminder",
+    stage: "24h_reminder",
+    error_message:
+      "Telegram send timed out after 12s for 3 recipients (simulated).",
+    severity: "error",
+    status: "open",
+    occurrences: 3,
+    notified: true,
+    first_seen_at: new Date(Date.now() - 3 * 24 * 3600 * 1000).toISOString(),
+    last_seen_at: new Date(Date.now() - 6 * 3600 * 1000).toISOString(),
+    resolved_at: null,
+    demo: true,
+  },
+  {
+    id: "demo-aerr-2",
+    dedupe_key: "bc03-onboarding-missing-email",
+    workflow: "BC-03 — Client Onboarding",
+    execution_id: "184180",
+    node_name: "Fetch order",
+    stage: "onboarding_start",
+    error_message:
+      "Order customer has no email on file — onboarding message skipped (simulated).",
+    severity: "warning",
+    status: "open",
+    occurrences: 1,
+    notified: false,
+    first_seen_at: new Date(Date.now() - 26 * 3600 * 1000).toISOString(),
+    last_seen_at: new Date(Date.now() - 26 * 3600 * 1000).toISOString(),
+    resolved_at: null,
+    demo: true,
+  },
+  {
+    id: "demo-aerr-3",
+    dedupe_key: "bc07-renewal-shopify-429",
+    workflow: "BC-07 — Renewals",
+    execution_id: "184102",
+    node_name: "Shopify: list orders",
+    stage: "renewal_sweep",
+    error_message:
+      "Shopify Admin API rate limit (429) during the renewal sweep (simulated).",
+    severity: "error",
+    status: "resolved",
+    occurrences: 6,
+    notified: true,
+    first_seen_at: new Date(Date.now() - 9 * 24 * 3600 * 1000).toISOString(),
+    last_seen_at: new Date(Date.now() - 2 * 24 * 3600 * 1000).toISOString(),
+    resolved_at: new Date(Date.now() - 2 * 24 * 3600 * 1000).toISOString(),
+    demo: true,
+  },
+];
+
+const errorResolutions: DemoErrorResolutionRow[] = [
+  {
+    id: "demo-aer-1",
+    error_id: "demo-aerr-3",
+    resolved_by: null,
+    resolution_note:
+      "Rate-limit backoff added in BC-07; sweep re-ran clean overnight (simulated annotation).",
+    created_at: new Date(Date.now() - 2 * 24 * 3600 * 1000).toISOString(),
+    demo: true,
+  },
+];
+
+export function demoAutomationErrors(): DemoAutomationErrorRow[] {
+  return [...automationErrors].sort(
+    (a, b) => b.last_seen_at.localeCompare(a.last_seen_at)
+  );
+}
+
+export function demoErrorResolutions(): DemoErrorResolutionRow[] {
+  return [...errorResolutions].reverse();
+}
+
+/**
+ * Demo "Resolve": appends to the resolutions ledger ONLY. The
+ * automation_errors rows above are immutable (no status flip, no
+ * resolved_at write) — same binding as the live app path.
+ */
+export function demoResolveError(input: {
+  error_id: string;
+  resolved_by: string | null;
+  resolution_note: string;
+}): DemoErrorResolutionRow {
+  const row: DemoErrorResolutionRow = {
+    id: `demo-aer-${Date.now()}`,
+    error_id: input.error_id,
+    resolved_by: input.resolved_by,
+    resolution_note: input.resolution_note,
+    created_at: now(),
+    demo: true,
+  };
+  errorResolutions.push(row);
+  return row;
+}
+
+/* ------------------------------------------------------------------ *
  * Review workspace simulations
  * ------------------------------------------------------------------ */
 

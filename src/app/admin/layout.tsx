@@ -22,6 +22,7 @@ import {
   MessageSquare,
   ClipboardCheck,
   Bell,
+  AlertTriangle,
 } from "lucide-react";
 import { isDemoMode, integrationStatus } from "@/lib/mode";
 
@@ -45,6 +46,7 @@ const NAV: {
   { href: "/admin/progress", label: "Progress", icon: TrendingUp, adminOnly: true },
   { href: "/admin/content", label: "Content", icon: FileText, adminOnly: true },
   { href: "/admin/automation", label: "Automation", icon: Workflow, adminOnly: true },
+  { href: "/admin/automation/errors", label: "Errors", icon: AlertTriangle, adminOnly: true },
   { href: "/admin/settings", label: "Settings", icon: Settings, adminOnly: true },
 ];
 
