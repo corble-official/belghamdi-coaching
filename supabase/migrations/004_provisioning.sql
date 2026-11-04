@@ -60,5 +60,6 @@ $$;
 --     clients_invite_status_chk), invite_attempts (default 0),
 --     invite_last_sent_at
 --   * no functions, no policies, no triggers, no grants
--- DOWN-004.sql drops the three columns (the CHECK constraint drops with
--- its column automatically).
+-- DOWN-004-provisioning.sql drops the three columns (the CHECK constraint
+-- drops with its column automatically; DOWN-004.sql belongs to Task 7's
+-- 004_coach_chat_policy.sql).

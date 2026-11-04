@@ -97,7 +97,7 @@ function parseRpcResult(data: unknown): OrderEventRpcResult {
 /**
  * Resolve the client row the RPC created/matched. Trusts an explicit
  * client_id from the result, then re-derives via the RPC's own
- * telegram → email → phone fallback chain (never forks the RPC logic).
+ * email → telegram → phone fallback chain (never forks the RPC logic).
  */
 async function resolveClient(
   service: SupabaseClient,

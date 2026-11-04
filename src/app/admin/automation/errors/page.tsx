@@ -135,6 +135,9 @@ export default async function AdminAutomationErrorsPage() {
         id: r.id,
         error_id: r.error_id,
         resolved_by: r.resolved_by,
+        // Demo resolvers are the legacy-cookie admin (no profile id) — the
+        // view falls back to "admin".
+        resolved_by_name: null,
         resolution_note: r.resolution_note,
         created_at: r.created_at,
         demo: true,
@@ -222,12 +225,48 @@ export default async function AdminAutomationErrorsPage() {
             error_id: String(r.error_id),
             resolved_by:
               typeof r.resolved_by === "string" ? r.resolved_by : null,
+            resolved_by_name: null,
             resolution_note:
               typeof r.resolution_note === "string" ? r.resolution_note : null,
             created_at: String(r.created_at),
             demo: false,
           })
         );
+
+        // Human-readable resolver names: ONE batched profiles read for every
+        // distinct resolved_by uuid (nulls stay null → view falls back).
+        const resolverIds = Array.from(
+          new Set(
+            resolutions
+              .map((r) => r.resolved_by)
+              .filter((v): v is string => Boolean(v))
+          )
+        );
+        if (resolverIds.length > 0) {
+          const profRes = await service
+            .from("profiles")
+            .select("id, full_name")
+            .in("id", resolverIds);
+          if (profRes.error) {
+            // Degraded UX: keep the truncated-uuid fallback.
+            console.error(
+              "[admin/automation-errors] resolver names read failed",
+              profRes.error.message
+            );
+          } else {
+            const nameById = new Map<string, string>();
+            for (const p of (profRes.data ?? []) as Record<string, unknown>[]) {
+              if (typeof p.id === "string" && typeof p.full_name === "string") {
+                nameById.set(p.id, p.full_name);
+              }
+            }
+            resolutions = resolutions.map((r) => ({
+              ...r,
+              resolved_by_name:
+                (r.resolved_by && nameById.get(r.resolved_by)) || null,
+            }));
+          }
+        }
       }
     }
 

@@ -61,6 +61,22 @@ const DEMO_SUB: SubscriptionState = {
 };
 
 /**
+ * Columns not yet present in Supabase — migrations 001/004 own the schema.
+ * Align (and delete this shim) when the migrations land. Typed as optional
+ * unknowns so tsc stays strict without lying about the current schema.
+ */
+interface PendingSchemaFields {
+  auth_user_id?: unknown;
+  onboarding_completed?: unknown;
+  full_name?: unknown;
+  email?: unknown;
+}
+
+/** Safe string read for shim-typed optional schema fields. */
+const str = (value: unknown): string | undefined =>
+  typeof value === "string" ? value : undefined;
+
+/**
  * Resolve the current portal context.
  * Demo path returns BEFORE any Supabase construction — zero network calls.
  */
@@ -78,29 +94,13 @@ export async function getPortalContext(): Promise<PortalContext> {
   }
 
   // ---- Live path ----
-  const user = await getAuthUser();
+  // One client for both the auth lookup and the data reads below.
+  const supabase = await createPortalClient();
+  const user = await getAuthUser(supabase);
 
   if (!user) {
     return { demo: false, authed: false };
   }
-
-  const supabase = await createPortalClient();
-
-/**
- * Columns not yet present in Supabase — migrations 001/004 own the schema.
- * Align (and delete this shim) when the migrations land. Typed as optional
- * unknowns so tsc stays strict without lying about the current schema.
- */
-interface PendingSchemaFields {
-  auth_user_id?: unknown;
-  onboarding_completed?: unknown;
-  full_name?: unknown;
-  email?: unknown;
-}
-
-/** Safe string read for shim-typed optional schema fields. */
-const str = (value: unknown): string | undefined =>
-  typeof value === "string" ? value : undefined;
 
   const [profileRes, clientRes] = await Promise.all([
     supabase.from("profiles").select("*").eq("id", user.id).single(),

@@ -9,11 +9,19 @@ import type { SupabaseClient, User } from "@supabase/supabase-js";
  * This is the client ALL portal-facing routes use.
  */
 export async function createPortalClient(): Promise<SupabaseClient> {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !anonKey) {
+    throw new Error(
+      "portal client requires NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY"
+    );
+  }
+
   const cookieStore = cookies();
 
   return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    url,
+    anonKey,
     {
       cookies: {
         getAll() {
@@ -39,9 +47,13 @@ export async function createPortalClient(): Promise<SupabaseClient> {
 /**
  * Resolve the signed-in user (getSession → getUser fallback).
  * Returns null when no valid session/user is available.
+ * Pass `client` to reuse an already-constructed portal client
+ * (avoids building a second one per context resolution).
  */
-export async function getAuthUser(): Promise<User | null> {
-  const supabase = await createPortalClient();
+export async function getAuthUser(
+  client?: SupabaseClient
+): Promise<User | null> {
+  const supabase = client ?? (await createPortalClient());
 
   const {
     data: { session },

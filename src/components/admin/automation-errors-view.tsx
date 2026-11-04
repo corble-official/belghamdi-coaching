@@ -8,6 +8,8 @@ export type ErrorResolutionVM = {
   id: string;
   error_id: string;
   resolved_by: string | null;
+  /** Profile full_name for `resolved_by` (server-resolved; null = fallback). */
+  resolved_by_name: string | null;
   resolution_note: string | null;
   created_at: string;
   demo: boolean;
@@ -261,7 +263,8 @@ export function AutomationErrorsView({
                     </p>
                     <p className="text-[10px] text-wgray-dim uppercase tracking-widest mt-0.5">
                       {new Date(r.created_at).toLocaleString()} · by{" "}
-                      {r.resolved_by ? `${r.resolved_by.slice(0, 8)}…` : "admin"}
+                      {r.resolved_by_name ??
+                        (r.resolved_by ? `${r.resolved_by.slice(0, 8)}…` : "admin")}
                       {r.demo ? " · demo" : ""}
                     </p>
                   </div>

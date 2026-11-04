@@ -102,6 +102,8 @@ export async function getPortalChatState(
     .select(MESSAGE_COLUMNS)
     .eq("conversation_id", conversationId)
     .order("message_ts", { ascending: false, nullsFirst: false })
+    // Tiebreaker: same-`message_ts` rows keep a deterministic order by id.
+    .order("id", { ascending: false })
     .limit(READ_WINDOW);
 
   const rows = (res.data ?? []) as Record<string, unknown>[];

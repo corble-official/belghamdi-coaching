@@ -55,6 +55,8 @@ type SalesRow = {
 
 const AUDIENCE_ROLES = ["admin", "coach", "coach_assistant"] as const;
 
+const UUID_RE = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+
 export async function GET() {
   const { ctx, error } = await assertStaff();
   if (error) return error;
@@ -260,9 +262,18 @@ export async function PATCH(req: NextRequest) {
   }
 
   // ---- Demo: in-memory toggle (read=true only), zero network ----
+  // (Demo ids are not uuids — mirrors the resolutions route, which checks
+  // the uuid shape only on the live path.)
   if (ctx.demo) {
     demoMarkNotificationRead(id);
     return NextResponse.json({ ok: true, demo: true });
+  }
+
+  // Mirror the resolutions route: reject non-uuid ids cleanly before any
+  // service use (the column is uuid — a raw Postgres cast error would
+  // surface as a misleading 502 instead of a caller mistake).
+  if (!UUID_RE.test(id)) {
+    return NextResponse.json({ ok: false, error: "bad_body" }, { status: 400 });
   }
 
   const service = tryCreateServiceClient();

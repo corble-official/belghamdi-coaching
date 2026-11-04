@@ -675,8 +675,8 @@ const DICT: Record<string, { en: string; ar: string }> = {
     ar: "انتهت مدة اشتراكك — يبقى سجلك متاحاً للقراءة فقط، بينما توقفت الإرساليات الجديدة والمحادثة مع الكوتش. جدّد اشتراكك لاستعادة الوصول الكامل.",
   },
   portal_banner_suspended: {
-    en: "Portal access is temporarily suspended pending a refund review. Contact the coach for details.",
-    ar: "تم إيقاف الوصول إلى البوابة مؤقتاً رهن مراجعة عملية الاسترداد. تواصل مع الكوتش لمعرفة التفاصيل.",
+    en: "Portal access is temporarily suspended. Contact the coach for details.",
+    ar: "تم إيقاف الوصول إلى البوابة مؤقتاً. تواصل مع الكوتش لمعرفة التفاصيل.",
   },
   portal_banner_revoked: {
     en: "Portal access was revoked after a full refund. Contact the coach if you believe this is a mistake.",

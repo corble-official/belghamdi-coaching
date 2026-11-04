@@ -126,7 +126,7 @@ export default function LoginForm({
                 </div>
               </div>
               <button type="submit" disabled={busy} className="btn-primary w-full">
-                {t(demo ? "login_demo_submit" : "login_submit")}{" "}
+                {busy ? t("login_sending") : t(demo ? "login_demo_submit" : "login_submit")}{" "}
                 <ArrowRight className={`h-4 w-4 ${busy ? "opacity-0" : ""}`} />
               </button>
 

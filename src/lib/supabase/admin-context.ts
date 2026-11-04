@@ -109,7 +109,9 @@ export async function getAdminContext(): Promise<AdminContext> {
   }
 
   // ---- JWT path ----
-  const user = await getAuthUser();
+  // One client for the auth lookup + profile/assignment reads below.
+  const supabase = await createPortalClient();
+  const user = await getAuthUser(supabase);
   if (!user) {
     return {
       demo: false,
@@ -120,7 +122,6 @@ export async function getAdminContext(): Promise<AdminContext> {
     };
   }
 
-  const supabase = await createPortalClient();
   const profileRes = await supabase
     .from("profiles")
     .select("id, role")
