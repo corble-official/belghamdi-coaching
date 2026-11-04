@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { checkinGates } from "@/lib/checkins";
 import { getPortalCtx } from "../server";
 import FollowUpChat from "./FollowUpChat";
 
@@ -14,8 +15,8 @@ import FollowUpChat from "./FollowUpChat";
  * - Otherwise (suspended/revoked/no subscription) → chat blocked card with
  *   a renewal CTA; the thread is not fetched at all (API mirrors this).
  *
- * The check-ins teaser anchor `#checkins` (hub card target) renders below
- * the chat as a placeholder — Task 8 fills it.
+ * The check-ins section (`#checkins`) renders below the chat from
+ * GET /api/portal/checkins, gated by the same server-derived entitlements.
  */
 export default async function FollowUpPage() {
   const ctx = await getPortalCtx();
@@ -25,6 +26,7 @@ export default async function FollowUpPage() {
   }
 
   const ent = ctx.entitlements;
+  const gates = checkinGates(ent);
   const historyOnly =
     !ent.coach_chat &&
     (ent.checkin_history_readonly || ent.coach_feedback_readonly);
@@ -36,6 +38,11 @@ export default async function FollowUpPage() {
       demo={ctx.demo}
       mode={mode}
       clientName={ctx.client.full_name}
+      checkins={{
+        canSubmit: gates.can_submit,
+        readonly: gates.history_readonly,
+        blocked: !gates.can_read,
+      }}
     />
   );
 }

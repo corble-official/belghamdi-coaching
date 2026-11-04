@@ -3,17 +3,16 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
-  CalendarCheck,
   CircleAlert,
   History,
   Lock,
   MessageSquare,
   RefreshCcw,
   Send,
-  type LucideIcon,
 } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { Reveal } from "@/components/ui/Reveal";
+import CheckinsSection from "./CheckinsSection";
 
 /**
  * Follow-up chat — one unified thread for BC-06: the client's own web
@@ -67,11 +66,18 @@ export default function FollowUpChat({
   demo,
   mode,
   clientName,
+  checkins,
 }: {
   demo: boolean;
   mode: Mode;
   /** Session client name — only shown in the locked variant header. */
   clientName: string;
+  /** Check-ins section gate snapshot (server-derived entitlements). */
+  checkins: {
+    canSubmit: boolean;
+    readonly: boolean;
+    blocked: boolean;
+  };
 }) {
   const { t, lang } = useI18n();
 
@@ -248,7 +254,7 @@ export default function FollowUpChat({
             </Link>
           </div>
         </Reveal>
-        <CheckinsTeaser />
+        <CheckinsSection demo={demo} {...checkins} />
       </section>
     );
   }
@@ -414,7 +420,7 @@ export default function FollowUpChat({
         </div>
       </Reveal>
 
-      <CheckinsTeaser />
+      <CheckinsSection demo={demo} {...checkins} />
     </section>
   );
 }
@@ -445,37 +451,5 @@ function Header({
         {t(introKey)}
       </p>
     </Reveal>
-  );
-}
-
-/**
- * Check-ins teaser — the hub card anchor target (`/portal/follow-up#checkins`).
- * Placeholder card only; Task 8 fills this surface.
- */
-function CheckinsTeaser() {
-  const { t } = useI18n();
-  const Icon: LucideIcon = CalendarCheck;
-
-  return (
-    <section id="checkins" className="scroll-mt-28 mt-8">
-      <Reveal>
-        <div className="card-surface p-6 opacity-90">
-          <div className="flex items-start justify-between gap-3">
-            <span className="shrink-0 inline-flex items-center justify-center h-11 w-11 rounded-xl bg-brand-soft text-brand">
-              <Icon className="h-5 w-5" />
-            </span>
-            <span className="shrink-0 rounded-full text-[10px] font-display uppercase tracking-widest text-muted border border-line px-2.5 py-1">
-              {t("followup_checkins_soon")}
-            </span>
-          </div>
-          <h3 className="heading-lg text-lg mt-4">
-            {t("portal_card_checkins_title")}
-          </h3>
-          <p className="text-sm leading-relaxed text-muted mt-1.5">
-            {t("followup_checkins_teaser_body")}
-          </p>
-        </div>
-      </Reveal>
-    </section>
   );
 }

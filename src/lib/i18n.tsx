@@ -879,13 +879,252 @@ const DICT: Record<string, { en: string; ar: string }> = {
     en: "Renew subscription",
     ar: "جدّد اشتراكك",
   },
-  followup_checkins_soon: {
-    en: "Coming next",
-    ar: "قريباً",
+  /* ===== Portal check-ins + progress (Task 8) ===== */
+  checkins_section_title: { en: "Check-ins", ar: "المتابعات" },
+  checkins_section_intro: {
+    en: "Send your weekly card and read the coach's feedback.",
+    ar: "أرسل بطاقتك الأسبوعية واطلع على ملاحظات الكوتش.",
   },
-  followup_checkins_teaser_body: {
-    en: "Your weekly check-ins and the coach's feedback will live right here under this anchor.",
-    ar: "متابعاتك الأسبوعية وملاحظات الكوتش ستظهر هنا مباشرة تحت هذا القسم.",
+  checkins_section_empty: {
+    en: "No open check-in right now — a new card appears here as soon as it is scheduled.",
+    ar: "مفيش بطاقة مفتوحة حالياً — أول ما تفتح بطاقة جديدة هتلاقيها هنا.",
+  },
+  checkins_blocked_body: {
+    en: "Check-ins are paused with your subscription state — renew to reopen the cards and the history.",
+    ar: "المتابعات متوقفة مع حالة اشتراكك — جدّد الباقة لفتح البطاقات والسجل.",
+  },
+  checkins_readonly_banner: {
+    en: "Your subscription period has ended — open cards stay read-only and your history remains available.",
+    ar: "انتهت مدة اشتراكك — البطاقات المفتوحة للقراءة فقط وسجلك يبقى متاحاً.",
+  },
+  checkins_loading: {
+    en: "Loading check-ins…",
+    ar: "جارٍ تحميل المتابعات…",
+  },
+  checkins_error: {
+    en: "Couldn't load your check-ins.",
+    ar: "تعذر تحميل المتابعات.",
+  },
+  checkins_retry: { en: "Try again", ar: "حاول تاني" },
+  checkins_view_history: { en: "View history", ar: "عرض السجل" },
+  checkins_submit_cta: { en: "Fill check-in", ar: "املأ البطاقة" },
+  checkins_history_note: {
+    en: "Full history and trends live in the progress page.",
+    ar: "السجل الكامل والرسوم في صفحة التقدم.",
+  },
+  checkins_period: { en: "Period {label}", ar: "الفترة {label}" },
+  checkins_due: { en: "Due {date}", ar: "آخر موعد: {date}" },
+  checkins_due_unknown: {
+    en: "No due date set",
+    ar: "بدون موعد محدد",
+  },
+
+  checkin_title: { en: "Weekly check-in", ar: "البطاقة الأسبوعية" },
+  checkin_intro: {
+    en: "This week's numbers — weight or measurements, adherence and energy. The coach reviews and replies.",
+    ar: "أرقام الأسبوع ده — الوزن أو القياسات والالتزام والطاقة. الكوتش بيراجعها ويرد عليك.",
+  },
+  checkin_label_weight: {
+    en: "Current weight (kg)",
+    ar: "الوزن الحالي (كجم)",
+  },
+  checkin_last_weight: {
+    en: "Last recorded weight: {weight} kg",
+    ar: "آخر وزن مسجل: {weight} كجم",
+  },
+  checkin_label_measurements: {
+    en: "Measurements (cm) — optional",
+    ar: "القياسات (سم) — اختياري",
+  },
+  checkin_measurements_hint: {
+    en: "Fill what you can — a weight or any single measurement is enough.",
+    ar: "اكمل اللي تقدر عليه — الوزن أو أي قياس واحد يكفي.",
+  },
+  checkin_measure_chest: { en: "Chest", ar: "الصدر" },
+  checkin_measure_waist: { en: "Waist", ar: "الوسط" },
+  checkin_measure_hips: { en: "Hips", ar: "الأرداف" },
+  checkin_measure_arm: { en: "Arm", ar: "الذراع" },
+  checkin_measure_thigh: { en: "Thigh", ar: "الفخذ" },
+  checkin_label_training_days: {
+    en: "Training days completed (0–7)",
+    ar: "أيام التمرين المنفذة (0-7)",
+  },
+  checkin_label_workout_pct: {
+    en: "Workout adherence",
+    ar: "الالتزام بالتمرين",
+  },
+  checkin_label_nutrition_pct: {
+    en: "Nutrition adherence",
+    ar: "الالتزام بالتغذية",
+  },
+  checkin_label_energy: { en: "Energy level (1–10)", ar: "مستوى الطاقة (1-10)" },
+  checkin_label_sleep: { en: "Sleep quality (1–10)", ar: "جودة النوم (1-10)" },
+  checkin_label_difficulties: {
+    en: "Difficulties or injuries this week",
+    ar: "صعوبات أو إصابات هذا الأسبوع",
+  },
+  checkin_label_feedback: {
+    en: "Notes for the coach",
+    ar: "ملاحظات للكوتش",
+  },
+  checkin_label_photos: {
+    en: "Progress photos (optional)",
+    ar: "صور التقدم (اختياري)",
+  },
+  checkin_photos_hint: {
+    en: "Up to 3 photos — JPG, PNG or WebP, max 10MB each. Photos are private to you and your coach.",
+    ar: "حتى 3 صور — JPG أو PNG أو WebP وبحد أقصى 10 ميجا للصورة. الصور خاصة ليك وللكوتش فقط.",
+  },
+  checkin_photo_add: { en: "Add photo", ar: "إضافة صورة" },
+  checkin_photo_uploading: { en: "Uploading…", ar: "جارٍ الرفع…" },
+  checkin_photo_remove: { en: "Remove", ar: "إزالة" },
+  checkin_submit: { en: "Send check-in", ar: "إرسال البطاقة" },
+  checkin_submitting: { en: "Sending…", ar: "جارٍ الإرسال…" },
+  checkin_error_required: {
+    en: "Enter your weight or at least one measurement.",
+    ar: "أدخل الوزن أو قياساً واحداً على الأقل.",
+  },
+  checkin_error_range: {
+    en: "A value is outside the allowed range — check the weight, measurements and percentages.",
+    ar: "في قيمة خارج النطاق المسموح — راجع الوزن والقياسات والنسب.",
+  },
+  checkin_error_photo_limit: {
+    en: "Up to 3 photos per check-in.",
+    ar: "الحد الأقصى 3 صور للبطاقة الواحدة.",
+  },
+  checkin_error_photo_type: {
+    en: "Only JPG, PNG or WebP images are supported.",
+    ar: "الصور المسموحة JPG أو PNG أو WebP فقط.",
+  },
+  checkin_error_photo_size: {
+    en: "That image is larger than 10MB.",
+    ar: "حجم الصورة أكبر من 10 ميجا.",
+  },
+  checkin_error_photo_failed: {
+    en: "The photo didn't upload — please try again.",
+    ar: "فشل رفع الصورة — جرّب تاني.",
+  },
+  checkin_error_locked: {
+    en: "Submitting is unavailable right now — your plan doesn't include check-ins.",
+    ar: "الإرسال غير متاح حالياً — باقتك لا تتضمن المتابعات.",
+  },
+  checkin_error_already: {
+    en: "This period was already submitted.",
+    ar: "تم إرسال هذه الفترة بالفعل.",
+  },
+  checkin_error_generic: {
+    en: "The check-in wasn't sent — check your connection and try again.",
+    ar: "لم يتم إرسال البطاقة — تحقق من الاتصال وحاول مرة أخرى.",
+  },
+  checkin_success_title: {
+    en: "Check-in sent.",
+    ar: "تم إرسال البطاقة.",
+  },
+  checkin_success_body: {
+    en: "The coach received your numbers and notes — the reply lands in your progress history after review.",
+    ar: "استلم الكوتش أرقامك وملاحظاتك — هيظهر الرد في سجل التقدم بعد المراجعة.",
+  },
+  checkin_already_title: {
+    en: "Check-in already sent.",
+    ar: "البطاقة مُرسلة بالفعل.",
+  },
+  checkin_already_body: {
+    en: "This period was submitted already — its details stay in your progress history.",
+    ar: "هذه الفترة تم إرسالها بالفعل — تفاصيلها موجودة في سجل التقدم.",
+  },
+  checkin_locked_title: { en: "Submitting locked", ar: "الإرسال مقفول" },
+  checkin_locked_body: {
+    en: "Weekly check-ins need an active subscription — renew your plan to send a new one.",
+    ar: "البطاقات الأسبوعية تحتاج اشتراكاً نشطاً — جدّد باقتك لإرسال متابعة جديدة.",
+  },
+  checkin_readonly_body: {
+    en: "Your subscription period has ended — your history stays available read-only and new check-ins are paused until renewal.",
+    ar: "انتهت مدة اشتراكك — سجلك يبقى متاحاً للقراءة فقط وإرسال البطاقات متوقف لحد التجديد.",
+  },
+  checkin_notfound_title: {
+    en: "Check-in unavailable",
+    ar: "البطاقة غير متاحة",
+  },
+  checkin_notfound_body: {
+    en: "This link isn't available for your account — go back to the portal and pick a check-in from the list.",
+    ar: "الرابط ده مش متاح لحسابك — ارجع للبوابة واختر متابعة من القائمة.",
+  },
+  checkin_go_progress: { en: "Progress history", ar: "سجل التقدم" },
+  checkin_summary_weight: {
+    en: "Recorded weight: {weight} kg",
+    ar: "الوزن المسجل: {weight} كجم",
+  },
+
+  progress_title: { en: "Progress & history", ar: "التقدم والسجل" },
+  progress_intro: {
+    en: "Your past check-ins, measurements and coach notes — everything in one place.",
+    ar: "بطاقاتك السابقة والقياسات وملاحظات الكوتش — كل حاجة في مكان واحد.",
+  },
+  progress_readonly_banner: {
+    en: "Your subscription period has ended — history stays readable, while new check-ins are paused until renewal.",
+    ar: "انتهت مدة اشتراكك — السجل يبقى متاحاً للقراءة وإرسال بطاقات جديدة متوقف لحد التجديد.",
+  },
+  progress_empty_title: { en: "No history yet", ar: "لا يوجد سجل حتى الآن" },
+  progress_empty_body: {
+    en: "Your first weekly card will appear here with weight, measurements and the coach's feedback.",
+    ar: "أول بطاقة أسبوعية تبعتها هتظهر هنا مع الوزن والقياسات وملاحظات الكوتش.",
+  },
+  progress_cta_checkin: { en: "Send a check-in", ar: "أرسل بطاقة جديدة" },
+  progress_cta_note: {
+    en: "Ready for this week's check-in?",
+    ar: "جاهز لبطاقة الأسبوع؟",
+  },
+  progress_weight_chart_title: { en: "Weight trend", ar: "تطور الوزن" },
+  progress_waist_chart_title: { en: "Waist trend", ar: "محيط الوسط" },
+  progress_units_kg: { en: "kg", ar: "كجم" },
+  progress_units_cm: { en: "cm", ar: "سم" },
+  progress_chart_empty: {
+    en: "Not enough data for a chart yet.",
+    ar: "لا توجد قياسات كافية للرسم بعد.",
+  },
+  progress_photos_note: {
+    en: "Photo links are signed and temporary (10 minutes) and regenerate on every page open — images stay private to you and your coach.",
+    ar: "روابط الصور موقّعة ومؤقتة (10 دقايق) وتتولد مع كل فتح للصفحة — الصور خاصة ليك وللكوتش فقط.",
+  },
+  progress_blocked_title: {
+    en: "History unavailable",
+    ar: "السجل غير متاح",
+  },
+  progress_blocked_body: {
+    en: "History access is paused with your subscription state — renew or contact the coach to restore it.",
+    ar: "الوصول للسجل متوقف مع حالة اشتراكك — جدّد أو تواصل مع الكوتش لاستعادته.",
+  },
+  progress_error_title: {
+    en: "Couldn't load your history",
+    ar: "تعذر تحميل السجل",
+  },
+  progress_error_body: {
+    en: "Something went wrong while loading your data — refresh the page, and contact the coach if it persists.",
+    ar: "حصلت مشكلة أثناء تحميل بياناتك — حدّث الصفحة، ولو استمرت المشكلة تواصل مع الكوتش.",
+  },
+  progress_review_none: { en: "Awaiting review", ar: "بانتظار المراجعة" },
+  progress_review_pending: { en: "In review", ar: "قيد المراجعة" },
+  progress_review_approved: { en: "Approved", ar: "معتمد" },
+  progress_review_needs_work: { en: "Needs work", ar: "يحتاج تحسين" },
+  progress_review_label: { en: "Coach feedback", ar: "ملاحظات الكوتش" },
+  progress_submitted_on: { en: "Submitted {date}", ar: "أُرسلت في {date}" },
+  progress_submitted_unknown: {
+    en: "Submission date unavailable",
+    ar: "تاريخ الإرسال غير متاح",
+  },
+  progress_metric_weight: { en: "Weight", ar: "الوزن" },
+  progress_metric_days: { en: "Training days", ar: "أيام التمرين" },
+  progress_metric_workout: { en: "Workout", ar: "التمرين" },
+  progress_metric_nutrition: { en: "Nutrition", ar: "التغذية" },
+  progress_metric_energy: { en: "Energy", ar: "الطاقة" },
+  progress_metric_sleep: { en: "Sleep", ar: "النوم" },
+  progress_photo_alt: {
+    en: "Progress photo from a past check-in",
+    ar: "صورة تقدم من بطاقة سابقة",
+  },
+  progress_photo_unavailable: {
+    en: "Photo unavailable",
+    ar: "الصورة غير متاحة",
   },
   followup_error_required: {
     en: "Write a message first.",
