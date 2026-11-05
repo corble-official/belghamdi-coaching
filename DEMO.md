@@ -114,7 +114,33 @@ In the **admin browser** you'll see the side effects: new notification(s), the o
 
 ---
 
-## 4. Security checks you can try in demo
+## 4. Testing workflows & automation in demo
+
+**The core idea:** the webapp and n8n talk through a single choke point — `deliver()` (`src/lib/integrations/n8n-client.ts`), HMAC-signed. In live mode it POSTs to the n8n webhook; **in demo mode it records the delivery locally instead** (status `skipped`, up to 300 records in your browser localStorage under `bc_n8n_outbox`). So you can test everything the *website* does with automation, entirely offline.
+
+### What you can exercise (all visible in `/admin/automation`)
+
+| Trigger | Where you fire it | Outbox result |
+|---|---|---|
+| **BC-02 — website lead intake** | Submit the contact/lead form on the public site | delivery record for the BC-02 webhook (payload the workflow would receive) |
+| **BC-03 — order verified → identity** | `node scripts/probe-bc03-webhook.mjs 3000 SO-… email` (Act 2) + demo checkout (`order.paid`) | webhook 200 + provisioning result; checkout order event in the outbox |
+| **BC-06 — follow-up task** | Portal renewal request (Act 5) | delivery record + the task appearing in `/admin/tasks` |
+| **Notifications** | Onboarding submit, missing-email event, task events | rows in `/admin/notifications` |
+| **BC-99 — automation errors** | `/admin/automation/errors` demo rows | deduped view + **Resolve** flow (resolution recorded; error rows stay read-only — app never mutates them) |
+| **Retry path** | **Retry** button on a delivery in the Automation Center | re-fires through `/api/automation/retry` (bounded to 3 attempts per record) |
+| **Health probe** | Automation Center status card | `/api/automation/status` (admin-gated) reports n8n `configured/connected/secretConfigured` without ever exposing the secret |
+
+Also useful: the **outbox records are the contract check**. Open any delivery and compare its payload against `src/lib/integrations/contracts.ts` — that's the exact shape n8n must accept. Task 11 did this and found the BC-03 mapping mismatch (live workflow `ignored` the app-shaped event), which is why that's an owner item.
+
+### What demo *cannot* test (and how to test it anyway)
+
+Demo proves the **website side** fires and records; it cannot run the **workflows themselves** (they live on the n8n instance outside this app). To test those:
+
+1. **From the n8n editor** — open BC-01…BC-99 on your instance and use *Test workflow* / *Execute previous* with pinned data. Nothing on the website changes; publishing stays owner-authorized.
+2. **Signed payloads from scripts** — the probe pattern (`scripts/probe-bc03-webhook.mjs`) can point at the **live** n8n webhooks instead of localhost: same HMAC headers, real workflow run. Known finding: BC-03's intake currently `ignored`s the app-shaped payload (`missing order_ref`) — that's the mapping review in §6.
+3. **Telegram flows (BC-01/BC-06 consumer side)** and real Shopify webhooks need real credentials — end-to-end checks live in the §6 runbooks once the service key and Shopify env land.
+
+## 5. Security checks you can try in demo
 
 - Open `/portal` in a fresh incognito window → redirected to `/login`.
 - `POST /api/portal/renewal` / `/api/admin/*` without cookies → **401/403**.
@@ -124,7 +150,7 @@ In the **admin browser** you'll see the side effects: new notification(s), the o
 
 ---
 
-## 5. What is remaining (before go-live — NOT now)
+## 6. What is remaining (before go-live — NOT now)
 
 ### A. Environment / access (owner)
 | Item | Why |
