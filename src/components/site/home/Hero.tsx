@@ -146,7 +146,7 @@ export function HomeHero() {
                 className="absolute top-8 -start-3 md:-start-8 bg-white rounded-2xl shadow-lg border border-line px-4 py-3 text-xs font-bold text-ink"
               >
                 {t("float_label_coach")}
-                <span className="block text-[11px] font-medium text-muted mt-0.5">Bassam El Ghamdi</span>
+                <span className="block text-[11px] font-medium text-muted mt-0.5">Coach Adam</span>
               </motion.div>
 
               <motion.div
