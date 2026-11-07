@@ -42,13 +42,13 @@ export function Nav() {
         <Link href="/" className="flex items-center gap-2.5" onClick={() => setOpen(false)}>
           <img
             src="/logo.png"
-            alt="Belghamdi Coaching"
+            alt="FitForge Coaching"
             width={36}
             height={36}
             className="h-9 w-9 object-contain invert opacity-80"
           />
           <span className="font-latin font-extrabold tracking-tight text-sm md:text-base text-ink uppercase" dir="ltr">
-            Belghamdi Coaching
+            FitForge Coaching
           </span>
         </Link>
 

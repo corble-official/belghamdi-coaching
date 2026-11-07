@@ -61,7 +61,7 @@ export function CoachPortrait({
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={COACH_IMAGE}
-        alt="Captain Belghamdi"
+        alt="Coach Adam"
         sizes={sizes}
         loading={priority ? "eager" : "lazy"}
         onError={() => setState("failed")}
