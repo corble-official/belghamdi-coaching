@@ -31,7 +31,7 @@ export function Footer() {
             <div className="flex items-center gap-2.5">
               <img src="/logo.png" alt="" width={40} height={40} className="h-10 w-10 object-contain" />
               <span className="font-latin font-extrabold text-base text-cream uppercase" dir="ltr">
-                Belghamdi Coaching
+                FitForge Coaching
               </span>
             </div>
             <p className="text-sm leading-relaxed mt-4 max-w-[36ch] text-cream/60">

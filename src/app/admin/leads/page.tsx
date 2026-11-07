@@ -21,7 +21,7 @@ const emptyForm = {
   interestedProgram: "",
   fitnessGoal: "Build muscle",
   status: "new" as Lead["status"],
-  assignedCoach: "Coach Belghamdi",
+  assignedCoach: "Coach Adam",
   notes: "",
 };
 

@@ -18,17 +18,17 @@ const daysAgo = (n: number) =>
 
 const initialLeads: Lead[] = [
   { id: "ld-1041", fullName: "Yasmine Ait", email: "yasmine.a.demo@example.com", phone: "+212 6X1 XXX 01", source: "program-selector", interestedProgram: "Push Pull Leg x Upper Lower — 5 Days", fitnessGoal: "Build muscle", status: "new", createdAt: daysAgo(1), assignedCoach: "Unassigned", notes: "Selected via program selector. Intermediate lifter.", history: [{ at: daysAgo(1), action: "Lead created from program selector" }] },
-  { id: "ld-1040", fullName: "Omar Benali", email: "omar.b.demo@example.com", phone: "+212 6X2 XXX 02", source: "website-form", interestedProgram: "Gold Coaching", fitnessGoal: "Lose fat", status: "contacted", createdAt: daysAgo(3), assignedCoach: "Coach Belghamdi", notes: "Wants to start after holidays.", history: [{ at: daysAgo(3), action: "Lead created from contact form" }, { at: daysAgo(2), action: "Status changed to Contacted" }] },
-  { id: "ld-1039", fullName: "Sara El Fassi", email: "sara.f.demo@example.com", phone: "+212 6X3 XXX 03", source: "contact-page", interestedProgram: "Muscle Mommies", fitnessGoal: "Build muscle", status: "qualified", createdAt: daysAgo(6), assignedCoach: "Coach Belghamdi", notes: "Ready to commit. Asked about Silver vs Gold.", history: [{ at: daysAgo(6), action: "Lead created" }, { at: daysAgo(5), action: "Status changed to Contacted" }, { at: daysAgo(4), action: "Status changed to Qualified" }] },
-  { id: "ld-1038", fullName: "Karim Zerhouni", email: "karim.z.demo@example.com", phone: "+212 6X4 XXX 04", source: "referral", interestedProgram: "Upper Lower", fitnessGoal: "Get stronger", status: "converted", createdAt: daysAgo(15), assignedCoach: "Coach Belghamdi", notes: "Purchased program. Converted to client.", history: [{ at: daysAgo(15), action: "Lead created" }, { at: daysAgo(13), action: "Converted to client cl-0512" }] },
+  { id: "ld-1040", fullName: "Omar Benali", email: "omar.b.demo@example.com", phone: "+212 6X2 XXX 02", source: "website-form", interestedProgram: "Gold Coaching", fitnessGoal: "Lose fat", status: "contacted", createdAt: daysAgo(3), assignedCoach: "Coach Adam", notes: "Wants to start after holidays.", history: [{ at: daysAgo(3), action: "Lead created from contact form" }, { at: daysAgo(2), action: "Status changed to Contacted" }] },
+  { id: "ld-1039", fullName: "Sara El Fassi", email: "sara.f.demo@example.com", phone: "+212 6X3 XXX 03", source: "contact-page", interestedProgram: "Muscle Mommies", fitnessGoal: "Build muscle", status: "qualified", createdAt: daysAgo(6), assignedCoach: "Coach Adam", notes: "Ready to commit. Asked about Silver vs Gold.", history: [{ at: daysAgo(6), action: "Lead created" }, { at: daysAgo(5), action: "Status changed to Contacted" }, { at: daysAgo(4), action: "Status changed to Qualified" }] },
+  { id: "ld-1038", fullName: "Karim Zerhouni", email: "karim.z.demo@example.com", phone: "+212 6X4 XXX 04", source: "referral", interestedProgram: "Upper Lower", fitnessGoal: "Get stronger", status: "converted", createdAt: daysAgo(15), assignedCoach: "Coach Adam", notes: "Purchased program. Converted to client.", history: [{ at: daysAgo(15), action: "Lead created" }, { at: daysAgo(13), action: "Converted to client cl-0512" }] },
   { id: "ld-1037", fullName: "Demo Visitor", email: "visitor.demo@example.com", phone: "-", source: "website-form", interestedProgram: "Arnold x U-L", fitnessGoal: "Lose fat", status: "lost", createdAt: daysAgo(30), assignedCoach: "Unassigned", notes: "No response after 3 attempts.", history: [{ at: daysAgo(30), action: "Lead created" }, { at: daysAgo(24), action: "Marked as Lost" }] },
 ];
 
 const initialClients: Client[] = [
-  { id: "cl-0512", name: "Karim Zerhouni", email: "karim.z.demo@example.com", phone: "+212 6X4 XXX 04", age: 28, fitnessGoal: "Get stronger", experienceLevel: "intermediate", assignedProgram: "Upper Lower", coachingPackage: "silver", startDate: daysAgo(12), subscriptionStatus: "active", assignedCoach: "Coach Belghamdi", notes: "Referred by a current client.", createdAt: daysAgo(12) },
-  { id: "cl-0511", name: "Nadia Rami", email: "nadia.r.demo@example.com", phone: "+212 6X5 XXX 05", age: 31, fitnessGoal: "Build muscle", experienceLevel: "intermediate", assignedProgram: "Muscle Mommies", coachingPackage: "gold", startDate: daysAgo(40), subscriptionStatus: "active", assignedCoach: "Coach Belghamdi", notes: "Second package cycle.", createdAt: daysAgo(40) },
+  { id: "cl-0512", name: "Karim Zerhouni", email: "karim.z.demo@example.com", phone: "+212 6X4 XXX 04", age: 28, fitnessGoal: "Get stronger", experienceLevel: "intermediate", assignedProgram: "Upper Lower", coachingPackage: "silver", startDate: daysAgo(12), subscriptionStatus: "active", assignedCoach: "Coach Adam", notes: "Referred by a current client.", createdAt: daysAgo(12) },
+  { id: "cl-0511", name: "Nadia Rami", email: "nadia.r.demo@example.com", phone: "+212 6X5 XXX 05", age: 31, fitnessGoal: "Build muscle", experienceLevel: "intermediate", assignedProgram: "Muscle Mommies", coachingPackage: "gold", startDate: daysAgo(40), subscriptionStatus: "active", assignedCoach: "Coach Adam", notes: "Second package cycle.", createdAt: daysAgo(40) },
   { id: "cl-0510", name: "Yassine Hadi", email: "yassine.h.demo@example.com", phone: "+212 6X6 XXX 06", age: 24, fitnessGoal: "Lose fat", experienceLevel: "beginner", assignedProgram: "Full Body", coachingPackage: "none", startDate: daysAgo(9), subscriptionStatus: "active", assignedCoach: "Unassigned", notes: "Program-only client.", createdAt: daysAgo(9) },
-  { id: "cl-0509", name: "Laila Drissi", email: "laila.d.demo@example.com", phone: "+212 6X7 XXX 07", age: 35, fitnessGoal: "Athletic performance", experienceLevel: "advanced", assignedProgram: "Anterior x Posterior", coachingPackage: "gold", startDate: daysAgo(80), subscriptionStatus: "on-hold", assignedCoach: "Coach Belghamdi", notes: "Traveling this month. Paused.", createdAt: daysAgo(80) },
+  { id: "cl-0509", name: "Laila Drissi", email: "laila.d.demo@example.com", phone: "+212 6X7 XXX 07", age: 35, fitnessGoal: "Athletic performance", experienceLevel: "advanced", assignedProgram: "Anterior x Posterior", coachingPackage: "gold", startDate: daysAgo(80), subscriptionStatus: "on-hold", assignedCoach: "Coach Adam", notes: "Traveling this month. Paused.", createdAt: daysAgo(80) },
 ];
 
 const initialOrders: Order[] = [
@@ -40,9 +40,9 @@ const initialOrders: Order[] = [
 ];
 
 const initialSubscriptions: Subscription[] = [
-  { id: "sb-0211", clientId: "cl-0512", clientName: "Karim Zerhouni", package: "silver", startDate: daysAgo(12), renewalDate: new Date(Date.now() + 18 * 86400000).toISOString(), status: "active", paymentStatus: "paid", assignedCoach: "Coach Belghamdi" },
-  { id: "sb-0210", clientId: "cl-0511", clientName: "Nadia Rami", package: "gold", startDate: daysAgo(40), renewalDate: new Date(Date.now() + 4 * 86400000).toISOString(), status: "active", paymentStatus: "paid", assignedCoach: "Coach Belghamdi" },
-  { id: "sb-0209", clientId: "cl-0509", clientName: "Laila Drissi", package: "gold", startDate: daysAgo(80), renewalDate: new Date(Date.now() - 15 * 86400000).toISOString(), status: "on-hold", paymentStatus: "paid", assignedCoach: "Coach Belghamdi" },
+  { id: "sb-0211", clientId: "cl-0512", clientName: "Karim Zerhouni", package: "silver", startDate: daysAgo(12), renewalDate: new Date(Date.now() + 18 * 86400000).toISOString(), status: "active", paymentStatus: "paid", assignedCoach: "Coach Adam" },
+  { id: "sb-0210", clientId: "cl-0511", clientName: "Nadia Rami", package: "gold", startDate: daysAgo(40), renewalDate: new Date(Date.now() + 4 * 86400000).toISOString(), status: "active", paymentStatus: "paid", assignedCoach: "Coach Adam" },
+  { id: "sb-0209", clientId: "cl-0509", clientName: "Laila Drissi", package: "gold", startDate: daysAgo(80), renewalDate: new Date(Date.now() - 15 * 86400000).toISOString(), status: "on-hold", paymentStatus: "paid", assignedCoach: "Coach Adam" },
 ];
 
 const initialProgress: ProgressRecord[] = [
@@ -65,13 +65,13 @@ const initialTransformations: Transformation[] = [
     clientLabel: "Demo Client A",
     demo: true,
     weeks: 24,
-    beforeImage: "https://belghamdicoaching.com/cdn/shop/files/dcbdd09a8b66d1d9f0dc875ccab63824.png?v=1740677851&width=600",
-    afterImage: "https://belghamdicoaching.com/cdn/shop/files/2.png?v=1741112795&width=600",
+    beforeImage: "/images/programs/muscle-mommies-4-5-days-splits.jpg",
+    afterImage: "/images/programs/full-body-3-days-high-frequency-split.jpg",
     summary: "Demo transformation entry. Stages show a recommended 16-week build cycle.",
     stages: [
-      { week: 1, title: "Assessment", detail: "Baseline measurements and movement screening recorded.", metric: "Power clean 65 kg", image: "https://belghamdicoaching.com/cdn/shop/files/dcbdd09a8b66d1d9f0dc875ccab63824.png?v=1740677851&width=400" },
+      { week: 1, title: "Assessment", detail: "Baseline measurements and movement screening recorded.", metric: "Power clean 65 kg", image: "/images/programs/muscle-mommies-4-5-days-splits.jpg" },
       { week: 8, title: "Volume phase", detail: "Hypertrophy block completed with full training adherence.", metric: "Power clean 78 kg" },
-      { week: 20, title: "Peak block", detail: "Final strength block with deload scheduling.", metric: "Power clean 90 kg", image: "https://belghamdicoaching.com/cdn/shop/files/2.png?v=1741112795&width=400" },
+      { week: 20, title: "Peak block", detail: "Final strength block with deload scheduling.", metric: "Power clean 90 kg", image: "/images/programs/full-body-3-days-high-frequency-split.jpg" },
     ],
     visible: true,
   },
@@ -80,8 +80,8 @@ const initialTransformations: Transformation[] = [
     clientLabel: "Demo Client B",
     demo: true,
     weeks: 16,
-    beforeImage: "https://belghamdicoaching.com/cdn/shop/files/8b5f9cd07c576a45d0e8b8f7546e310a.png?v=1740678031&width=600",
-    afterImage: "https://belghamdicoaching.com/cdn/shop/files/9d2eef58f419a730887c6092b3023294.png?v=1740682018&width=600",
+    beforeImage: "/images/programs/upper-lower-4-days.jpg",
+    afterImage: "/images/programs/push-pull-leg-x-upper-lower.jpg",
     summary: "Demo transformation entry. Stages show a recommended cutting cycle.",
     stages: [
       { week: 1, title: "Baseline", detail: "Starting bodyweight and weekly targets documented.", metric: "Weight 92 kg" },
@@ -108,12 +108,12 @@ const initialContentEdits: Record<ContentTab, ContentEdit> = {
   },
   programs: {
     title: "",
-    body: "Structured training programs built and refined by Coach Belghamdi — pick the split that matches your schedule and experience.",
+    body: "Structured training programs built and refined by Coach Adam — pick the split that matches your schedule and experience.",
     visible: true,
   },
   coaching: {
     title: "",
-    body: "Personal coaching with weekly check-ins, custom nutrition targets, and direct access to Coach Belghamdi.",
+    body: "Personal coaching with weekly check-ins, custom nutrition targets, and direct access to Coach Adam.",
     visible: true,
   },
   faq: {
@@ -185,8 +185,8 @@ const baseState = {
   currency: "EGP" as const,
   seedVersion: SEED_VERSION,
   settings: {
-    businessName: "Belghamdi Coaching",
-    contactEmail: "coach@belghamdicoaching.com",
+    businessName: "FitForge Coaching",
+    contactEmail: "coach@fitforgecoaching.com",
     phone: "+212 6XX XXX XXX",
     whatsapp: "",
     instagram: "",
@@ -264,7 +264,7 @@ export const useAdminStore = create<AdminDataState>()(
       updateTransformation: (id, patch) =>
         set({ transformations: get().transformations.map((t) => (t.id === id ? { ...t, ...patch } : t)) }),
       addNote: (note) => {
-        const full: InternalNote = { ...note, id: uuid(), createdAt: new Date().toISOString(), author: "Coach Belghamdi" };
+        const full: InternalNote = { ...note, id: uuid(), createdAt: new Date().toISOString(), author: "Coach Adam" };
         set({ notes: [full, ...get().notes] });
       },
       notesFor: (entityType, entityId) =>
