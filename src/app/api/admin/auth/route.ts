@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 const ADMIN_COOKIE = "bc_admin";
 
 async function tokenFor(password: string): Promise<string> {
-  const data = new TextEncoder().encode(`${password}::belghamdi-admin::v1`);
+  const data = new TextEncoder().encode(`${password}::fitforge-admin::v1`);
   const digest = await crypto.subtle.digest("SHA-256", data);
   return Array.from(new Uint8Array(digest))
     .map((b) => b.toString(16).padStart(2, "0"))
@@ -12,7 +12,7 @@ async function tokenFor(password: string): Promise<string> {
 
 export async function POST(req: NextRequest) {
   const body = (await req.json().catch(() => null)) as { password?: string } | null;
-  const password = process.env.ADMIN_PASSWORD || "belghamdi-demo";
+  const password = process.env.ADMIN_PASSWORD || "fitforge-demo";
 
   if (!body || body.password !== password) {
     return NextResponse.json({ ok: false, error: "Invalid credentials" }, { status: 401 });

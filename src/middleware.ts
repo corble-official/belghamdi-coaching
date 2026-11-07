@@ -18,7 +18,7 @@ function hasSupabaseAuthCookie(
 }
 
 async function tokenFor(password: string): Promise<string> {
-  const data = new TextEncoder().encode(`${password}::belghamdi-admin::v1`);
+  const data = new TextEncoder().encode(`${password}::fitforge-admin::v1`);
   const digest = await crypto.subtle.digest("SHA-256", data);
   return Array.from(new Uint8Array(digest))
     .map((b) => b.toString(16).padStart(2, "0"))
@@ -47,7 +47,7 @@ export async function middleware(req: NextRequest) {
   // ---- Existing admin guard (unchanged) ----
   if (!pathname.startsWith("/admin")) return NextResponse.next();
 
-  const password = process.env.ADMIN_PASSWORD || "belghamdi-demo";
+  const password = process.env.ADMIN_PASSWORD || "fitforge-demo";
   const expected = await tokenFor(password);
   const cookie = req.cookies.get(ADMIN_COOKIE)?.value;
   const authenticated = cookie === expected;
