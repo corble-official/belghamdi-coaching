@@ -65,7 +65,7 @@ export default function AdminSubscriptionsPage() {
     renewalDate: new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10),
     status: "pending" as Subscription["status"],
     paymentStatus: "pending" as Subscription["paymentStatus"],
-    assignedCoach: "Coach Belghamdi",
+    assignedCoach: "Coach Adam",
   });
 
   useEffect(() => {
