@@ -197,7 +197,7 @@ export function ProgramsSection() {
   );
 }
 
-/* ---------------- 04 — why fitforge ---------------- */
+/* ---------------- 04 — why belghamdi ---------------- */
 
 const WHY = [
   { k: 1, bg: "bg-brand-soft", span: "md:col-span-2" },

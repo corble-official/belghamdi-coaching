@@ -202,7 +202,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             <Menu className="h-6 w-6" />
           </button>
           <span className="ml-4 font-display font-semibold uppercase tracking-widest text-sm">
-            FitForge Admin
+            Belghamdi Admin
           </span>
         </div>
         {children}

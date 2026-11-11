@@ -525,7 +525,7 @@ const DICT: Record<string, { en: string; ar: string }> = {
   level_intermediate: { en: "Intermediate", ar: "متوسط" },
   level_advanced: { en: "Advanced", ar: "متقدم" },
   days_per_week_n: { en: "{n} days / week", ar: "{n} أيام / أسبوع" },
-  why_title: { en: "Why FitForge?", ar: "ليه فيت فورج؟" },
+  why_title: { en: "Why Belghamdi?", ar: "ليه بالغامدي؟" },
   why_headline: { en: "You don't need a big budget to train right", ar: "مش لازم ميزانية كبيرة عشان تبدأ صح" },
   why_1_title: { en: "A clear program", ar: "برنامج واضح" },
   why_1_copy: { en: "Instead of wondering what to train every single day.", ar: "بدل ما تفضل محتار تتمرن إيه كل يوم." },
@@ -576,8 +576,8 @@ const DICT: Record<string, { en: string; ar: string }> = {
   },
   coach_section_q: { en: "Who is the captain?", ar: "مين الكابتن؟" },
   coach_section_copy: {
-    en: "I'm Coach Adam — for years I've been training thousands of the Arabic community every week, and my goal is simple: make correct training accessible to everyone, at a price everyone can afford.",
-    ar: "أنا الكابتن آدم، من سنين بشغّل مع آلاف من الناس كل أسبوع، وهدفي بسيط: أخلي التمرين الصح في متناول الكل، وبسعر يستاهله كل واحد.",
+    en: "I'm Coach Belghamdi — for years I've been training thousands of the Arabic community every week, and my goal is simple: make correct training accessible to everyone, at a price everyone can afford.",
+    ar: "أنا الكابتن بالغامدي، من سنين بشغّل مع آلاف من الناس كل أسبوع، وهدفي بسيط: أخلي التمرين الصح في متناول الكل، وبسعر يستاهله كل واحد.",
   },
   videos_section_q: { en: "Learn with me", ar: "اتعلم معايا" },
   videos_copy: {
@@ -618,8 +618,8 @@ const DICT: Record<string, { en: string; ar: string }> = {
   about_q: { en: "About", ar: "من أنا" },
   about_headline: { en: "A coach obsessed with the process", ar: "كوتش مهووس بالتنفيذ الصح" },
   about_copy: {
-    en: "FitForge Coaching exists to bring scientific training to people who want real outcomes — structured programming, honest accountability, and progress you can measure week over week.",
-    ar: "فيت فورج كوتشينج موجود عشان يجيب التدريب العلمي لكل الناس اللي عايزة نتيجة حقيقية — برمجة منظمة، ومتابعة صادقة، وتقدم تراه بعينك أسبوع ورا أسبوع.",
+    en: "Belghamdi Coaching exists to bring scientific training to people who want real outcomes — structured programming, honest accountability, and progress you can measure week over week.",
+    ar: "بالغامدي كوتشينج موجود عشان يجيب التدريب العلمي لكل الناس اللي عايزة نتيجة حقيقية — برمجة منظمة، ومتابعة صادقة، وتقدم تراه بعينك أسبوع ورا أسبوع.",
   },
   about_1_title: { en: "Coach-led programs", ar: "برامج من الكابتن بنفسه" },
   about_1_copy: {
@@ -640,7 +640,7 @@ const DICT: Record<string, { en: string; ar: string }> = {
     en: "Build beyond your limits — but build in a way you can sustain for the next decade.",
     ar: "ابنِ أكبر من حدودك — بس بطريقة تقدر تكمل معاك عشر سنين جاية.",
   },
-  about_quote_by: { en: "— Coach Adam", ar: "— الكابتن آدم" },
+  about_quote_by: { en: "— Coach Belghamdi", ar: "— الكابتن بالغامدي" },
 
   /* ===== Transformations page ===== */
   transformations_q: { en: "Transformations", ar: "التحولات" },
@@ -659,8 +659,8 @@ const DICT: Record<string, { en: string; ar: string }> = {
   portal_greeting: { en: "Welcome back, {name}.", ar: "أهلاً بعودتك، {name}." },
   portal_signout: { en: "Sign out", ar: "تسجيل الخروج" },
   portal_footer_note: {
-    en: "FitForge Coaching — client portal",
-    ar: "فيت فورج — بوابة العملاء",
+    en: "Belghamdi Coaching — client portal",
+    ar: "كوتش بالغامدي — بوابة العملاء",
   },
   portal_nav_home: { en: "Home", ar: "الرئيسية" },
   portal_nav_chat: { en: "Chat", ar: "المحادثة" },

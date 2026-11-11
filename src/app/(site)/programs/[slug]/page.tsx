@@ -16,7 +16,7 @@ export async function generateMetadata({
   const product = getProduct(slug);
   if (!product) return {};
   return {
-    title: `${product.title} — FitForge Coaching`,
+    title: `${product.title} — Belghamdi Coaching`,
     description: product.description,
   };
 }

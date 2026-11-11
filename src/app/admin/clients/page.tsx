@@ -34,7 +34,7 @@ const emptyForm = {
   assignedProgram: "",
   coachingPackage: "none" as Client["coachingPackage"],
   subscriptionStatus: "pending" as Client["subscriptionStatus"],
-  assignedCoach: "Coach Adam",
+  assignedCoach: "Coach Belghamdi",
   notes: "",
 };
 

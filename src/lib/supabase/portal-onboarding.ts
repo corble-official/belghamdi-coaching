@@ -79,7 +79,7 @@ export function demoOnboardingState(): OnboardingState {
     prefill: {
       ...emptyPrefill(),
       full_name: "عميل تجريبي",
-      email: "demo@fitforgecoaching.com",
+      email: "demo@belghamdicoaching.com",
     },
     hasLinkedClient: true,
   };

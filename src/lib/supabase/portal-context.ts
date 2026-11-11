@@ -45,13 +45,13 @@ export type PortalContext =
 const DEMO_CLIENT: PortalClient = {
   id: "demo-client-id",
   full_name: "عميل تجريبي",
-  email: "demo@fitforgecoaching.com",
+  email: "demo@belghamdicoaching.com",
 };
 
 const DEMO_PROFILE: PortalProfile = {
   id: "demo-client-id",
   full_name: "عميل تجريبي",
-  email: "demo@fitforgecoaching.com",
+  email: "demo@belghamdicoaching.com",
 };
 
 const DEMO_SUB: SubscriptionState = {

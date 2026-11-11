@@ -6,7 +6,7 @@ import { createHash } from "crypto";
    Mirrors src/app/api/admin/auth/route.ts (bc_admin = SHA-256 of ADMIN_PASSWORD). */
 
 export function adminPassword(): string {
-  return process.env.ADMIN_PASSWORD || "fitforge-demo";
+  return process.env.ADMIN_PASSWORD || "belghamdi-demo";
 }
 
 export function adminCookieName(): string {
@@ -14,8 +14,8 @@ export function adminCookieName(): string {
 }
 
 export function adminCookieValue(): string {
-  // Must mirror src/app/api/admin/auth/route.ts tokenFor(): sha256 of "<password>::fitforge-admin::v1"
-  return createHash("sha256").update(`${adminPassword()}::fitforge-admin::v1`).digest("hex");
+  // Must mirror src/app/api/admin/auth/route.ts tokenFor(): sha256 of "<password>::belghamdi-admin::v1"
+  return createHash("sha256").update(`${adminPassword()}::belghamdi-admin::v1`).digest("hex");
 }
 
 /** Returns true when the request carries a valid admin cookie. */

@@ -34,7 +34,7 @@ export default function AdminLoginPage() {
         <div className="w-12 h-12 border border-copper flex items-center justify-center font-display font-bold text-copper text-xl mb-6">
           B
         </div>
-        <p className="eyebrow mb-2">FitForge Admin</p>
+        <p className="eyebrow mb-2">Belghamdi Admin</p>
         <h1 className="heading-lg text-2xl mb-8">Dashboard access</h1>
 
         <form onSubmit={submit} className="space-y-5">
@@ -67,7 +67,7 @@ export default function AdminLoginPage() {
 
         <p className="flex items-center gap-2 text-[11px] text-wgray-dim mt-8 leading-relaxed">
           <UserCog className="h-4 w-4 shrink-0" />
-          Demo credentials: password set via ADMIN_PASSWORD (default: fitforge-demo)
+          Demo credentials: password set via ADMIN_PASSWORD (default: belghamdi-demo)
         </p>
       </div>
     </div>

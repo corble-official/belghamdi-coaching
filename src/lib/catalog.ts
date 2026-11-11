@@ -35,8 +35,9 @@ export const CATEGORIES: ProductCategory[] = [
   "Women's Training",
 ];
 
-/* Demo catalog — fictional FitForge brand. Structure mirrors a real Shopify
-   coaching store. Every product includes the same 7 bundled items (see INCLUDED_ITEMS). */
+/* Real data extracted from the live store — belghamdicoaching.com (Shopify).
+   Every product includes the same 7 bundled items (see INCLUDED_ITEMS),
+   and the note below is taken verbatim from the live product pages. */
 
 export const INJURY_NOTE =
   "This program is not suitable for those with current injuries or during rehabilitation.";
@@ -76,6 +77,8 @@ export const INCLUDED_ITEMS: { title: string; detail: string }[] = [
   },
 ];
 
+const CDN = "https://belghamdicoaching.com/cdn/shop/files";
+
 export const CATALOG: Product[] = [
   {
     id: "prod-anterior-posterior",
@@ -84,8 +87,8 @@ export const CATALOG: Product[] = [
     category: "Training Splits",
     description:
       "A complete training program, 4+ days a week at high frequency for every muscle group. Anterior/posterior structure that develops your whole body scientifically, building balanced muscular mass with high frequency and intensity — no dedicated lower-body days, in a flexible, resilient plan.",
-    image: "/images/programs/anterior-x-posterior.jpg",
-    sourceUrl: "#",
+    image: `${CDN}/1242352235.png?v=1760710968&width=1000`,
+    sourceUrl: "https://belghamdicoaching.com/products/anterior-x-posterior",
     price: 380,
     compareAtPrice: 699,
     frequency: "4+ sessions / week",
@@ -109,16 +112,16 @@ export const CATALOG: Product[] = [
     title: "Arnold x U-L",
     category: "Specialized Programs",
     description:
-      "A hybrid program that blends the classic Arnold-style volume approach with an Upper/Lower framework. Choose it when you want a signature FitForge system that keeps the intensity high every week.",
-    image: "/images/programs/arnold-x-u-l.jpg",
-    sourceUrl: "#",
+      "A hybrid program that blends the classic Arnold-style volume approach with an Upper/Lower framework. Choose it when you want a signature Belghamdi system that keeps the intensity high every week.",
+    image: `${CDN}/arnoold.png?v=1755456413&width=1000`,
+    sourceUrl: "https://belghamdicoaching.com/products/arnold-x-u-l",
     price: 380,
     compareAtPrice: 699,
     frequency: "Multi-split / week",
     audience: "Lifters who enjoyed classic Arnold splits and want a modern, structured version",
     benefits: [
       "Arnold-style volume with U-L structure",
-      "Signature FitForge system",
+      "Signature Belghamdi system",
       "High weekly intensity",
       "Video-guided execution",
     ],
@@ -135,8 +138,8 @@ export const CATALOG: Product[] = [
     category: "Full Body",
     description:
       "A training program, just 3 days a week — for maximum muscle mass gain in minimum time. If your time is limited but you want a strong, muscular body built scientifically, this program is for you. 3 days are enough for the largest muscle gains while respecting recovery and preventing overtraining.",
-    image: "/images/programs/muscle-mommies-4-5-days-splits.jpg",
-    sourceUrl: "#",
+    image: `${CDN}/dcbdd09a8b66d1d9f0dc875ccab63824.png?v=1740677851&width=1000`,
+    sourceUrl: "https://belghamdicoaching.com/products/muscle-mommies-4-5-days-splits",
     price: 380,
     compareAtPrice: 699,
     frequency: "3 sessions / week",
@@ -159,9 +162,9 @@ export const CATALOG: Product[] = [
     title: "Muscle Mommies",
     category: "Women's Training",
     description:
-      "The signature FitForge women's split built on a 3-day full-body, high-frequency structure — developed for the Muscle Mommies community and available with selectable training days (4–5 day options inside).",
-    image: "/images/programs/full-body-3-days-high-frequency-split.jpg",
-    sourceUrl: "#",
+      "The signature Belghamdi women's split built on a 3-day full-body, high-frequency structure — developed for the Muscle Mommies community and available with selectable training days (4–5 day options inside).",
+    image: `${CDN}/2.png?v=1741112795&width=1000`,
+    sourceUrl: "https://belghamdicoaching.com/products/full-body-3-days-high-frequency-split",
     price: 380,
     compareAtPrice: 699,
     frequency: "3 days (4–5 day options)",
@@ -185,8 +188,8 @@ export const CATALOG: Product[] = [
     category: "PPL",
     description:
       "The five-day hybrid: a Push/Pull/Legs week woven into Upper/Lower days, giving every muscle high weekly volume while keeping recovery realistic. This is the pick of the store's 5-day split.",
-    image: "/images/programs/push-pull-leg-x-upper-lower.jpg",
-    sourceUrl: "#",
+    image: `${CDN}/9d2eef58f419a730887c6092b3023294.png?v=1740682018&width=1000`,
+    sourceUrl: "https://belghamdicoaching.com/products/push-pull-leg-x-upper-lower",
     price: 380,
     compareAtPrice: 699,
     frequency: "5 sessions / week",
@@ -210,8 +213,8 @@ export const CATALOG: Product[] = [
     category: "Upper / Lower",
     description:
       "The store's classic 4-day Upper/Lower split — a step up from the 3-day plan with dedicated upper and lower sessions twice a week, engineered for balanced strength and size when you can commit four consistent days.",
-    image: "/images/programs/upper-lower-4-days.jpg",
-    sourceUrl: "#",
+    image: `${CDN}/8b5f9cd07c576a45d0e8b8f7546e310a.png?v=1740678031&width=1000`,
+    sourceUrl: "https://belghamdicoaching.com/products/upper-lower-4-days",
     price: 380,
     compareAtPrice: 699,
     frequency: "4 sessions / week",
@@ -243,7 +246,7 @@ const PRODUCT_AR: Record<string, { title: string; description: string; audience:
   "arnold-x-u-l": {
     title: "أرنولد × أبر لور",
     description:
-      "برنامج هجين بيدمج حجم أرنولد الكلاسيكي مع تقسيمة أبر/لور. اختاره لو عايز نظام فيت فورج بتدريب عالي كل أسبوع.",
+      "برنامج هجين بيدمج حجم أرنولد الكلاسيكي مع تقسيمة أبر/لور. اختاره لو عايز نظام بالغامدي بتدريب عالي كل أسبوع.",
     audience: "أصحاب تقسيمة أرنولد اللي عايزينها بشكل حديث ومنظم",
   },
   "muscle-mommies-4-5-days-splits": {
@@ -255,7 +258,7 @@ const PRODUCT_AR: Record<string, { title: string; description: string; audience:
   "full-body-3-days-high-frequency-split": {
     title: "مسل ماميز",
     description:
-      "تقسيمة فيت فورج المميزة للسيدات على أساس 3 أيام فول بودي بتكرار عالي — متطورة لمجتمع Muscle Mommies ومتاحة بحد أيام متغير (اختيارات 4–5 أيام داخل الخطة).",
+      "تقسيمة بالغامدي المميزة للسيدات على أساس 3 أيام فول بودي بتكرار عالي — متطورة لمجتمع Muscle Mommies ومتاحة بحد أيام متغير (اختيارات 4–5 أيام داخل الخطة).",
     audience: "سيدات بيبنيوا قوة ورشاقة على جدول أسبوعي مرن",
   },
   "push-pull-leg-x-upper-lower": {
@@ -309,7 +312,7 @@ const BENEFITS_AR: Record<string, string[]> = {
   ],
   "arnold-x-u-l": [
     "حجم أرنولد الكلاسيكي مع تقسيمة أبر/لور",
-    "نظام فيت فورج المميز",
+    "نظام بالغامدي المميز",
     "شدة أسبوعية عالية",
     "تنفيذ مشروح بالفيديو",
   ],
@@ -412,29 +415,29 @@ export const COACHING_PACKAGES: CoachingPackage[] = [
 export const getCoachingPackage = (id: CoachingPackageId) =>
   COACHING_PACKAGES.find((p) => p.id === id);
 
-/* Demo coach & business data for the fictional FitForge brand. */
+/* Real coach & business data extracted from the live client site. */
 export const BUSINESS = {
-  brand: "FitForge Coaching",
-  brandLegal: "FitForge-Coaching",
-  coach: "Coach Adam",
-  coachArabic: "الكابتن آدم",
+  brand: "Belghamdi Coaching",
+  brandLegal: "Belghamdi-Coaching",
+  coach: "Bassam El Ghamdi",
+  coachArabic: "بسام بالغامدي",
   location: "Cairo, Egypt",
-  website: "https://fitforgecoaching.com",
-  email: "coach@fitforgecoaching.com",
-  whatsapp: "+20 100 000 0000",
-  whatsappLink: "https://wa.me/201000000000",
-  logo: "/logo.png",
+  website: "https://belghamdicoaching.com",
+  email: "coach@belghamdicoaching.com",
+  whatsapp: "+201028796338",
+  whatsappLink: "https://wa.me/201028796338",
+  logo: "https://belghamdicoaching.com/cdn/shop/files/logi.png?v=1750603230&width=600",
   stats: {
-    clientsServed: "12,000+",
-    clientsOnSplits: "9,000+",
-    instagramFollowers: "48K",
-    tiktokFollowers: "120K",
+    clientsServed: "20,000+",
+    clientsOnSplits: "16,000+",
+    instagramFollowers: "65.5K",
+    tiktokFollowers: "232K",
   },
   payments: ["Vodafone Cash", "Instapay", "Visa / Credit"],
   socials: {
-    instagram: "#",
-    tiktok: "#",
-    youtube: "#",
-    threads: "#",
+    instagram: "https://www.instagram.com/belghamdi.coaching/",
+    tiktok: "https://www.tiktok.com/@belghamdi.coaching",
+    youtube: "https://www.youtube.com/@Belghamdi.Coaching",
+    threads: "https://www.threads.com/@belghamdi.coaching",
   },
 } as const;

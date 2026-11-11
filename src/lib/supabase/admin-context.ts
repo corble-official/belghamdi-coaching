@@ -52,7 +52,7 @@ export type AdminContext = {
 /** Same digest as middleware + /api/admin/auth — kept in lockstep on purpose. */
 async function tokenFor(password: string): Promise<string> {
   const data = new TextEncoder().encode(
-    `${password}::fitforge-admin::v1`
+    `${password}::belghamdi-admin::v1`
   );
   const digest = await crypto.subtle.digest("SHA-256", data);
   return Array.from(new Uint8Array(digest))
@@ -64,7 +64,7 @@ async function hasLegacyAdminCookie(): Promise<boolean> {
   const store = await cookies();
   const cookie = store.get(ADMIN_COOKIE)?.value;
   if (!cookie) return false;
-  const password = process.env.ADMIN_PASSWORD || "fitforge-demo";
+  const password = process.env.ADMIN_PASSWORD || "belghamdi-demo";
   return cookie === (await tokenFor(password));
 }
 
