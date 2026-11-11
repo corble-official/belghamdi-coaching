@@ -11,3 +11,4 @@ next-env.d.ts
 # Local browser-probe artifacts (playwright-cli)
 .playwright-cli/
 output/
+n8n-backups/
